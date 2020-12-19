@@ -23,8 +23,8 @@ DefaultContentLanguage = "zh-cn"
   Subtitle = "人生天地间，忽如远行客"
   Imglogo = "/img/logo.png"
   #AuthorImg = "/img/author.jpg"
-  DateFormat = "2006-01-02"
-  YearFormat = "2006年"
+  DateFormat = "219-01-02"
+  YearFormat = "2019年"
   MonthFormat = "01-02"
   Fancybox = true
 
