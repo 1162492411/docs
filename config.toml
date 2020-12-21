@@ -1,6 +1,6 @@
-Title =  "zyg-tech"
+Title =  ""
 LanguageCode = "zh-cn"
-BaseUrl = "https://1162492411.github.io/a/"
+BaseUrl = "https://www.zyg-tech.me"
 Theme =  "next"
 MetaDataFormat =  "yaml"
 CanonifyUrls =  true
