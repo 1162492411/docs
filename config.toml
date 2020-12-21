@@ -49,11 +49,6 @@ DefaultContentLanguage = "zh-cn"
   URL = "/categories/技术/"
   Weight = 2
 [[Menu.Main]]
-  Name = "感想"
-  Pre = "tint"
-  URL = "/categories/感想/"
-  Weight = 3
-[[Menu.Main]]
   Name = "笔记"
   Pre = "book"
   URL = "/categories/笔记/"
