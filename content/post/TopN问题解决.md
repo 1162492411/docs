@@ -1,8 +1,8 @@
 ---
-title: "MySQL中TopN问题解决"
+title: "TopN问题解决"
 date: 2020-11-24T17:24:56+08:00
 description: "Article description."
-draft: true
+draft: false
 toc: TRUE
 categories:
   - 数据库
