@@ -11,9 +11,9 @@ DisablePathToLower =  false
 HasCJKLanguage = true
 PreserveTaxonomyNames = false
 UglyUrls = false
-PygmentsStyle = "monokai"
-pygmentsCodefences = true
-pygmentsCodefencesGuessSyntax = true
+#PygmentsStyle = "monokai"
+#pygmentsCodefences = true
+#pygmentsCodefencesGuessSyntax = true
 DefaultContentLanguage = "zh-cn"
 
 [Params]
@@ -23,7 +23,7 @@ DefaultContentLanguage = "zh-cn"
   Subtitle = "人生天地间，忽如远行客"
   Imglogo = "/img/logo.png"
   #AuthorImg = "/img/author.jpg"
-  DateFormat = "2019-01-02"
+  #DateFormat = "2019-01-02"
   YearFormat = "2019年"
   MonthFormat = "01-02"
   Fancybox = true
