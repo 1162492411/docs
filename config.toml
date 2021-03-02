@@ -54,9 +54,9 @@ DefaultContentLanguage = "zh-cn"
   URL = "/categories/笔记/"
   Weight = 4
 [[Menu.Main]]
-  Name = "杂记"
+  Name = "面试题"
   Pre = "leaf"
-  URL = "/categories/杂记/"
+  URL = "/categories/面试题/"
   Weight = 5
 [[Menu.Main]]
   Name = "归档"
