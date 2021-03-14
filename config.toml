@@ -62,12 +62,12 @@ DefaultContentLanguage = "zh-cn"
   Name = "归档"
   Pre = "archive"
   URL = "/post/"
-  Weight = 6
+  Weight = 7
 [[Menu.Main]]
   Name = "关于"
   Pre = "user"
   URL = "/about/"
-  Weight = 7
+  Weight = 8
 
 [[Params.Socials]]
   Name = "GitHub"
