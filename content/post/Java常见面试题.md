@@ -154,23 +154,20 @@ volatile通过内存屏障来实现，而synchronized通过系统内核互斥实
 
 # 线程篇
 
-1. 线程和进程的区别
+## 线程和进程的区别
 
 {{< spoiler >}} 
 进程是资源分配的最小单位，线程是CPU调度的最小单位
 
 {{< / spoiler >}}
 
-
-2. 线程有哪几种状态
-
-{{< spoiler >}} 
+## 线程有哪几种状态
 
 ![java-线程状态图](https://gitee.com/1162492411/pic/raw/master/java-线程状态图.jpeg)
 
-{{< / spoiler >}}
 
-3. 线程的实现方式有哪些，这些方式之间有什么区别
+
+## 线程的实现方式有哪些，这些方式之间有什么区别
 
 {{< spoiler >}} 
 
@@ -179,8 +176,7 @@ volatile通过内存屏障来实现，而synchronized通过系统内核互斥实
 3）Thread 是类，而Runnable是接口，并且Runnable可以实现资源共享，例如卖票的场景
 {{< / spoiler >}}
 
-
-4. Thread类包含start()和run()方法，它们的区别是什么
+## Thread类包含start()和run()方法，它们的区别是什么
 
 {{< spoiler >}} 
 start() : 它的作用是启动一个新线程，新线程会执行相应的run()方法。start()不能被重复调用。
@@ -188,41 +184,39 @@ start() : 它的作用是启动一个新线程，新线程会执行相应的run(
 run()   : run()就和普通的成员方法一样，可以被重复调用。单独调用run()的话，会在当前线程中执行run()，而并不会启动新线程
 {{< / spoiler >}}
 
-5. 为什么notify(), wait()等函数定义在Object中，而不是Thread中
+## 为什么notify(), wait()等函数定义在Object中，而不是Thread中
+
 {{< spoiler >}} 
 notify(), wait()依赖于“同步锁”，而“同步锁”是对象锁持有，并且每个对象有且仅有一个
 {{< / spoiler >}}
 
-6. sleep() 与 wait()的比较
+## sleep() 与 wait()的比较
+
 {{< spoiler >}} 
 wait()的作用是让当前线程由“运行状态”进入“等待(阻塞)状态”的同时，也会释放同步锁。
 而sleep()的作用是也是让当前线程由“运行状态”进入到“休眠(阻塞)状态”。
 但是，wait()会释放对象的同步锁，而sleep()则不会释放锁
 {{< / spoiler >}}
 
-7. join()方法的作用和原理
+## join()方法的作用和原理
+
 {{< spoiler >}} 
 作用是让“主线程”等待“子线程”结束之后才能继续运行，原理就是对应的native方法中先是主线程调用了wait然后在子线程threadA执行完毕之后，JVM会调用lock.notify_all(thread)来唤醒就是主线程
 {{< / spoiler >}}
 
-
-8. nofity和nofityAll的区别
+## nofity和nofityAll的区别
 
 {{< spoiler >}} 
 notify()方法只随机唤醒一个 wait 线程，而notifyAll()方法唤醒所有 wait 线程
 {{< / spoiler >}}
 
-
-如何实现线程安全，各个实现方法有什么区别
+## 如何实现线程安全，各个实现方法有什么区别
 
 {{< spoiler >}} 
 
 {{< / spoiler >}}
 
-
-
-
-JDK自带的有哪几种线程池
+## JDK自带的有哪几种线程池
 
 {{< spoiler >}} 
 
@@ -230,7 +224,7 @@ JDK自带的有哪几种线程池
 
 {{< / spoiler >}}
 
-如何设计一个线程池
+## 如何设计一个线程池
 
 {{< spoiler >}} 
 
@@ -238,7 +232,21 @@ JDK自带的有哪几种线程池
 
 {{< / spoiler >}}
 
-线程池的参数有哪些，各自作用是什么
+## 线程池的参数有哪些，各自作用是什么
+
+
+
+
+
+## execute和submit的区别与联系
+
+{{< spoiler >}} 
+
+* 任务类型 ：execute只能提交Runnable类型的任务，而submit既能提交Runnable类型任务也能提交Callable类型任务
+* 异常 ： execute直接抛出异常，submit会吃掉异常，可用future的get捕获
+* 顶层接口 ：execute所属顶层接口是Executor,submit所属顶层接口是ExecutorService
+
+{{< / spoiler >}}
 
 
 
@@ -247,11 +255,6 @@ JDK自带的有哪几种线程池
 多线程的价值？
 创建线程的有哪些方式？
 创建线程的三种方式的对比？
-线程的状态流转图
-Java 线程具有五种基本状态
-什么是线程池？有哪几种创建方式？
-四种线程池的创建
-线程池的优点？
 常用的并发工具类有哪些？
 CyclicBarrier 和 CountDownLatch 的区别
 synchronized 的作用？
