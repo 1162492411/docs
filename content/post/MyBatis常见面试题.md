@@ -12,11 +12,7 @@ tags:
   - MyBatis
 ---
 
-{{< spoiler >}} 
 
-
-
-{{< / spoiler >}}
 
 # 基础篇
 
