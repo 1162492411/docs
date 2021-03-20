@@ -163,6 +163,17 @@ Hibernate属于全自动ORM映射工具，使用Hibernate查询关联对象或�
 
 {{< / spoiler >}}
 
+## 一级缓存在哪些情况下失效
+
+{{< spoiler >}} 
+
+* sqlsession变了 缓存失效
+* sqlsession不变,查询条件不同，一级缓存失效
+* sqlsession不变,中间发生了增删改操作，一级缓存失败
+* sqlsession不变,手动清除缓存，一级缓存失败
+{{< / spoiler >}}
+
+
 ## 缓存清空策略有哪些
 
 {{< spoiler >}} 
