@@ -17,7 +17,7 @@ tags:
 
 ## 如何理解Redis的通讯协议resp协议
     {{< spoiler >}} 
-
+    
     {{< / spoiler >}}
 
 ## 如何理解Redis的cluster bus的gossip协议
@@ -50,160 +50,154 @@ tags:
 ## Redis的主从复制原理是什么
 
     {{< spoiler >}} 
-    
     从节点连接主节点，向主节点发起同步请求，接收主节点的rdb文件
-    
     {{< / spoiler >}}
 
-6. Redis如何划分内存
+## Redis如何划分内存
 
-    {{< spoiler >}} 
-    1）used_memory ：Redis分配器分配的内存总量；
-    2）used_memory_rss ：进程占据操作系统的内存；
-    3）mem_fragmentation_ratio ： 内存碎片率，used_memory_rss / used_memory；
-    4）mem_allocator ： 使用的内存分配器
-    {{< / spoiler >}}
-    
-7. Redis的存储细节
+{{< spoiler >}} 
+1）used_memory ：Redis分配器分配的内存总量；
+2）used_memory_rss ：进程占据操作系统的内存；
+3）mem_fragmentation_ratio ： 内存碎片率，used_memory_rss / used_memory；
+4）mem_allocator ： 使用的内存分配器
+{{< / spoiler >}}
 
-    {{< spoiler >}} 
+## Redis的存储细节
 
-    {{< / spoiler >}}
-    
-8. Redis如何实现渐进式hash进行扩容
+{{< spoiler >}} 
 
-    
+{{< / spoiler >}}
 
-    {{< spoiler >}} 
-    
-    1）申请旧hash两倍的内存空间，使得原有的字典同时持有旧hash表和新hash表
-    
-    2）维护一个标志变量rehashindex用于记录进度
-    
-    3）访问字典时将旧hash表中位于rehashindex这个桶中的key全部转移到新hash表中
-    
-    4）全部转移完时修改记录进度rehashindex
-    
-    {{< / spoiler >}}
-    
-    
-    
-9. Redis事务的CAS
+## Redis如何实现渐进式hash进行扩容
 
-    {{< spoiler >}} 
+{{< spoiler >}} 
 
-    {{< / spoiler >}}
+1）申请旧hash两倍的内存空间，使得原有的字典同时持有旧hash表和新hash表
 
-10. string如何扩容
+2）维护一个标志变量rehashindex用于记录进度
 
-    {{< spoiler >}} 
-    小于1m时每次加倍扩容，大于1m时每次增加1m，最大为512m
-    {{< / spoiler >}}
+3）访问字典时将旧hash表中位于rehashindex这个桶中的key全部转移到新hash表中
 
-11. redis的文件事件处理器都包含哪些部分
+4）全部转移完时修改记录进度rehashindex
 
-     {{< spoiler >}} 
-     1）多个 socket用来完成请求的接收与响应信息的发送
-     2）IO 多路复用程序
-     3）文件事件分派器用来协调调度
-     4）事件处理器（连接应答处理器、命令请求处理器、命令回复处理器）用来真正干活
-     {{< / spoiler >}}
+{{< / spoiler >}}
+
+
+
+## Redis事务的CAS
+
+{{< spoiler >}} 
+
+{{< / spoiler >}}
+
+## string如何扩容
+
+{{< spoiler >}} 
+小于1m时每次加倍扩容，大于1m时每次增加1m，最大为512m
+{{< / spoiler >}}
+
+## redis的文件事件处理器都包含哪些部分
+
+ {{< spoiler >}} 
+ 1）多个 socket用来完成请求的接收与响应信息的发送
+ 2）IO 多路复用程序
+ 3）文件事件分派器用来协调调度
+ 4）事件处理器（连接应答处理器、命令请求处理器、命令回复处理器）用来真正干活
+ {{< / spoiler >}}
 
 # 基础篇
 
-1. Redis都有哪些基础的数据结构，他们各自的底层是如何实现的，对应的使用场景是什么
+## Redis都有哪些基础的数据结构，他们各自的底层是如何实现的，对应的使用场景是什么
 
-    {{< spoiler >}} 
-    1）String ： 类似Java的动态数组，在内部预先分配一定空间，场景为存储键值对；
-    2）Hash ： 类似Java的HashMap，数据+链表结构，发生 hash 碰撞时将会把元素追加到链表上，场景为存储购物车信息或者对象；
-    3）List ： 类似Java的LinkedList，插入与删除数据的复杂度为O(1),数据量少时为一块内存连续的ziplist，数据量多时采用有前后指针的quicklist，redis3.2以后是ziplist+quicklist，场景为点赞列表、评论列表；
-    4）Set ： 类似Java的HashSet，键无序且唯一，value为null，场景为好友、关注、粉丝、感兴趣的人集合；
-    5）SortedSet ：有序集合，内部实现为ziplist或者skiplist，场景为排行榜
-    {{< / spoiler >}}
+{{< spoiler >}} 
+1）String ： 类似Java的动态数组，在内部预先分配一定空间，场景为存储键值对；
+2）Hash ： 类似Java的HashMap，数据+链表结构，发生 hash 碰撞时将会把元素追加到链表上，场景为存储购物车信息或者对象；
+3）List ： 类似Java的LinkedList，插入与删除数据的复杂度为O(1),数据量少时为一块内存连续的ziplist，数据量多时采用有前后指针的quicklist，redis3.2以后是ziplist+quicklist，场景为点赞列表、评论列表；
+4）Set ： 类似Java的HashSet，键无序且唯一，value为null，场景为好友、关注、粉丝、感兴趣的人集合；
+5）SortedSet ：有序集合，内部实现为ziplist或者skiplist，场景为排行榜
+{{< / spoiler >}}
 
-2. Redis有哪些高级的数据结构，对应的使用场景是什么
+## Redis有哪些高级的数据结构，对应的使用场景是什么
 
-    {{< spoiler >}}
-    1)BitMaps : 位图,面向bit进行操作,每个bit位为一个值,极度节省空间,经典使用场景是用户的每日签到记录
-    2)HyperLogLog : 基数统计,基数是数据集去重后元素个数,经典使用场景是统计用户UV
-    3)GEO : 处理地理位置
-    {{< /spoiler >}}
+{{< spoiler >}}
+1)BitMaps : 位图,面向bit进行操作,每个bit位为一个值,极度节省空间,经典使用场景是用户的每日签到记录
+2)HyperLogLog : 基数统计,基数是数据集去重后元素个数,经典使用场景是统计用户UV
+3)GEO : 处理地理位置
+{{< /spoiler >}}
 
-3. Redis如何做到数据持久化，这些方式各自有什么优缺点
+## Redis如何做到数据持久化，这些方式各自有什么优缺点
 
-    {{< spoiler >}} 
-    RDB保存快照，AOF保存执行命令的记录并合并命令；
-    1) RDB有两种方式：同步save模式和异步bgsave模式，同步save模式可以保证数据一致性；
-    save会导致redis阻塞，bgsave在大数据量时fork会引起抖动，导致短暂时间内redis响应变慢，且fork需要一定的内存开销；
-    rdb文件默认每次rdb时进行替换并压缩；
-    rdb优点：文件紧凑，体积小，适合全量备份与复制，且加载rdb文件的速度比加载aof文件的速度快
-    rdb缺点：无法秒级别持久化，老版本redis无法兼容新版本的rdb
-    2) aof是目前主流的持久数据的方式，aof每次都会将写命令保存到缓冲区然后追加输出到aof文件中，
-    {{< / spoiler >}}
+{{< spoiler >}} 
+RDB保存快照，AOF保存执行命令的记录并合并命令；
+1) RDB有两种方式：同步save模式和异步bgsave模式，同步save模式可以保证数据一致性；
+save会导致redis阻塞，bgsave在大数据量时fork会引起抖动，导致短暂时间内redis响应变慢，且fork需要一定的内存开销；
+rdb文件默认每次rdb时进行替换并压缩；
+rdb优点：文件紧凑，体积小，适合全量备份与复制，且加载rdb文件的速度比加载aof文件的速度快
+rdb缺点：无法秒级别持久化，老版本redis无法兼容新版本的rdb
+2) aof是目前主流的持久数据的方式，aof每次都会将写命令保存到缓冲区然后追加输出到aof文件中，
+{{< / spoiler >}}
 
+## Redis慢查询如何开启
 
-​    
-5. Redis慢查询如何开启
+{{< spoiler >}} 
+设置slowlog-log-slower-than属性来配置慢查询时间的阈值，设置slowlog-max-len属性来配置存储多少条慢查询命令
+{{< / spoiler >}}
 
-    {{< spoiler >}} 
-    设置slowlog-log-slower-than属性来配置慢查询时间的阈值，设置slowlog-max-len属性来配置存储多少条慢查询命令
-    {{< / spoiler >}}
-    
-6. Redis的默认内存为多大
+## Redis的默认内存为多大
 
-    {{< spoiler >}} 
-    32位机器默认3个G，64位机器默认不限制
-    {{< / spoiler >}}
-    
-7. Redis的淘汰策略有哪些
+{{< spoiler >}} 
+32位机器默认3个G，64位机器默认不限制
+{{< / spoiler >}}
 
-    {{< spoiler >}} 
-    1）noeviction ： 不删除
-    2）allkeys-lru ： 从所有key中删除最近最少使用的key
-    3）volatile-lru ： 从设置了过期时间的key中删除最近最少使用的key
-    4）allkeys-random ： 从所有key中随机删除
-    5）volatile-random ： 从设置了过期时间的key中随机删除
-    6）volatile-ttl ： 从设置了过期时间的key中删除剩余时间最短的
-    7）allkeys-lfu ：淘汰访问频率最低的key
-    8）volatile-lfu ：只淘汰访问频率最低的过期key
-    {{< / spoiler >}}
-    
-8. Redis的删除策略有哪些，这些删除策略各自有什么优缺点
+## Redis的淘汰策略有哪些
 
-    {{< spoiler >}} 
-    1）定时删除 ： 在设置键的过期时间的同时，创建一个定时任务，当键达到过期时间时，立即执行对键的删除操作，优点是对内存友好可以即时释放，缺点是对cpu不友好可能大量key同时删除；
-    2）定期删除 ： 每隔一定时间删除过期的键，优点是对cpu友好，缺点是对内存不友好；
-    3）惰性删除 ： 放任键过期不管，但在每次获取键时，判断是否过期，若过期再删除，优点是对cpu友好，缺点是对内存不友好
-    {{< / spoiler >}}
-  
-9. Redis的Pipeline如何理解
+{{< spoiler >}} 
+1）noeviction ： 不删除
+2）allkeys-lru ： 从所有key中删除最近最少使用的key
+3）volatile-lru ： 从设置了过期时间的key中删除最近最少使用的key
+4）allkeys-random ： 从所有key中随机删除
+5）volatile-random ： 从设置了过期时间的key中随机删除
+6）volatile-ttl ： 从设置了过期时间的key中删除剩余时间最短的
+7）allkeys-lfu ：淘汰访问频率最低的key
+8）volatile-lfu ：只淘汰访问频率最低的过期key
+{{< / spoiler >}}
 
-    {{< spoiler >}} 
-    将多个命令一次性发送并执行，节省网络消耗，虽然命令执行时可能被其他命令穿插
-    {{< / spoiler >}}
-  
-10. Redis如何设置过期时间
+## Redis的删除策略有哪些，这些删除策略各自有什么优缺点
 
-    {{< spoiler >}} 
-    1）expire key milliseconds在指定毫秒后过期；
-    2）expire key seconds在指定秒后过期；
-    3）expire at key timestamp 在指定的时间戳（秒级别）后过期；
-    4）expire at key millisecondsTimestamp 在指定的时间戳（毫秒）后过期
-    {{< / spoiler >}}
-  
-11. Redis支持哪些集群模式
+{{< spoiler >}} 
+1）定时删除 ： 在设置键的过期时间的同时，创建一个定时任务，当键达到过期时间时，立即执行对键的删除操作，优点是对内存友好可以即时释放，缺点是对cpu不友好可能大量key同时删除；
+2）定期删除 ： 每隔一定时间删除过期的键，优点是对cpu友好，缺点是对内存不友好；
+3）惰性删除 ： 放任键过期不管，但在每次获取键时，判断是否过期，若过期再删除，优点是对cpu友好，缺点是对内存不友好
+{{< / spoiler >}}
 
-    {{< spoiler >}} 
+## Redis的Pipeline如何理解
 
-    1）主从复制模式；2）Sentinel哨兵模式；3）cluster模式
-    
-    {{< / spoiler >}}
-    
-12. Redis的事务是否支持回滚
+{{< spoiler >}} 
+将多个命令一次性发送并执行，节省网络消耗，虽然命令执行时可能被其他命令穿插
+{{< / spoiler >}}
 
-13. Redis的事务有哪些相关命令
+## Redis如何设置过期时间
 
-14. Redis有哪些常用的缓存更新策略
+{{< spoiler >}} 
+1）expire key milliseconds在指定毫秒后过期；
+2）expire key seconds在指定秒后过期；
+3）expire at key timestamp 在指定的时间戳（秒级别）后过期；
+4）expire at key millisecondsTimestamp 在指定的时间戳（毫秒）后过期
+{{< / spoiler >}}
+
+## Redis支持哪些集群模式
+
+{{< spoiler >}} 
+
+1）主从复制模式；2）Sentinel哨兵模式；3）cluster模式
+
+{{< / spoiler >}}
+
+## Redis的事务是否支持回滚
+
+## Redis的事务有哪些相关命令
+
+## Redis有哪些常用的缓存更新策略
 
 # 实战篇
 
@@ -276,9 +270,10 @@ tags:
 {{< spoiler >}} 
 1）Cache Aside Pattern ：
 
-​	-读的时候，先读缓存，缓存没有的话，就读数据库，然后取出数据后放入缓存，同时返回响应。 
+* 读的时候，先读缓存，缓存没有的话，就读数据库，然后取出数据后放入缓存，同时返回响应。 
 
-	- 更新的时候，先更新数据库，然后再删除缓存，这种方案实际上在高并发的时候可以继续进行优化
+- 更新的时候，先更新数据库，然后再删除缓存，这种方案实际上在高并发的时候可以继续进行优化
+
 {{< / spoiler >}}
 
 ## 有哪些基于Redis实现的分布式锁
@@ -341,6 +336,8 @@ tags:
  1）管道2）手动拼接发送resp命令
 
  {{< / spoiler >}}
+
+# 优化篇
 
 ## 开发层次有哪些常用的优化建议
 

@@ -115,3 +115,23 @@ Spring事务的七个传播级别，默认是哪个
 2. 常用的实体拷贝有哪几种方式，各自是如何实现的
 3. Spring的BeanUtils拷贝存在哪些细节问题
 
+# SpringBoot
+## 简述SpringBoot的配置文件加载顺序
+{{< spoiler >}} 
+由高到低依次为：
+命令行参数。所有的配置都可以在命令行上进行指定；
+来自java:comp/env的JNDI属性；
+Java系统属性（System.getProperties()）；
+操作系统环境变量 ；
+jar包外部的application-{profile}.properties或application.yml(带spring.profile)配置文件
+jar包内部的application-{profile}.properties或application.yml(带spring.profile)配置文件 再来加载不带profile
+jar包外部的application.properties或application.yml(不带spring.profile)配置文件
+jar包内部的application.properties或application.yml(不带spring.profile)配置文件
+@Configuration注解类上的@PropertySource
+{{< / spoiler >}}
+
+
+
+
+
+
