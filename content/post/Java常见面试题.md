@@ -276,7 +276,9 @@ notify()方法只随机唤醒一个 wait 线程，而notifyAll()方法唤醒所�
 
 {{< spoiler >}} 
 
-
+* newFixedThreadPool ：创建指定线程数量的线程池，无界阻塞队列LinkedBlockingQueue，适合执行较快的任务
+* newCachedThreadPool ：根据需要自动创建线程，无界阻塞队列SynchronousQueue
+* newScheduledThreadPool ： 主要用来延迟执行任务或者定期执行任务，延迟队列DelayedWorkQueue
 
 {{< / spoiler >}}
 
