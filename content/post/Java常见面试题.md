@@ -276,13 +276,13 @@ notify()方法只随机唤醒一个 wait 线程，而notifyAll()方法唤醒所�
 
 {{< spoiler >}} 
 
-* newFixedThreadPool ：创建指定线程数量的线程池，无界阻塞队列LinkedBlockingQueue，适合执行较快的任务
-* newCachedThreadPool ：根据需要自动创建线程，无界阻塞队列SynchronousQueue
+* newFixedThreadPool ：创建指定线程数量的线程池，无界阻塞队列LinkedBlockingQueue，适合执行较快的任务,
+* newCachedThreadPool ：根据需要自动创建线程，无界阻塞队列SynchronousQueue,适合用在**短时间内有大量短任务的场景**
 * newScheduledThreadPool ： 主要用来延迟执行任务或者定期执行任务，延迟队列DelayedWorkQueue
+* newWorkStealingPool : 窃取任务，并行stream就是使用的该线程池，建议线程数量为cpu核数 - 1
+* newSingleThreadExecutor : 固定一个线程，无界阻塞队列LinkedBlockingQueue，**能保证任务是按顺序执行**
 
 {{< / spoiler >}}
-
-
 
 ## 线程池 - 线程池的参数有哪些，各自作用是什么
 
@@ -755,7 +755,7 @@ CPU的MESI能够保证缓存一致性，但是不能保证一个线程对变量�
 
 7. 消除缓存行的伪共享
 
-   - 除了我们在代码中使用的同步锁和jvm自己内置的同步锁外，还有一种隐藏的锁就是缓存行，它也被称为性能杀手。在多核cup的处理器中，每个cup都有自己独占的一级缓存、二级缓存，甚至还有一个共享的三级缓存，为了提高性能，cpu读写数据是以缓存行为最小单元读写的；32位的cpu缓存行为32字节，64位cup的缓存行为64字节，这就导致了一些问题。
+   - 除了我们在代码中使用的同步锁和jvm自己内置的同步锁外，还有一种隐藏的锁就是缓存行，它也被称为性能杀手。在多核cpu的处理器中，每个cpu都有自己独占的一级缓存、二级缓存，甚至还有一个共享的三级缓存，为了提高性能，cpu读写数据是以缓存行为最小单元读写的；32位的cpu缓存行为32字节，64位cup的缓存行为64字节，这就导致了一些问题。
 
 {{< / spoiler >}}
 
@@ -790,6 +790,84 @@ CPU的MESI能够保证缓存一致性，但是不能保证一个线程对变量�
 (3) 死锁检测：死锁预防和避免都是事前措施，而死锁的检测则是判断系统是否处于死锁状态，如果是，则执行死锁解除策略。
 
 (4) 死锁解除：这是与死锁检测结合使用的，它使用的方式就是剥夺。即将某进程所拥有的资源强行收回，分配给其他的进程。
+
+{{< / spoiler >}}
+
+## synchoronized的的实现原理
+
+{{< spoiler >}} 
+
+根据线程的竞争情况，锁状态的会逐渐升级 ：无锁--> 偏向锁 --> 轻量锁 --> 重量锁。线程运行完之后降级
+
+* 偏向锁
+  * 适用场景 ：单个线程间断性获取锁
+  * 加锁过程：持有偏向锁的线程以后每次进入这个锁相关的同步块时，只需比对一下 mark word 的线程 id 是否为本线程，如果是则获取锁成功，将线程id写入mark word中
+  * 撤销过程 ：等待全局安全点后将其恢复到轻量锁或者无锁
+* 轻量锁
+  * 适用场景 ：多个线程交替获取锁
+  * 加锁过程 ：JVM 在当前线程的栈帧中创建 Lock Reocrd，并将对象头中的 Mark Word 复制到 Lock Reocrd 中；线程尝试使用 CAS 将对象头中的 Mark Word 替换为指向 Lock Reocrd 的指针，获取成功则加锁成功，否则膨胀为重量锁
+  * 撤销过程 ：使用CAS将LockRecord还原，还原成功则释放，否则膨胀为重量锁
+* 重量锁
+  * todo：流程有些复杂
+
+{{< / spoiler >}}
+
+## Synchronized和ReentrantLock的区别{{< spoiler >}} 
+
+* Synchronized是JVM层次的锁实现，ReentrantLock是JDK层次的锁实现；
+
+* Synchronized的锁状态是无法在代码中直接判断的，但是ReentrantLock可以通过`ReentrantLock#isLocked`判断；
+
+* Synchronized是非公平锁，ReentrantLock是可以是公平也可以是非公平的；
+
+* Synchronized是不可以被中断的，而`ReentrantLock#lockInterruptibly`方法是可以被中断的；
+
+* 在发生异常时Synchronized会自动释放锁（由javac编译时自动实现），而ReentrantLock需要开发者在finally块中显示释放锁；
+
+* ReentrantLock获取锁的形式有多种：如立即返回是否成功的tryLock(),以及等待指定时长的获取，更加灵活；
+
+* Synchronized在特定的情况下**对于已经在等待的线程**是后来的线程先获得锁（上文有说），而ReentrantLock对于**已经在等待的线程**一定是先来的线程先获得锁
+
+{{< / spoiler >}}
+
+# 代理反射篇
+
+## JDK动态代理和CGLiB代理区别
+
+{{< spoiler >}} 
+
+* JDK 动态代理是基于接口的，所以**要求代理类一定是有定义接口的**。
+* CGLIB 基于ASM字节码生成工具，它是通过继承的方式来实现代理类，所以**要注意 final 方法**。
+* 执行效率方面 ：JDK高于CGLIB，调用次数为百万级别时JDK速度比CGLIB高30%，千万级别时JDK速度比CGLIB高100%
+
+{{< / spoiler >}}
+
+## JDK动态代理的实现原理
+
+{{< spoiler >}} 
+
+1. 首先通过实现 InvocationHandler 接口得到一个切面类(干活的人)。
+2. 然后利用 Proxy 根据目标类的类加载器、接口和切面类得到一个代理类(协调管理的人)。
+3. 代理类的逻辑就是把所有接口方法的调用转发到切面类的 invoke() 方法上，然后根据反射调用目标类的方法。
+
+{{< / spoiler >}}
+
+## CGLIB代理的实现原理
+
+{{< spoiler >}} 
+
+核心思路与JDK动态代理类似，但是使用的原理是ASM字节码技术
+
+```java
+        //1.new
+        Enhancer en = new Enhancer();
+        //2.设置父类，也就是代理目标类，上面提到了它是通过生成子类的方式
+        en.setSuperclass(target.getClass());
+        //3.设置回调函数，这个this其实就是代理逻辑实现类，也就是切面，可以理解为JDK 动态代理的handler
+        en.setCallback(this);
+        //4.创建代理对象，也就是目标类的子类了。
+        return en.create();
+```
 
 {{< / spoiler >}}
 
@@ -940,11 +1018,22 @@ FullGC有三种情况。
 
 {{< spoiler >}} 
 
-加载、验证、准备、解析、初始化
+* 加载 ：将二进制流搞到内存中来，生成一个 Class 类
+* 连接 
+  * 验证 ：验证加载进来的二进制流是否符合一定格式，是否规范，是否符合当前 JVM 版本
+  * 准备 ：为静态变量(类变量)赋初始值(例如int默认赋值0)，也即为它们在方法区划分内存空间
+  * 解析 ：将常量池的符号引用转化成直接引用
+* 初始化 ：执行一些静态代码块，为静态变量赋值(这里的赋值才是代码里面的赋值)
 
 {{< / spoiler >}}
 
+## 双亲委派
 
+{{< spoiler >}} 
+
+
+
+{{< / spoiler >}}
 
 MinGC与FullGC各自指什么
 

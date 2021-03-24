@@ -137,8 +137,6 @@ Hibernate属于全自动ORM映射工具，使用Hibernate查询关联对象或�
 
 {{< / spoiler >}}
 
-
-
 ## 简述设计模式在MyBatis中的运用
 
 {{< spoiler >}} 

@@ -57,8 +57,6 @@ Spring中Bean的生命周期
 
 同样的接口存在多个实现时如何指定某一个实现
 
-
-
 {{< spoiler >}} 
 
 1.@Qualifer 2.@Primary
