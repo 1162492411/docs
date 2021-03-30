@@ -10,16 +10,6 @@ tags:
   - Spring
 ---
 
-
-
-{{< spoiler >}} 
-
-
-
-{{< / spoiler >}}
-
-
-
 # IOC
 
 ## 创建IOC容器的过程
@@ -134,8 +124,6 @@ singletonObjects：单例对象的cache；
 - WebXmlApplicationContext：该容器会在一个 web 应用程序的范围内加载在 XML 文件中已被定义的 bean
 
 {{< / spoiler >}}
-
-
 
 ## 有哪些内置的BeanPostProcessor
 
@@ -253,6 +241,15 @@ Spring事务底层如何实现
 
 {{< / spoiler >}}
 
+## 嵌套事务和挂起事务的区别是什么
+
+{{< spoiler >}} 
+
+* 嵌套事务 ：本质上还是同一个事务的不同保存点，如果涉及到外层事务回滚，则内层的也将会被回滚
+* 挂起事务 ：对应的是一个新的事务，拿到的是新的资源，所以外层事务回滚时，不影响内层事务
+
+{{< / spoiler >}}
+
 # 拷贝
 
 1. 什么是浅拷贝和深拷贝，有什么区别
@@ -313,6 +310,15 @@ Spring事务底层如何实现
 
 {{< / spoiler >}}
 
+## 概述SpringBoot的自动装配原理
 
+{{< spoiler >}} 
+
+* 判断自动装配开关是否打开。默认`spring.boot.enableautoconfiguration=true`，可在 `application.properties` 或 `application.yml` 中设置
+* 获取`EnableAutoConfiguration`注解中的 `exclude` 和 `excludeName`
+* 获取需要自动装配的所有配置类，读取`META-INF/spring.factories`
+* 通过@Conditionalxxx的结果判断需要加载哪些配置类
+
+{{< / spoiler >}}
 
 

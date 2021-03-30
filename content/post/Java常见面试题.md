@@ -59,6 +59,8 @@ private、default、protected、public
 * 时空平衡 ：数组+链表时间复杂度小,为O(1),插入方便，并且单个节点内存小；红黑树时间复杂度高,为O(n)，插入复杂，它需要通过旋转来平衡，并且单个节点内存大
 * 数据分布 :  当hashCode算法足够好时，数据会尽量均匀分布，几乎不会出现单个链表元素数量超过8的情况；当hashCode算法不好时，本身hashmap做了一次hash扰动了，并且足够理想的情况下，随机数据分散程度遵循泊松分布，几率为0.0000006，也几乎不会出现单个链表元素数量超过8的情况
 
+{{< / spoiler >}}
+
 ## HashMap在1.8中为什么相比1.7增加了红黑树
 
 {{< spoiler >}} 
@@ -136,7 +138,7 @@ private、default、protected、public
   * 多线程put导致扩容时会形成环形结构从而导致死循环
   * modCount的修改不是原子性的
   * 扩容时由于插入数据导致判断的值不一定准确
-* 锁 占位
+* 锁 (todo占位)
 
 {{< / spoiler >}}
 
@@ -144,8 +146,19 @@ private、default、protected、public
 
 {{< spoiler >}} 
 
-* 操作时采用 Synchronized
+* 操作时采用 Synchronized/直接改用HashTable
+* 使用Collections.synchronizedMap
 * 改用ConcurrentHashMap
+
+{{< / spoiler >}}
+
+## ConcurrentHashMap如何实现线程安全
+
+{{< spoiler >}} 
+
+* 使用volatile保证当Node中的值变化时对于其他线程是可见的
+* 使用table数组的头结点作为synchronized的锁来保证写操作的安全
+* 当头结点为null时，使用CAS操作来保证数据能正确的写入
 
 {{< / spoiler >}}
 
@@ -270,8 +283,6 @@ notify()方法只随机唤醒一个 wait 线程，而notifyAll()方法唤醒所�
 
 {{< / spoiler >}}
 
-
-
 ## 线程池 - JDK自带的有哪几种线程池
 
 {{< spoiler >}} 
@@ -286,13 +297,18 @@ notify()方法只随机唤醒一个 wait 线程，而notifyAll()方法唤醒所�
 
 ## 线程池 - 线程池的参数有哪些，各自作用是什么
 
-
-
-## 线程池 - 如何设计一个线程池
-
 {{< spoiler >}} 
 
-
+* CorePoolSize：线程池创建时候初始化的线程数,默认1
+- MaxPoolSize：线程池最大的线程数，只有在缓冲队列满了之后才会申请超过核心线程数的线程，默认Integer.MAX
+- QueueCapacity：用来缓冲执行任务的队列的队列大小，默认Integer.MAX
+- KeepAliveSeconds：线程的空闲时间，单位/s，当超过了核心线程出之外的线程在空闲时间到达之后会被销毁,默认60
+- ThreadNamePrefix：线程池中线程名的前缀，继承自父类ExecutorConfigurationSupport，默认是BeanName/方法名
+- RejectedExecutionHandler：线程池对拒绝任务的处理策略，自父类ExecutorConfigurationSupport,（策略为JDK ThreadPoolExecutor自带）
+  - AbortPolicy：默认策略，直接抛出异常 RejectedExecutionException
+  - CallerRunsPolicy：直接在 execute 方法的调用线程中运行被拒绝的任务；如果执行程序已关闭，则会丢弃该任务
+  - DiscardPolicy：该策略直接丢弃
+  - DiscardOldestPolicy：该策略会先将最早入队列的未执行的任务丢弃掉，然后尝试执行新的任务。如果执行程序已关闭，则会丢弃该任务
 
 {{< / spoiler >}}
 
@@ -305,12 +321,6 @@ notify()方法只随机唤醒一个 wait 线程，而notifyAll()方法唤醒所�
 * 顶层接口 ：execute所属顶层接口是Executor,submit所属顶层接口是ExecutorService
 
 {{< / spoiler >}}
-
-
-
-
-
-
 
 ## 理论 - Java的线程模型
 
@@ -381,8 +391,6 @@ Java的线程模型采用的是一对一，即一个内核线程对应一个用�
 
 {{< / spoiler >}}
 
-
-
 ## 理论 - 什么是上下文切换
 
 {{< spoiler >}} 
@@ -451,8 +459,6 @@ Java的线程模型采用的是一对一，即一个内核线程对应一个用�
 * 使用协程**：在单线程里实现多任务的调度，并在单线程里维持多个任务间的切换(Java没有协程，线程模型限制所致)
 
 {{< / spoiler >}}
-
-
 
 ## 理论 - 什么是happens-before原则
 
@@ -564,13 +570,6 @@ Java 中用到的线程调度算法是什么？
 什么是自旋？
 Java Concurrency API 中的 Lock 接口(Lock interface)是什么？对比同步它有什么优势？
 
-
-
-ConcurrentHashMap为什么比HashMap安全又高效
-{{< spoiler >}} 
-jdk7分段锁，jdk8cas
-{{< / spoiler >}}
-
 ## 理论 - volatile关键字的作用
 
 {{< spoiler >}} 
@@ -610,8 +609,6 @@ jdk7分段锁，jdk8cas
   在每个volatile写操作的前面插入一个StoreStore屏障，后面插入一个SotreLoad屏障。
 
 {{< / spoiler >}}
-
-
 
 ## 理论 - 什么是MESI
 
@@ -687,21 +684,33 @@ CPU的MESI能够保证缓存一致性，但是不能保证一个线程对变量�
 
 
 
-
-
-
-
-## 可重入锁是什么，synchronized是不是可重入锁，如果是，那么它是如何实现的
+## 什么是可重入锁
 
 {{< spoiler >}} 
-1.允许一个线程二次请求自己持有对象锁的临界资源，
-2.synchronized是可重入锁
-3.synchronized 锁对象有个计数器，会随着线程获 取锁后 +1 计数，当线程执行完毕后 -1，直到清零释放锁
+
+允许一个线程多次请求自己持有对象锁的临界资源
+
 {{< / spoiler >}}
 
+## synchronized的可重入锁原理
 
+{{< spoiler >}} 
+synchronized 锁对象有个计数器，会随着线程获 取锁后 +1 计数，当线程执行完毕后 -1，直到清零释放锁
+{{< / spoiler >}}
+
+## ReentrantLock的可重入锁原理
+
+{{< spoiler >}} 
+
+基于AQS的同步状态：state。
+
+其原理大致为：当某一线程获取锁后，将state值+1，并记录下当前持有锁的线程，再有线程来获取锁时，判断这个线程与持有锁的线程是否是同一个线程，如果是，将state值再+1，如果不是，阻塞线程。 当线程释放锁时，将state值-1，当state值减为0时，表示当前线程彻底释放了锁，然后将记录当前持有锁的线程的那个字段设置为null，并唤醒其他线程，使其重新竞争锁
+
+{{< / spoiler >}}
 
 ## 公平锁和非公平锁的区别，为什么公平锁效率低于非公平锁
+
+
 
 ## 同步队列器AQS思想，以及基于AQS实现的lock
 
@@ -873,7 +882,7 @@ CPU的MESI能够保证缓存一致性，但是不能保证一个线程对变量�
 
 # JVM篇
 
-JVM的内存区域分为哪几块，其中哪几块是线程共享的，每一块存储什么
+## JVM的内存区域分为哪几块，其中哪几块是线程共享的，每一块存储什么
 
 ![img](https://gitee.com/1162492411/pic/raw/master/Java-JVM内存结构.png)
 
@@ -888,7 +897,7 @@ JVM的内存区域分为哪几块，其中哪几块是线程共享的，每一�
 
 {{< / spoiler >}}
 
-内存溢出和内存泄露的区别
+## 内存溢出和内存泄露的区别
 
 {{< spoiler >}} 
 
