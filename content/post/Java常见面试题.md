@@ -821,7 +821,9 @@ synchronized 锁对象有个计数器，会随着线程获 取锁后 +1 计数�
 
 {{< / spoiler >}}
 
-## Synchronized和ReentrantLock的区别{{< spoiler >}} 
+## Synchronized和ReentrantLock的区别
+
+{{< spoiler >}} 
 
 * Synchronized是JVM层次的锁实现，ReentrantLock是JDK层次的锁实现；
 

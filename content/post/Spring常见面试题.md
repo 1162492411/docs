@@ -250,11 +250,55 @@ Spring事务底层如何实现
 
 {{< / spoiler >}}
 
+## 哪些情况下事务注解无法生效
+
+{{< spoiler >}} 
+
+* 方法自调用 ： 
+  * 举例 ：例如类AService中方法a中直接调用方法b,这样因为本质是调用了this.B(),而this指的是A而不是A的代理对象，
+  * 解决方法 ：配置aop时将expose-proxy设置为true，这样会将当前代理对象放入ThreadLocal中，然后使用AopContext.currentProxy()获取当前代理，将this.b()改为((AService)AopContext.currentProxy()).b()
+* 方法为private/protect
+  * 举例 ：例如类AService中方法a中直接调用private/protect修饰的方法b
+  * 解决方法 ：将b修改为public，原因是 SpringAOP对于最外层的函数只拦截public方法，不拦截protected和private方法
+
+{{< / spoiler >}}
+
+## JDK代理和CGLIB代理的区别
+
+{{< spoiler >}} 
+
+JDK动态代理只能对实现了接口的类生成代理,而不能针对类.
+CGLIB是针对类实现代理,主要是对指定的类生成一个子类,覆盖其中的方法,因为是继承,所以该类或方法最好不要声明成fina
+
+{{< / spoiler >}}
+
 # 拷贝
 
-1. 什么是浅拷贝和深拷贝，有什么区别
-2. 常用的实体拷贝有哪几种方式，各自是如何实现的
-3. Spring的BeanUtils拷贝存在哪些细节问题
+## 什么是浅拷贝和深拷贝，有什么区别
+
+
+
+## 深拷贝有哪些实现方式
+
+{{< spoiler >}} 
+
+* 手动赋值
+* 实现Serializable接口，实现clonable接口的clone方法
+* 使用反射，先序列化再反序列化为新对象，例如fastjson
+
+{{< / spoiler >}}
+
+## 常用的实体拷贝有哪几种方式，各自是如何实现的
+
+
+
+
+
+## Spring的BeanUtils拷贝存在哪些细节问题
+
+
+
+
 
 # 设计模式
 
