@@ -171,6 +171,10 @@ UNIX 系统下， IO 模型一共有 5 种： **同步阻塞 I/O**、**同步非
 
 {{< / spoiler >}}
 
+## Linux中几种IO模型有什么不同
+
+![img](https://gitee.com/1162492411/pic/raw/master/LinuxIO模型.png)
+
 ## Java中有哪些IO模型
 
 {{< spoiler >}} 
