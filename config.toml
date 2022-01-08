@@ -3,6 +3,7 @@ LanguageCode = "zh-cn"
 Theme =  "next"
 MetaDataFormat =  "yaml"
 CanonifyUrls =  true
+BaseUrl = "https://www.github.com/1162492411/a"
 BuildDrafts =  false
 PaginatePath =  "p"
 Paginate = 8
