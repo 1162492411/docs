@@ -1,6 +1,5 @@
 Title =  ""
 LanguageCode = "zh-cn"
-BaseUrl = "https://www.zyg-tech.me"
 Theme =  "next"
 MetaDataFormat =  "yaml"
 CanonifyUrls =  true
@@ -73,11 +72,6 @@ DefaultContentLanguage = "zh-cn"
   Name = "GitHub"
   Icon = "github"
   URL = "https://github.com/1162492411/"
-
-[[Params.Socials]]
-  Name = "知乎"
-  Icon = "globe"
-  URL = "https://www.zhihu.com/people/momo0528/" 
 
 [languages.zh-cn]
 languageCode = "zh-cn"
