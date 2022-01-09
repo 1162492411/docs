@@ -49,6 +49,11 @@ DefaultContentLanguage = "zh-cn"
   URL = "/categories/技术/"
   Weight = 2
 [[Menu.Main]]
+  Name = "实战"
+  Pre = "code"
+  URL = "/categories/实战/"
+  Weight = 3
+[[Menu.Main]]
   Name = "笔记"
   Pre = "book"
   URL = "/categories/笔记/"
