@@ -287,3 +287,52 @@ final class SynchronousMethodHandler implements MethodHandler{
 ![image-20220117221035060](https://gitee.com/1162492411/pic/raw/master/Feign-源码分析-处理请求一图流.png)
 
 ![image-20220117221221585](https://gitee.com/1162492411/pic/raw/master/Feign-源码分析-处理请求概览.png)
+
+## 对象关系
+
+${beanName} : 从@FeignClient注解中按优先级查找context-id/service-id/name/value的值
+
+
+![image-20220125211131866](https://gitee.com/1162492411/pic/raw/master/feign-源码分析-对象关系.png)
+
+
+
+## 日常开发问题
+
+### Q : @FeignClients中的名字能否一致？如果一致会出现什么问题
+
+A : cloudOpenFeign中存在多个name，name有三种：一种是注册到spring的beanName(从context-id/service-id/name/value取值)，一种是注册到spring的bean的别名aliasName(从qualifiers/qualifier取值)，还有一种name是class的全路径className,这三个名字(beanName,aliasName,className)不仅用于FeignClient自身向spring注册，还用于它专属的Configuration、Options等组件的spring bean名称。因此是否可以重复实际上取决于spring bean配置spring.main.allow-bean-definition-overriding，
+
+- `Spring Boot 2.0.x` 默认是 `true`.
+- `Spring Boot 2.1.x` 默认是 `false`
+
+### Q ：报错"出现重复的FeignClientSpecification"如何解决
+
+A : 检查@FeignClient中是否存在相同的context-id/service-id/name/value
+
+### Q : 报错"AmbiguousMapping"如何解决
+
+A : 原因是xxxClient继承不同服务的xxApi时，xxxApi类级别存在@RequestMapping注解，xxxClient继承后也被springmvc扫描了
+
+   解决方案：1）自定义一个RequestMappingHandlerMapping重写isHandler()方法；2）升级到spring6； 3）升级到cloudOpenFeign v3.1.0 v3.0.6 v3.0.5 v2.2.10.RELEASE
+
+### Q ： 如何配置使用HTTP连接池？它们是怎么生效的
+
+A : 配置连接池需要两步：1)property配置feign.httpclient.enabled= true 2）maven引入依赖
+    生效方式方面，主要是feign-client中先进行了client的注册，这样在feign初始化时整个项目的spring中存在了client，被各个feignClient拿去使用
+
+### Q ：默认超时配置是多少？
+
+A : 默认是连接超时10s，读超时60s,通过feign.Request.Options()空参构造器实现
+
+- 可以配置一个全局超时时间 ：feign.client.config. default.connectTimeout= 2000 feign.client.config. default.readTimeout= 60000
+- 可以单独对指定FeignClient配置超时时间 : 1)代码配置 @FeignClient(configuration=xxx.config.class) config类中声明options 2）配置文件配置 feign.client.config.serviceC.connectTimeout=2000 feign.client.config.serviceC.readTimeout=60000
+- feign和robbin等的超时时间优先级：需要实验一下，一方面,robbin有自己的client,一方面ribbon相关的包可能会先注册options对象从而影响feign的初始化流程
+
+### Q ：feignClient的配置优先级？
+
+A : FeignClientFactoryBean.configureFeign()中进行了配置的准备,得出的结论是
+
+如果feign.client.defaultToProperties=true(默认,属性默认赋值为true),生效顺序是全局上下文->默认上下文→指定FeignClient上下文
+
+如果feign.client.defaultToProperties=false,生效顺序是默认上下文->指定FeignClient上下文->全局上下文
