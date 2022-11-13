@@ -1,0 +1,178 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>参数校验 -</title><meta name=keywords content="zyg,独立,博客,程序员,个人,思考,读书,笔记,技术,分享,java"><meta property="og:title" content="参数校验"><meta property="og:site_name" content><meta property="og:image" content="/img/author.jpg"><meta name=title content="参数校验 -"><meta name=description content="Article description."><link rel="shortcut icon" href=https://1162492411.github.io/docs/img/favicon.ico><link rel=apple-touch-icon href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link href="https://1162492411.github.io/docs/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel=stylesheet type=text/css><link href="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/main.css rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/syntax.css rel=stylesheet type=text/css><script type=text/javascript id=hexo.configuration>var NexT=window.NexT||{};var CONFIG={scheme:'Pisces',sidebar:{"position":"left","display":"post"},fancybox:true,motion:true};</script></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class="site-meta custom-logo"><div class=custom-logo-site-title><a href=https://1162492411.github.io/docs/ class=brand rel=start><span class=logo-line-before><i></i></span><span class=site-title></span><span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>人生天地间，忽如远行客</p></div><div class=site-nav-toggle><button>
+<span class=btn-bar></span><span class=btn-bar></span><span class=btn-bar></span></button></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=https://1162492411.github.io/docs/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E6%8A%80%E6%9C%AF/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>技术</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>实战</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E7%AC%94%E8%AE%B0/ rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>笔记</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=section><i class="menu-item-icon fa fa-fw fa-leaf"></i><br>面试题</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/post/ rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/about/ rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br></a></li></ul><div class=site-search><div class=popup><span class="search-icon fa fa-search"></span><input type=text id=local-search-input><div id=local-search-result></div><span class=popup-btn-close>close</span></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://1162492411.github.io/docs/post/%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/ itemprop=url>参数校验</a></h1><div class=post-meta><span class=post-time><span class=post-meta-item-icon><i class="fa fa-calendar-o"></i></span><span class=post-meta-item-text></span><time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2020-11-24">2020-11-24</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-folder-o"></i></span><span class=post-meta-item-text></span><span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/%E6%A0%A1%E9%AA%8C itemprop=url rel=index><span itemprop=name>校验</span></a>
+&nbsp;</span></span>
+<span>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-eye"></i></span><span class=post-meta-item-text></span><span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>作为后台开发人员,为保证数据的有效性与完整性,避免处理前台传递的无效或不完整的信息,会进行后台的数据校验,常用的是Spring中的SpringValidation,
+事实上它是对Hibernate Validator的封装,而Hibernate Validator又是对Bean Validation规范的实现,下面我们来较为全面的了解一下关于校验的那点事儿.</p><h1 id=1bean-validation规范>1.Bean Validation规范</h1><p>Bean Validation规范主要用于对 Bean 中的字段的值进行约束定义、描述和验证,截止目前一共有三个版本 : Bean Validation 1.0/1.1/2.0,分别对应
+JSR 303/349/380,有兴趣的同学可以到https://www.jcp.org/en/jsr/overview , 根据JSR编号查找相应的规范提案,关于Bean Validation各版本区别可前往https://beanvalidation.org查看。</p><h1 id=2bean-validation实现>2.Bean Validation实现</h1><p>规范离不开相应的实现,Bean Validation的实现有两个 : Hibernate Validator与Apache BVal,Spring Validation就是基于Hibernate Validator封装的,它们都离不开javax Validation,公司也封装了framework-validation供大家使用。</p><p>这里介绍一下规范和实现之间的版本关系 :</p><ol><li>Bean Validation 1.0 &ndash;> Hibernate Validator 4.3.1与Apache BVal 0.5</li><li>Bean Validation 1.1 &ndash;> Hibernate Validator 5.1.1与Apache BVal 1.1.2</li><li>Bean Validation 2.0 &ndash;> Hibernate Validator 6.0.1</li></ol><p>Bean Validation 主要提供了以下验证规则(javax.validation.constraints):
+1)AssertFalse : 验证 Boolean 对象是否为 true
+2)AssertTrue : 验证 Boolean 对象是否为 false
+3)DecimalMax : 被标注的值必须不大于约束中指定的最大值(含精度)
+4)DecimalMin : 被标注的值必须不小于约束中指定的最小值(含精度)
+5)Digits : 验证 Number 和 String 的构成是否合法
+6)Future : 验证 Date 和 Calendar 对象是否在当前时间之后
+7)Max : 验证 Number 和 String 对象是否小等于指定的值
+8)Min : 验证 Number 和 String 对象是否大等于指定的值
+9)NotNull : 验证对象是否不为null
+10)Null : 验证对象是否为null
+11)Past : 验证 Date 和 Calendar 对象是否在当前时间之前
+12)Pattern : 验证 Date 和 Calendar 对象是否在当前时间之后
+13)Size : 验证CharSequence/Collection/Map/Array对象长度是否在给定的范围之内</p><p>Hibernate Validator在javax.validation的基础上增加了以下验证规则(org.hibernate.validator.constraints):
+1)CreditCardNumber : 信用卡验证
+2)EAN : 验证是否为EAN-13的商品用条码
+3)Email : 邮箱地址验证
+4)Length : 验证字符串长度
+5)LuhnCheck : 验证是否符合模10算法的规则,例如大多数银行卡号编码规则采用了模10算法,前往https://en.wikipedia.org/wiki/Luhn_algorithm#cite_note-0 参考该算法
+6)Mod10Check : 验证是否符合Mod10算法
+7)Mod11Check : 验证是否符合Mod11算法
+8)NotBlank : 检查约束字符串是不是Null还有被Trim的长度是否大于0,只对字符串,且会去掉前后空格
+9)NotEmpty : 检查约束元素是否为NULL或者是EMPTY
+10)ParameterScriptAssert : 使用脚本进行验证
+11)Range : 校验数字或表示数字的字符串的取值范围
+12)SafeHtml : 校验是否包含恶意脚本
+13)ScriptAssert : 调用静态方法验证
+14)URL : 校验是否是合法的URL</p><p>Spring Validation没有增加额外的验证规则,而是着重于通过BeanPostProcesser、Interceptor等在接收HTTP请求处理参数时进行参数校验,并封装了验证结果如BindingResult、Errors等,方便开发者使用。</p><h1 id=3bean-validation实践>3.Bean Validation实践</h1><h2 id=31-javax-validation原生基础用法>3.1 javax Validation原生基础用法</h2><p>Maven地址</p><pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;javax.validation&lt;/groupId&gt;
+    &lt;artifactId&gt;validation-api&lt;/artifactId&gt;
+    &lt;version&gt;1.1.0.Final&lt;/version&gt;
+  &lt;/dependency&gt;
+</code></pre><p>实体类</p><pre><code>public class FlowLearning {
+
+  @NotNull
+  private Long id;
+  //other properties
+}
+</code></pre><p>校验方法</p><pre><code>Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+Set&lt;ConstraintViolation&lt;Object&gt;&gt; resultSet = validator.validate(flowLEarning,FlowLearning.class);
+if (!CollectionUtils.isEmpty(resultSet)) {
+  throw new IllegalArgumentException(resultSet.toString());
+}
+</code></pre><p>javax.validation.Validator为验证对象提供了三个方法
+1) Set&lt;ConstraintViolation> validate(T object, Class&lt;?>&mldr; groups) &ndash;>验证一个给定的对象
+2)Set&lt;ConstraintViolation> validateProperty(T object, String propertyName, Class&lt;?>&mldr;groups) &ndash;>验证给定对象中的字段或者属性
+3) Set&lt;ConstraintViolation> validateValue(Class beanType, String propertyName, Object value, Class&lt;?>&mldr; groups) &ndash;>验证给定对象中的属性的具体值</p><h2 id=32-spring-validation-注解校验>3.2 spring validation 注解校验</h2><p>略</p><h2 id=33-scriptassert校验复杂的业务逻辑>3.3 @ScriptAssert校验复杂的业务逻辑</h2><p>实体类</p><pre><code>@Getter
+@Setter
+// @ScriptAssert的lang指脚本语言,script中的方法名需要完全限定名
+@ScriptAssert(lang = &quot;javascript&quot;, script = &quot;com.xdja.oa.nyingchi.admin.User.mockScriptAssert(_this.position,_this.amount)&quot;)
+public class User {
+
+  private String position;
+
+  private Integer amount;
+
+  public static boolean mockScriptAssert(String position,Integer amount){
+    if(StringUtils.isEmpty(position) || amount == null || amount &lt;0){
+      return false;
+    }else {
+    return true;
+    }
+  }
+}
+</code></pre><p>校验方法</p><pre><code>@RequestMapping(value = &quot;script&quot;, method = RequestMethod.POST)
+public ResponseMsg scripts(@Validated @RequestBody User user, BindingResult bindingResult){
+  if(bindingResult.hasErrors()){
+    throw new IllegalArgumentException(&quot;参数不合法&quot;);
+  }else{
+    //校验成功,处理业务逻辑
+  }
+  return ResponseMsg.success();
+}
+</code></pre><p>@ScriptAssert中的lang属性指的是哪种脚本语言,要查看当前jdk版本所支持的脚本语言,可以通过如下代码获取</p><pre><code>ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+List&lt;ScriptEngineFactory&gt; engineFactories = scriptEngineManager.getEngineFactories();
+if(engineFactories.size() == 0) {
+  System.out.println(&quot;本JVM尚不支持任何脚本引擎&quot;);
+return;
+}
+
+System.out.println(&quot;本JVM支持的脚本引擎有:&quot;);
+for(ScriptEngineFactory engineFactory : engineFactories) {
+  System.out.println(&quot;引擎名称:&quot; + engineFactory.getEngineName());
+  System.out.println(&quot;\t可被ScriptEngineManager识别的名称:&quot; + engineFactory.getNames());
+  System.out.println(&quot;\t该引擎支持的脚本语言名称:&quot; + engineFactory.getLanguageName());
+  System.out.println(&quot;\t是否线程安全:&quot; + engineFactory.getParameter(&quot;THREADING&quot;));
+}
+</code></pre><h2 id=34-原生自定义validator>3.4 原生自定义Validator</h2><p>自定义注解</p><pre><code>@Target( { METHOD, FIELD, ANNOTATION_TYPE })
+@Retention(RUNTIME)
+@Documented
+@Constraint(validatedBy = CheckStringValidator.class)
+public @interface CheckString {
+  String message() default &quot;字符串校验失败！请少侠重新来过~&quot;;
+
+  Class&lt;?&gt;[] groups() default {};
+
+  Class&lt;? extends Payload&gt;[] payload() default {};
+
+  CheckType checkType() ;
+
+}
+</code></pre><p>注解中的枚举</p><pre><code>public enum CheckType {
+  EMPTY,NOT_EMPTY
+}
+</code></pre><p>注解校验器</p><pre><code>public class CheckStringValidator implements ConstraintValidator&lt;CheckString,String&gt; {
+
+  private CheckType checkType;
+
+  @Override
+  public void initialize(CheckString constraintAnnotation) {
+    this.checkType = constraintAnnotation.checkType();
+  }
+
+  @Override
+  public boolean isValid(String string, ConstraintValidatorContext context) {
+    if(string == null || checkType == null){
+      return false;
+    }else{
+       boolean result = false;
+       switch(checkType){
+         case NOT_EMPTY :
+           result = !StringUtils.isEmpty(string);
+          break;
+        case EMPTY:
+           result = StringUtils.isEmpty(string);
+        break;
+        default: break;
+        }
+      return result;
+      }
+  }
+}
+</code></pre><p>实体类</p><pre><code>@Getter
+@Setter
+public class User {
+
+  @CheckString(checkType = CheckType.NOT_EMPTY)
+  private String position;
+}
+</code></pre><p>校验</p><pre><code>@RequestMapping(value = &quot;script&quot;, method = RequestMethod.POST)
+public ResponseMsg scripts(@Valid @RequestBody User user, BindingResult bindingResult){
+  if(bindingResult.hasErrors()){
+    throw new IllegalArgumentException(&quot;参数不合法&quot;);
+  }else{
+    System.out.println(&quot;校验成功&quot;);
+  }
+}
+</code></pre><h2 id=35-校验模式>3.5 校验模式</h2><p>日常开发中进行的校验大多只要某字段校验失败就视为校验失败无需继续校验了，为此，可以设置校验模式为FastFail.</p><pre><code>HibernateValidatorConfiguration configuration = Validation.byProvider( HibernateValidator.class ).configure();
+ValidatorFactory factory = configuration.addProperty( &quot;hibernate.validator.fail_fast&quot;, &quot;true&quot; ).buildValidatorFactory();
+Validator validator = factory.getValidator();
+
+</code></pre><p>级联验证目前使用较少,不再介绍。</p></div><footer class=post-footer><div class=post-tags><a href=https://1162492411.github.io/docs/tags/%e6%a0%a1%e9%aa%8c rel=tag title=校验>#校验#</a>
+<a href=https://1162492411.github.io/docs/tags/spring rel=tag title=Spring>#Spring#</a>
+<a href=https://1162492411.github.io/docs/tags/hibernatevalidate rel=tag title=HibernateValidate>#HibernateValidate#</a></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://1162492411.github.io/docs/post/topn%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/ rel=next title=TopN问题解决><i class="fa fa-chevron-left"></i>TopN问题解决</a></div><div class="post-nav-prev post-nav-item"><a href=https://1162492411.github.io/docs/post/%E6%B1%87%E6%8A%A5%E6%90%9C%E7%B4%A2%E4%BC%98%E5%8C%96%E5%8E%86%E7%A8%8B/ rel=prev title=汇报搜索优化历程>汇报搜索优化历程 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap></li><li class=sidebar-nav-overview data-target=site-overview></li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=https://1162492411.github.io/docs/img/author.jpg alt=zyg><p class=site-author-name itemprop=name>zyg</p><p class="site-description motion-element" itemprop=description>Programmer & Architect</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=https://1162492411.github.io/docs/post/><span class=site-state-item-count>28</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-categories"><a href=https://1162492411.github.io/docs/categories/><span class=site-state-item-count>27</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-tags"><a href=https://1162492411.github.io/docs/tags/><span class=site-state-item-count>47</span>
+<span class=site-state-item-name></span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/1162492411/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>GitHub</a></span></div><div class="links-of-blogroll motion-element inline"><script type=text/javascript src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&m=0&s=220&c=ff0000&cr1=ffffff&f=arial&l=33&bv=35" async></script></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#31-javax-validation原生基础用法>3.1 javax Validation原生基础用法</a></li><li><a href=#32-spring-validation-注解校验>3.2 spring validation 注解校验</a></li><li><a href=#33-scriptassert校验复杂的业务逻辑>3.3 @ScriptAssert校验复杂的业务逻辑</a></li><li><a href=#34-原生自定义validator>3.4 原生自定义Validator</a></li><li><a href=#35-校验模式>3.5 校验模式</a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span itemprop=copyrightYear>&copy;
+2009 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span><span class=author itemprop=copyrightHolder></span></div><div class=powered-by>Powered by - <a class=theme-link href=http://gohugo.io target=_blank title=hugo>Hugo v0.68.3</a></div><div class=theme-info>Theme by - <a class=theme-link href=https://github.com/xtfly/hugo-theme-next target=_blank>NexT</a></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i><span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript>if(Object.prototype.toString.call(window.Promise)!=='[object Function]'){window.Promise=null;}</script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery/index.js?v=2.1.3"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.min.js?v=1.2.1"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="https://1162492411.github.io/docs/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script><script src="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script><script type=text/javascript src=https://1162492411.github.io/docs/js/utils.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/motion.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/affix.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/schemes/pisces.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/scrollspy.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/post-details.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/toc.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/bootstrap.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/search.js></script><script type=text/x-mathjax-config>
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script></body></html>

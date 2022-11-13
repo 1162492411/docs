@@ -1,0 +1,131 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Spring常见面试题 -</title><meta name=keywords content="zyg,独立,博客,程序员,个人,思考,读书,笔记,技术,分享,java"><meta property="og:title" content="Spring常见面试题"><meta property="og:site_name" content><meta property="og:image" content="/img/author.jpg"><meta name=title content="Spring常见面试题 -"><meta name=description content="zyg | 博客 | 软件 |  Java"><link rel="shortcut icon" href=https://1162492411.github.io/docs/img/favicon.ico><link rel=apple-touch-icon href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link href="https://1162492411.github.io/docs/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel=stylesheet type=text/css><link href="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/main.css rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/syntax.css rel=stylesheet type=text/css><script type=text/javascript id=hexo.configuration>var NexT=window.NexT||{};var CONFIG={scheme:'Pisces',sidebar:{"position":"left","display":"post"},fancybox:true,motion:true};</script></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class="site-meta custom-logo"><div class=custom-logo-site-title><a href=https://1162492411.github.io/docs/ class=brand rel=start><span class=logo-line-before><i></i></span><span class=site-title></span><span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>人生天地间，忽如远行客</p></div><div class=site-nav-toggle><button>
+<span class=btn-bar></span><span class=btn-bar></span><span class=btn-bar></span></button></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=https://1162492411.github.io/docs/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E6%8A%80%E6%9C%AF/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>技术</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>实战</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E7%AC%94%E8%AE%B0/ rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>笔记</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=section><i class="menu-item-icon fa fa-fw fa-leaf"></i><br>面试题</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/post/ rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/about/ rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br></a></li></ul><div class=site-search><div class=popup><span class="search-icon fa fa-search"></span><input type=text id=local-search-input><div id=local-search-result></div><span class=popup-btn-close>close</span></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://1162492411.github.io/docs/post/spring%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/ itemprop=url>Spring常见面试题</a></h1><div class=post-meta><span class=post-time><span class=post-meta-item-icon><i class="fa fa-calendar-o"></i></span><span class=post-meta-item-text></span><time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2020-12-23">2020-12-23</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-folder-o"></i></span><span class=post-meta-item-text></span><span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98 itemprop=url rel=index><span itemprop=name>面试题</span></a>
+&nbsp;</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/spring itemprop=url rel=index><span itemprop=name>Spring</span></a>
+&nbsp;</span></span>
+<span>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-eye"></i></span><span class=post-meta-item-text></span><span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><h1 id=ioc>IOC</h1><h2 id=创建ioc容器的过程>创建IOC容器的过程</h2><span class=spoiler>以最原始的XmlBeanFactory为例讲解,
+1.创建Ioc配置文件的抽象资源，这个抽象资源包含了BeanDefinition的定义信息 ；
+2.创建一个BeanFactory，这里使用了DefaultListableBeanFactory ；
+3.创建一个载入BeanDefinition的读取器，这里使用XmlBeanDefinitionReader来载入XML文件形式的BeanDefinition ；
+4.然后将上面定位好的Resource，通过一个回调配置给BeanFactory ；
+5.从定位好的资源位置读入配置信息，具体的解析过程由XmlBeanDefinitionReader完成 ；
+6.完成整个载入和注册Bean定义之后，需要的Ioc容器就初步建立起来了</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=配置bean的方法>配置Bean的方法</h2><span class=spoiler>- 基于XML文件进行配置
+- 基于注解进行配置
+- 基于Java程序进行配置</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=spring-bean的初始化顺序>Spring bean的初始化顺序</h2><span class=spoiler>* Constructor
+* BeanPostProsser的before
+* @PostConstruct(其实也是一个BeanPostProsser的before)
+* InitializingBean
+* init-method
+* BeanPostProsser的after</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=spring-bean的销毁顺序>Spring Bean的销毁顺序</h2><span class=spoiler>* destory
+* destroy-method</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=spring中bean的生命周期>Spring中Bean的生命周期</h2><p><img src=https://gitee.com/1162492411/pic/raw/master/Spring-Bean.png alt></p><h2 id=bean的作用域有哪些>Bean的作用域有哪些</h2><span class=spoiler>* single ：单例，适用于无状态的bean，默认
+* prototype : 每次获取都返回一个新的实例，适用于有状态的bean，默认启动时不加载prototype的bean
+* request ：每次http请求会创建一个新的实例
+* session ：每次session共享一个新的实例
+* globalSession ：全局session共享一个新的实例</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=spring如何解决setter方式的循环依赖>Spring如何解决setter方式的循环依赖</h2><span class=spoiler>singletonFactories ： 单例对象工厂的cache；
+earlySingletonObjects ：提前暴光的单例对象的工厂Cache；
+singletonObjects：单例对象的cache；
+1. 实例化a，先把beanName放到singletonsCurrentlyInCreation中，然后调用无参构造方法实例化bean,然后构造一个singletonFactory对象放到singletonFactories中，暴露给其它可能的依赖;
+2. 最后装配属性时，发现需要注入b,那么就开始构造b,构造b的流程和上一步一致</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=spring无法解决哪些方式的循环依赖>Spring无法解决哪些方式的循环依赖</h2><span class=spoiler>* 构造器 ： a构造器中依赖b
+* setter的prototype ： prototype的bean启动时不加载，不在三级缓存中</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=有哪些常见的resource>有哪些常见的Resource</h2><span class=spoiler>- UrlResource：访问网络资源的实现类。
+- ClassPathResource：访问类加载路径里资源的实现类。
+- FileSystemResource：访问文件系统里资源的实现类。
+- ServletContextResource：访问相对于 ServletContext 路径里的资源的实现类：
+- InputStreamResource：访问输入流资源的实现类。
+- ByteArrayResource：访问字节数组资源的实现类。 这些 Resource 实现类，针对不同的的底层资源，提供了相应的资源访问逻辑，并提供便捷的包装，以利于客户端程序的资源访问</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=有哪些常见的context>有哪些常见的Context</h2><span class=spoiler>- FileSystemXmlApplicationContext：该容器从 XML 文件中加载已被定义的 bean。在这里，你需要提供给构造器 XML 文件的完整路径
+- ClassPathXmlApplicationContext：该容器从 XML 文件中加载已被定义的 bean。在这里，你不需要提供 XML 文件的完整路径，只需正确配置 CLASSPATH 环境变量即可，因为，容器会从 CLASSPATH 中搜索 bean 配置文件。
+- WebXmlApplicationContext：该容器会在一个 web 应用程序的范围内加载在 XML 文件中已被定义的 bean</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=有哪些内置的beanpostprocessor>有哪些内置的BeanPostProcessor</h2><span class=spoiler>* ApplicationContextAwareProcessor
+* 作用 ：向组件中注入IOC容器，提供对xxxAware类接口的实现
+* 注册 ：Spring容器的refresh方法内部调用prepareBeanFactory方法，prepareBeanFactory方法会添加ApplicationContextAwareProcessor到BeanFactory中
+* CommonAnnotationBeanPostProcessor
+* 作用 ：提供对@PostConstruct、@PreDestroy、@Resource、WebServiceRef注解的支持
+* 注册 ：在AnnotationConfigUtils类的registerAnnotationConfigProcessors方法中被封装成RootBeanDefinition并注册到Spring容器中
+* AutowiredAnnotationBeanPostProcessor
+* 作用 ：提供对@Autowired、@Value、@Lookup和@Inject注解的实现
+* 注册 ：在AnnotationConfigUtils类的registerAnnotationConfigProcessors方法被注册到Spring容器中
+* RequiredAnnotationBeanPostProcessor
+* 作用 ：提供对@Required注解的实现
+* 注册 ：在AnnotationConfigUtils类的registerAnnotationConfigProcessors方法被注册到Spring容器中
+* BeanValidationPostProcessor
+* 作用 ：提供对JSR-303验证的支持
+* AbstractAutoProxyCreator
+* 作用 ：提供对AOP的支持
+* 注册 ：默认不注册。在SpringBoot中加入aop-starter之后，会触发AopAutoConfiguration自动化配置，然后将AnnotationAwareAspectJAutoProxyCreator注册到Spring容器中
+* MethodValidationPostProcessor
+* 作用 ：支持方法级别的JSR-303规范。需要在类上加上@Validated注解，以及在方法的参数中加上验证注解，比如@Max，@Min，@NotEmpty
+* 注册 ： 默认不注册
+* ScheduledAnnotationBeanPostProcessor
+* 作用 ：Spring Scheduling功能对bean中使用了@Scheduled注解的方法进行调度处理
+* 注册 ： 默认不注册，添加@EnableScheduling会被注册
+* AsyncAnnotationBeanPostProcessor
+* 作用 ：提供对@Async注解的实现，通过AOP实现
+* 注册 ： 默认不注册，添加@EnableAsync会被注册</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=mvc>MVC</h1><h2 id=mvc的启动流程>MVC的启动流程</h2><h1 id=注解>注解</h1><h2 id=如何开启注解功能>如何开启注解功能</h2><span class=spoiler>* XML方式 ：在Spring配置文件中配置 context:annotation-config/元素
+* 注解方式 ： 使用**@ComponentScan**</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=autowired和resources注解的异同>@Autowired和@Resources注解的异同</h2><span class=spoiler>1.autowired默认按类型查找对象，resources默认按照名称查找对象
+2.autowired是spirng提供的注解，resouces是j2ee提供的注解，但是二者都是jsr标准下的注解
+3.两个注解都可以用在字段上</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=同样的接口存在多个实现时如何指定某一个实现>同样的接口存在多个实现时如何指定某一个实现</h2><span class=spoiler>1.@Qualifer 2.@Primary</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=aop>AOP</h1><p>aop的底层实现</p><p>动态代理有哪些实现方式，有什么区别</p><h1 id=事务>事务</h1><p>Spring事务底层如何实现</p><h2 id=传播级别和隔离级别各自定义>传播级别和隔离级别各自定义</h2><span class=spoiler>* 传播级别定义的是事务的控制范围
+* 隔离级别定义的是事务在数据库读写方面的控制范围</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=事务的五个隔离级别>事务的五个隔离级别</h2><span class=spoiler>**TransactionDefinition 接口中定义了五个表示隔离级别的常量：**
+- **TransactionDefinition.ISOLATION_DEFAULT:** 使用后端数据库默认的隔离级别，Mysql 默认采用的 REPEATABLE_READ隔离级别 Oracle 默认采用的 READ_COMMITTED隔离级别.
+- **TransactionDefinition.ISOLATION_READ_UNCOMMITTED:** 最低的隔离级别，允许读取尚未提交的数据变更，**可能会导致脏读、幻读或不可重复读**
+- **TransactionDefinition.ISOLATION_READ_COMMITTED:** 允许读取并发事务已经提交的数据，**可以阻止脏读，但是幻读或不可重复读仍有可能发生**
+- **TransactionDefinition.ISOLATION_REPEATABLE_READ:** 对同一字段的多次读取结果都是一致的，除非数据是被本身事务自己所修改，**可以阻止脏读和不可重复读，但幻读仍有可能发生。**
+- **TransactionDefinition.ISOLATION_SERIALIZABLE:** 最高的隔离级别，完全服从ACID的隔离级别。所有的事务依次逐个执行，这样事务之间就完全不可能产生干扰，也就是说，**该级别可以防止脏读、不可重复读以及幻读**。但是这将严重影响程序的性能。通常情况下也不会用到该级别</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=spring事务的七个传播级别>Spring事务的七个传播级别</h2><span class=spoiler>- PROPAGATION_REQUIRED: 支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。
+- PROPAGATION_SUPPORTS: 支持当前事务，如果当前没有事务，就以非事务方式执行。
+- PROPAGATION_MANDATORY: 支持当前事务，如果当前没有事务，就抛出异常。
+- PROPAGATION_REQUIRES_NEW: 新建事务，如果当前存在事务，把当前事务挂起。
+- PROPAGATION_NOT_SUPPORTED: 以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+- PROPAGATION_NEVER: 以非事务方式执行，如果当前存在事务，则抛出异常。
+- PROPAGATION_NESTED:如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则进行与PROPAGATION_REQUIRED类似的操作。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=嵌套事务和挂起事务的区别是什么>嵌套事务和挂起事务的区别是什么</h2><span class=spoiler>* 嵌套事务 ：本质上还是同一个事务的不同保存点，如果涉及到外层事务回滚，则内层的也将会被回滚
+* 挂起事务 ：对应的是一个新的事务，拿到的是新的资源，所以外层事务回滚时，不影响内层事务</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=哪些情况下事务注解无法生效>哪些情况下事务注解无法生效</h2><span class=spoiler>* 方法自调用 ：
+* 举例 ：例如类AService中方法a中直接调用方法b,这样因为本质是调用了this.B(),而this指的是A而不是A的代理对象，
+* 解决方法 ：配置aop时将expose-proxy设置为true，这样会将当前代理对象放入ThreadLocal中，然后使用AopContext.currentProxy()获取当前代理，将this.b()改为((AService)AopContext.currentProxy()).b()
+* 方法为private/protect
+* 举例 ：例如类AService中方法a中直接调用private/protect修饰的方法b
+* 解决方法 ：将b修改为public，原因是 SpringAOP对于最外层的函数只拦截public方法，不拦截protected和private方法</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=jdk代理和cglib代理的区别>JDK代理和CGLIB代理的区别</h2><span class=spoiler>JDK动态代理只能对实现了接口的类生成代理,而不能针对类.
+CGLIB是针对类实现代理,主要是对指定的类生成一个子类,覆盖其中的方法,因为是继承,所以该类或方法最好不要声明成fina</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=拷贝>拷贝</h1><h2 id=什么是浅拷贝和深拷贝有什么区别>什么是浅拷贝和深拷贝，有什么区别</h2><h2 id=深拷贝有哪些实现方式>深拷贝有哪些实现方式</h2><span class=spoiler>* 手动赋值
+* 实现Serializable接口，实现clonable接口的clone方法
+* 使用反射，先序列化再反序列化为新对象，例如fastjson</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=常用的实体拷贝有哪几种方式各自是如何实现的>常用的实体拷贝有哪几种方式，各自是如何实现的</h2><h2 id=spring的beanutils拷贝存在哪些细节问题>Spring的BeanUtils拷贝存在哪些细节问题</h2><h1 id=设计模式>设计模式</h1><h2 id=spring中用到了哪些设计模式>Spring中用到了哪些设计模式</h2><span class=spoiler>（1）工厂模式：BeanFactory就是简单工厂模式的体现，用来创建对象的实例；
+（2）单例模式：Bean默认为单例模式。
+（3）代理模式：Spring的AOP功能用到了JDK的动态代理和CGLIB字节码生成技术；
+（4）模板方法：用来解决代码重复的问题。比如. RestTemplate, JmsTemplate, JpaTemplate。
+（5）观察者模式：定义对象键一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都会得到通知被动更新，如Spring中listener的实现–ApplicationListener。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=springboot>SpringBoot</h1><h2 id=简述配置文件加载顺序>简述配置文件加载顺序</h2><span class=spoiler>由高到低依次为：
+* 命令行参数。所有的配置都可以在命令行上进行指定；
+* 来自java:comp/env的JNDI属性；
+* Java系统属性（System.getProperties()）；
+* 操作系统环境变量 ；
+* jar包外部的application-{profile}.properties或application.yml(带spring.profile)配置文件
+* jar包内部的application-{profile}.properties或application.yml(带spring.profile)配置文件 再来加载不带profile
+* jar包外部的application.properties或application.yml(不带spring.profile)配置文件
+* jar包内部的application.properties或application.yml(不带spring.profile)配置文
+* @Configuration注解类上的@PropertySource</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=概述springboot的启动流程>概述SpringBoot的启动流程</h2><span class=spoiler>1. 从`spring.factories`配置文件中**加载`EventPublishingRunListener`对象**
+2. **准备环境变量**，包括系统变量，环境变量，命令行参数，默认变量，`servlet`相关配置变量，随机值以及配置文件等
+3. 控制台**打印SpringBoot的`bannner`标志**
+4. **根据不同类型环境创建不同类型的`applicationcontext`容器**
+5. 从`spring.factories`配置文件中**加载`FailureAnalyzers`对象**,用来报告SpringBoot启动过程中的异常
+6. **为刚创建的容器对象做一些初始化工作**，准备一些容器属性值等，对`ApplicationContext`应用一些相关的后置处理和调用各个`ApplicationContextInitializer`的初始化方法来执行一些初始化逻辑等；
+7. **刷新容器**，这一步至关重要。比如调用`bean factory`的后置处理器，注册`BeanPostProcessor`后置处理器，初始化事件广播器且广播事件，初始化剩下的单例`bean`和SpringBoot创建内嵌的`Tomcat`服务器等等重要且复杂的逻辑都在这里实现，主要步骤可见代码的注释，关于这里的逻辑会在以后的spring源码分析专题详细分析；
+8. **执行刷新容器后的后置处理逻辑**，注意这里为空方法；
+9. **调用`ApplicationRunner`和`CommandLineRunner`的run方法**，我们实现这两个接口可以在spring容器启动后需要的一些东西比如加载一些业务数据等;
+10. **报告启动异常**，即若启动过程中抛出异常，此时用`FailureAnalyzers`来报告异常;
+11. 最终**返回容器对象**，这里调用方法没有声明对象来接收</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=概述springboot的自动装配原理>概述SpringBoot的自动装配原理</h2><span class=spoiler>* 判断自动装配开关是否打开。默认`spring.boot.enableautoconfiguration=true`，可在 `application.properties` 或 `application.yml` 中设置
+* 获取`EnableAutoConfiguration`注解中的 `exclude` 和 `excludeName`
+* 获取需要自动装配的所有配置类，读取`META-INF/spring.factories`
+* 通过@Conditionalxxx的结果判断需要加载哪些配置类</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style></div><footer class=post-footer><div class=post-tags><a href=https://1162492411.github.io/docs/tags/%e9%9d%a2%e8%af%95%e9%a2%98 rel=tag title=面试题>#面试题#</a>
+<a href=https://1162492411.github.io/docs/tags/spring rel=tag title=Spring>#Spring#</a></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://1162492411.github.io/docs/post/java%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=next title=Java常见面试题><i class="fa fa-chevron-left"></i>Java常见面试题</a></div><div class="post-nav-prev post-nav-item"><a href=https://1162492411.github.io/docs/post/linux%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=prev title=Linux常见面试题>Linux常见面试题 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=https://1162492411.github.io/docs/img/author.jpg alt=zyg><p class=site-author-name itemprop=name>zyg</p><p class="site-description motion-element" itemprop=description>Programmer & Architect</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=https://1162492411.github.io/docs/post/><span class=site-state-item-count>28</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-categories"><a href=https://1162492411.github.io/docs/categories/><span class=site-state-item-count>27</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-tags"><a href=https://1162492411.github.io/docs/tags/><span class=site-state-item-count>47</span>
+<span class=site-state-item-name></span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/1162492411/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>GitHub</a></span></div><div class="links-of-blogroll motion-element inline"><script type=text/javascript src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&m=0&s=220&c=ff0000&cr1=ffffff&f=arial&l=33&bv=35" async></script></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span itemprop=copyrightYear>&copy;
+2009 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span><span class=author itemprop=copyrightHolder></span></div><div class=powered-by>Powered by - <a class=theme-link href=http://gohugo.io target=_blank title=hugo>Hugo v0.68.3</a></div><div class=theme-info>Theme by - <a class=theme-link href=https://github.com/xtfly/hugo-theme-next target=_blank>NexT</a></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i><span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript>if(Object.prototype.toString.call(window.Promise)!=='[object Function]'){window.Promise=null;}</script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery/index.js?v=2.1.3"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.min.js?v=1.2.1"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="https://1162492411.github.io/docs/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script><script src="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script><script type=text/javascript src=https://1162492411.github.io/docs/js/utils.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/motion.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/affix.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/schemes/pisces.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/scrollspy.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/post-details.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/toc.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/bootstrap.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/search.js></script><script type=text/x-mathjax-config>
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script></body></html>

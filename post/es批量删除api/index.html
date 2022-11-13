@@ -1,0 +1,163 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Es批量删除api -</title><meta name=keywords content="zyg,独立,博客,程序员,个人,思考,读书,笔记,技术,分享,java"><meta property="og:title" content="Es批量删除api"><meta property="og:site_name" content><meta property="og:image" content="/img/author.jpg"><meta name=title content="Es批量删除api -"><meta name=description content="zyg | 博客 | 软件 |  Java"><link rel="shortcut icon" href=https://1162492411.github.io/docs/img/favicon.ico><link rel=apple-touch-icon href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link href="https://1162492411.github.io/docs/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel=stylesheet type=text/css><link href="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/main.css rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/syntax.css rel=stylesheet type=text/css><script type=text/javascript id=hexo.configuration>var NexT=window.NexT||{};var CONFIG={scheme:'Pisces',sidebar:{"position":"left","display":"post"},fancybox:true,motion:true};</script></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class="site-meta custom-logo"><div class=custom-logo-site-title><a href=https://1162492411.github.io/docs/ class=brand rel=start><span class=logo-line-before><i></i></span><span class=site-title></span><span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>人生天地间，忽如远行客</p></div><div class=site-nav-toggle><button>
+<span class=btn-bar></span><span class=btn-bar></span><span class=btn-bar></span></button></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=https://1162492411.github.io/docs/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E6%8A%80%E6%9C%AF/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>技术</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>实战</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E7%AC%94%E8%AE%B0/ rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>笔记</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=section><i class="menu-item-icon fa fa-fw fa-leaf"></i><br>面试题</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/post/ rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/about/ rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br></a></li></ul><div class=site-search><div class=popup><span class="search-icon fa fa-search"></span><input type=text id=local-search-input><div id=local-search-result></div><span class=popup-btn-close>close</span></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://1162492411.github.io/docs/post/es%E6%89%B9%E9%87%8F%E5%88%A0%E9%99%A4api/ itemprop=url>Es批量删除api</a></h1><div class=post-meta><span class=post-time><span class=post-meta-item-icon><i class="fa fa-calendar-o"></i></span><span class=post-meta-item-text></span><time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-01-09">2022-01-09</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-folder-o"></i></span><span class=post-meta-item-text></span><span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98 itemprop=url rel=index><span itemprop=name>实战</span></a>
+&nbsp;</span></span>
+<span>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-eye"></i></span><span class=post-meta-item-text></span><span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>ES中通过该API实现数据的批量删除,官方对该API的定义为 : 根据特定的查询条件对ES相关索引中某些特定的文档进行批量删除</p><h1 id=api介绍>API介绍</h1><p>DSL 如下</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=color:#960050;background-color:#1e0010>POST</span> <span style=color:#960050;background-color:#1e0010>indexName</span><span style=color:#ae81ff>1</span><span style=color:#960050;background-color:#1e0010>/_delete_by_query</span>
+{
+  <span style=color:#f92672>&#34;query&#34;</span>: { <span style=color:#960050;background-color:#1e0010>//这里传递查询条件</span>
+    <span style=color:#f92672>&#34;match&#34;</span>: {
+      <span style=color:#f92672>&#34;message&#34;</span>: <span style=color:#e6db74>&#34;some message&#34;</span>
+    }
+  }
+}
+</code></pre></div><p>响应如下</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json>{
+  <span style=color:#f92672>&#34;took&#34;</span> : <span style=color:#ae81ff>147</span>,<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>从整个操作的开始到结束的毫秒数</span>
+  <span style=color:#f92672>&#34;timed_out&#34;</span>: <span style=color:#66d9ef>false</span>,<span style=color:#960050;background-color:#1e0010>//</span> 
+  <span style=color:#f92672>&#34;deleted&#34;</span>: <span style=color:#ae81ff>119</span>,<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>成功删除的文档数</span>
+  <span style=color:#f92672>&#34;batches&#34;</span>: <span style=color:#ae81ff>1</span>,<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>通过查询删除的滚动响应数量</span>
+  <span style=color:#f92672>&#34;version_conflicts&#34;</span>: <span style=color:#ae81ff>0</span>,<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>根据查询删除时，版本冲突的数量</span>
+  <span style=color:#f92672>&#34;noops&#34;</span>: <span style=color:#ae81ff>0</span>,<span style=color:#960050;background-color:#1e0010>//</span> 
+  <span style=color:#f92672>&#34;retries&#34;</span>: {<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>根据查询删除的重试次数是响应于完整队列</span>
+    <span style=color:#f92672>&#34;bulk&#34;</span>: <span style=color:#ae81ff>0</span>,
+    <span style=color:#f92672>&#34;search&#34;</span>: <span style=color:#ae81ff>0</span>
+  },
+  <span style=color:#f92672>&#34;throttled_millis&#34;</span>: <span style=color:#ae81ff>0</span>,<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>请求休眠的毫秒数，与`requests_per_second`一致</span>
+  <span style=color:#f92672>&#34;requests_per_second&#34;</span>: <span style=color:#ae81ff>-1.0</span>,<span style=color:#960050;background-color:#1e0010>//</span> 
+  <span style=color:#f92672>&#34;throttled_until_millis&#34;</span>: <span style=color:#ae81ff>0</span>,<span style=color:#960050;background-color:#1e0010>//</span> 
+  <span style=color:#f92672>&#34;total&#34;</span>: <span style=color:#ae81ff>119</span>,<span style=color:#960050;background-color:#1e0010>//</span> 
+  <span style=color:#f92672>&#34;failures&#34;</span> : [ ]<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>失败的索引数组</span>
+}
+</code></pre></div><h1 id=原理>原理</h1><blockquote><p>在<code>_delete_by_query</code>执行期间，依次执行多个搜索请求，以便找到要删除的所有匹配文档。每次发现一批文档时，执行相应的批量请求以删除所有这些文档。如果搜索或批量请求被拒绝，<code>_delete_by_query</code>依赖于默认策略来重试拒绝的请求（最多10次，以指数返回）。达到最大重试次数限制会导致<code>_delete_by_query</code>中止，并在响应失败中返回所有故障。已经执行的删除仍然保持。换句话说，进程没有回滚，只会中止。当第一个故障导致中止时，失败批量请求返回的所有故障都会返回到故障元素中;因此，有可能会有不少失败的实体。注意，该API并不是真正将数据删除，而是将其标记为删除状态，并不会真正删除数据及释放磁盘空间</p></blockquote><h1 id=参数>参数</h1><table><thead><tr><th>参数</th><th>默认值</th><th>值域</th><th>作用</th></tr></thead><tbody><tr><td>refresh</td><td></td><td>[true,false,wait_for]</td><td>发送<code>refresh</code>将在一旦根据查询删除完成之后， 刷新所有涉及到的分片；如果设置为wait_for,表示使用集群自动刷新机制,具体等待的时间优先取索引级配置,默认1s</td></tr><tr><td>wait_for_completion</td><td></td><td>[true,false，任意正数]</td><td>值为false时es将会创建一个任务来执行删除，可以与TASK API结合使用，ES会增加一条.tasks/task/${taskId}数据用来记录删除进度</td></tr><tr><td>wait_for_active_shards</td><td></td><td></td><td>控制在继续请求之前必须有多少个分片必须处于活动状态</td></tr><tr><td>timeout</td><td></td><td></td><td>控制每个写入请求等待不可用分片变成可用的时间</td></tr><tr><td>requests_per_second</td><td>-1</td><td>任意正数,-1</td><td>-1时表示禁用该项，任意正数时，在多个批量批次间将会按该值进行等待</td></tr><tr><td>conflicts</td><td></td><td>proceed</td><td>计算删除数据时的版本冲突数量,使用该参数后将不会导致存在版本冲突时整个删除进度终止</td></tr></tbody></table><h1 id=异步>异步</h1><p>当我们在删除请求中添加wait_for_completion=false时ES会返回一个taskId来异步进行删除数据。可以通过API查询删除进度</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=color:#960050;background-color:#1e0010>--</span> <span style=color:#960050;background-color:#1e0010>查询任务的进度</span>
+<span style=color:#960050;background-color:#1e0010>GET</span> <span style=color:#960050;background-color:#1e0010>/_tasks/</span><span style=color:#ae81ff>1</span>
+<span style=color:#960050;background-color:#1e0010>--</span> <span style=color:#960050;background-color:#1e0010>响应</span>
+{
+  <span style=color:#f92672>&#34;completed&#34;</span> : <span style=color:#66d9ef>false</span>,
+  <span style=color:#f92672>&#34;task&#34;</span> : {
+    <span style=color:#f92672>&#34;node&#34;</span> : <span style=color:#e6db74>&#34;fFDobwtSQvS1ishWYtWQcg&#34;</span>,
+    <span style=color:#f92672>&#34;id&#34;</span> : <span style=color:#ae81ff>142113449</span>,
+    <span style=color:#f92672>&#34;type&#34;</span> : <span style=color:#e6db74>&#34;transport&#34;</span>,
+    <span style=color:#f92672>&#34;action&#34;</span> : <span style=color:#e6db74>&#34;indices:data/write/delete/byquery&#34;</span>,
+    <span style=color:#f92672>&#34;status&#34;</span> : {
+      <span style=color:#f92672>&#34;total&#34;</span> : <span style=color:#ae81ff>10918603</span>,
+      <span style=color:#f92672>&#34;updated&#34;</span> : <span style=color:#ae81ff>0</span>,
+      <span style=color:#f92672>&#34;created&#34;</span> : <span style=color:#ae81ff>0</span>,
+      <span style=color:#f92672>&#34;deleted&#34;</span> : <span style=color:#ae81ff>0</span>,
+      <span style=color:#f92672>&#34;batches&#34;</span> : <span style=color:#ae81ff>243</span>,
+      <span style=color:#f92672>&#34;version_conflicts&#34;</span> : <span style=color:#ae81ff>242000</span>,
+      <span style=color:#f92672>&#34;noops&#34;</span> : <span style=color:#ae81ff>0</span>,
+      <span style=color:#f92672>&#34;retries&#34;</span> : {
+        <span style=color:#f92672>&#34;bulk&#34;</span> : <span style=color:#ae81ff>0</span>,
+        <span style=color:#f92672>&#34;search&#34;</span> : <span style=color:#ae81ff>0</span>
+      },
+      <span style=color:#f92672>&#34;throttled_millis&#34;</span> : <span style=color:#ae81ff>0</span>,
+      <span style=color:#f92672>&#34;requests_per_second&#34;</span> : <span style=color:#ae81ff>-1.0</span>,
+      <span style=color:#f92672>&#34;throttled_until_millis&#34;</span> : <span style=color:#ae81ff>0</span>
+    },
+    <span style=color:#f92672>&#34;description&#34;</span> : <span style=color:#e6db74>&#34;delete-by-query [ads_lading_trade_brief_es_02]&#34;</span>,
+    <span style=color:#f92672>&#34;start_time_in_millis&#34;</span> : <span style=color:#ae81ff>1604650445876</span>,
+    <span style=color:#f92672>&#34;running_time_in_nanos&#34;</span> : <span style=color:#ae81ff>159708214419</span>,
+    <span style=color:#f92672>&#34;cancellable&#34;</span> : <span style=color:#66d9ef>true</span>,
+    <span style=color:#f92672>&#34;headers&#34;</span> : {
+     }
+  }
+}
+<span style=color:#960050;background-color:#1e0010>--</span> <span style=color:#960050;background-color:#1e0010>取消任务</span>
+<span style=color:#960050;background-color:#1e0010>POST</span> <span style=color:#960050;background-color:#1e0010>_tasks/task_id:</span><span style=color:#ae81ff>1</span><span style=color:#960050;background-color:#1e0010>/_cancel</span> 
+</code></pre></div><h1 id=切片>切片</h1><p>为了在尽量短的时间内删除数据，可以将数据通过scroll划分为不同的切片，然后并行删除多个切片。</p><p>当然，该API还支持自动切片。</p><h1 id=分段>分段</h1><p>​ 在调用该API后，数据仅仅是被标记为删除状态，实际上并未物理删除，需要依赖于Lucene对分段进行合并才能真正完成物理删除数据的效果。</p><p>​ ES写入数据的过程实际上被拆分为了以下几步 :</p><ol><li><p>先写到内存中，此时不可搜索</p></li><li><p>默认经过 1s 之后会通过refresh被写入 lucene 的底层文件 segment 中 ，此时可以搜索到</p></li><li><p>多个segment通过merge被合并为一个大的segment</p></li><li><p>多个大的segment通过flush被刷新到磁盘</p><p><a href="https://img-blog.csdnimg.cn/20200823133011451.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNzY5MjQ5Mw==,size_16,color_FFFFFF,t_70#pic_center">https://img-blog.csdnimg.cn/20200823133011451.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zNzY5MjQ5Mw==,size_16,color_FFFFFF,t_70#pic_center</a></p></li></ol><h2 id=refresh>refresh</h2><p>​ 在lucene 中，为了实现高索引速度，使用了segment 分段架构存储。一批写入数据保存在一个段中，其中每个段是磁盘中的单个文件，每个段会消耗文件句柄、内存和cpu运行周期。</p><p>在 index ，Update , Delete , Bulk 等操作中，可以设置 refresh 的值。取值如下：</p><ul><li><p>refresh=true : 更新数据之后，立刻对相关的分片(包括副本) 刷新，这个刷新操作保证了数据更新的结果可以立刻被搜索到。</p></li><li><p>refresh=wait_for : 这个参数表示，刷新不会立刻进行，而是等待一段时间才刷新 ( index.refresh_interval)，默认时间是 1 秒。刷新时间间隔可以通过index 的配置动态修改。或者直接手动刷新 POST /twitter/_refresh</p></li><li><p>refresh=false : refresh 的默认值，更新数据之后不立刻刷新，在返回结果之后的某个时间点会自动刷新，也就是随机的，看es服务器的运行情况。</p><h2 id=merge>merge</h2></li></ul><p>​ 当lucene中的段的数量过多时，搜索性能会降低，同时搜索时占用的内存也会更多，因此有必要控制段的数量。ES在后台进行段合并，将小段合并为大段，将大段合并为更大的段，同时，在段合并期间，被标记为删除状态的数据不会被合并到新段中。段合并需要消耗IO资源和CPU时间。</p><p>​ es对于merge比较保守，可以通过参数限制每次merge的小段的数量(max_num_segments,默认1)，限制每次merge的带宽(max_bytes_per_sec,默认20MB/s)</p><h1 id=实战>实战</h1><h2 id=场景一--根据批量的商品码删除es数据>场景一 : 根据批量的商品码删除ES数据</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#f92672>import</span> org.elasticsearch.ElasticsearchStatusException<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.action.ActionListener<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.action.admin.indices.create.CreateIndexRequest<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.action.bulk.BulkRequest<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.action.bulk.BulkResponse<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.action.get.GetRequest<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.action.get.GetResponse<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.action.index.IndexRequest<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.action.update.UpdateRequest<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.client.RequestOptions<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.client.Response<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.client.RestHighLevelClient<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.common.settings.Settings<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.common.unit.TimeValue<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.common.xcontent.XContentBuilder<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.common.xcontent.XContentFactory<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.common.xcontent.XContentType<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.index.query.*<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.index.reindex.BulkByScrollResponse<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.elasticsearch.index.reindex.DeleteByQueryRequest<span style=color:#f92672>;</span>
+
+<span style=color:#a6e22e>@Autowired</span>
+<span style=color:#66d9ef>private</span> RestHighLevelClient restHighLevelClient<span style=color:#f92672>;</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>deleteBatchForArchive</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> goodsCodeList<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        DeleteByQueryRequest request <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> DeleteByQueryRequest<span style=color:#f92672>(</span>priceItemIndex<span style=color:#f92672>);</span>
+        request<span style=color:#f92672>.</span><span style=color:#a6e22e>setDocTypes</span><span style=color:#f92672>(</span>priceItemType<span style=color:#f92672>);</span>
+        request<span style=color:#f92672>.</span><span style=color:#a6e22e>setQuery</span><span style=color:#f92672>(</span>installSearchRequestForArchive<span style=color:#f92672>(</span>goodsCodeList<span style=color:#f92672>));</span>
+        request<span style=color:#f92672>.</span><span style=color:#a6e22e>setConflicts</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;proceed&#34;</span><span style=color:#f92672>);</span>
+        ActionListener<span style=color:#f92672>&lt;</span>BulkByScrollResponse<span style=color:#f92672>&gt;</span> listener <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ActionListener<span style=color:#f92672>&lt;</span>BulkByScrollResponse<span style=color:#f92672>&gt;()</span> <span style=color:#f92672>{</span>
+            <span style=color:#a6e22e>@Override</span>
+            <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>onResponse</span><span style=color:#f92672>(</span>BulkByScrollResponse bulkByScrollResponse<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+                <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>Objects<span style=color:#f92672>.</span><span style=color:#a6e22e>isNull</span><span style=color:#f92672>(</span>bulkByScrollResponse<span style=color:#f92672>)){</span>
+                    log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;返回空数据&#34;</span><span style=color:#f92672>);</span>
+                    <span style=color:#66d9ef>return</span><span style=color:#f92672>;</span>
+                <span style=color:#f92672>}</span>
+                <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>goodsCodeList<span style=color:#f92672>.</span><span style=color:#a6e22e>size</span><span style=color:#f92672>()</span> <span style=color:#f92672>!=</span> bulkByScrollResponse<span style=color:#f92672>.</span><span style=color:#a6e22e>getDeleted</span><span style=color:#f92672>()){</span>
+                    log<span style=color:#f92672>.</span><span style=color:#a6e22e>error</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;删除了{}条商品码,其中{}条数据存在版本冲突,{}条数据删除失败,详情为:{}&#34;</span><span style=color:#f92672>,</span>bulkByScrollResponse<span style=color:#f92672>.</span><span style=color:#a6e22e>getDeleted</span><span style=color:#f92672>(),</span>
+                            bulkByScrollResponse<span style=color:#f92672>.</span><span style=color:#a6e22e>getVersionConflicts</span><span style=color:#f92672>(),</span> CollectionUtil<span style=color:#f92672>.</span><span style=color:#a6e22e>getListSize</span><span style=color:#f92672>(</span>bulkByScrollResponse<span style=color:#f92672>.</span><span style=color:#a6e22e>getBulkFailures</span><span style=color:#f92672>()),</span>
+                            <span style=color:#66d9ef>new</span> Gson<span style=color:#f92672>().</span><span style=color:#a6e22e>toJson</span><span style=color:#f92672>(</span>bulkByScrollResponse<span style=color:#f92672>.</span><span style=color:#a6e22e>getBulkFailures</span><span style=color:#f92672>()));</span>
+                <span style=color:#f92672>}</span>
+            <span style=color:#f92672>}</span>
+            <span style=color:#a6e22e>@Override</span>
+            <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>onFailure</span><span style=color:#f92672>(</span>Exception e<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+                log<span style=color:#f92672>.</span><span style=color:#a6e22e>error</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;归档ES数据发送请求时异常,商品码为:{},&#34;</span><span style=color:#f92672>,</span><span style=color:#66d9ef>new</span> Gson<span style=color:#f92672>().</span><span style=color:#a6e22e>toJson</span><span style=color:#f92672>(</span>goodsCodeList<span style=color:#f92672>),</span>e<span style=color:#f92672>);</span>
+            <span style=color:#f92672>}</span>
+        <span style=color:#f92672>};</span>
+        <span style=color:#75715e>// 调用异步方法,当ES侧完成请求时回调上面自定义的listener
+</span><span style=color:#75715e></span>        restHighLevelClient<span style=color:#f92672>.</span><span style=color:#a6e22e>deleteByQueryAsync</span><span style=color:#f92672>(</span>request<span style=color:#f92672>,</span>RequestOptions<span style=color:#f92672>.</span><span style=color:#a6e22e>DEFAULT</span><span style=color:#f92672>,</span>listener<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 根据码列表+失效状态进行查询
+</span><span style=color:#75715e>     * {
+</span><span style=color:#75715e>     * 	&#34;query&#34;: {
+</span><span style=color:#75715e>     * 		&#34;bool&#34;: {
+</span><span style=color:#75715e>     * 			&#34;must&#34;: [{
+</span><span style=color:#75715e>     * 				&#34;term&#34;: {&#34;effective&#34;: {&#34;value&#34;: 0,&#34;boost&#34;: 1.0}}},
+</span><span style=color:#75715e>     * 				{&#34;terms&#34;: {&#34;code&#34;: [&#34;214016384187744256&#34;, &#34;214015610148470784&#34;, &#34;214060765785659392&#34;],&#34;boost&#34;: 1.0}
+</span><span style=color:#75715e>     *            }],
+</span><span style=color:#75715e>     * 			&#34;adjust_pure_negative&#34;: true,
+</span><span style=color:#75715e>     * 			&#34;boost&#34;: 1.0* 		}
+</span><span style=color:#75715e>     *    }
+</span><span style=color:#75715e>     * }
+</span><span style=color:#75715e>     * @param goodsCodeList
+</span><span style=color:#75715e>     * @return
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>private</span> QueryBuilder <span style=color:#a6e22e>installSearchRequestForArchive</span><span style=color:#f92672>(</span>List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> goodsCodeList<span style=color:#f92672>){</span>
+        <span style=color:#75715e>//组装Query对象
+</span><span style=color:#75715e></span>        BoolQueryBuilder queryBuilder <span style=color:#f92672>=</span> QueryBuilders<span style=color:#f92672>.</span><span style=color:#a6e22e>boolQuery</span><span style=color:#f92672>();</span>
+        TermQueryBuilder statusTermQuery <span style=color:#f92672>=</span> QueryBuilders<span style=color:#f92672>.</span><span style=color:#a6e22e>termQuery</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;effective&#34;</span><span style=color:#f92672>,</span> 0<span style=color:#f92672>);</span>
+        TermsQueryBuilder goodsCodeTermsQuery <span style=color:#f92672>=</span> QueryBuilders<span style=color:#f92672>.</span><span style=color:#a6e22e>termsQuery</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;code&#34;</span><span style=color:#f92672>,</span> goodsCodeList<span style=color:#f92672>);</span>
+        queryBuilder<span style=color:#f92672>.</span><span style=color:#a6e22e>must</span><span style=color:#f92672>(</span>statusTermQuery<span style=color:#f92672>);</span>
+        queryBuilder<span style=color:#f92672>.</span><span style=color:#a6e22e>must</span><span style=color:#f92672>(</span>goodsCodeTermsQuery<span style=color:#f92672>);</span>
+        <span style=color:#66d9ef>return</span> queryBuilder<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+</code></pre></div></div><footer class=post-footer><div class=post-tags><a href=https://1162492411.github.io/docs/tags/java rel=tag title=Java>#Java#</a>
+<a href=https://1162492411.github.io/docs/tags/es rel=tag title=ES>#ES#</a>
+<a href=https://1162492411.github.io/docs/tags/es%e5%9f%ba%e7%a1%80api rel=tag title=ES基础Api>#ES基础Api#</a></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://1162492411.github.io/docs/post/feignambiguousmapping%E9%87%8D%E5%A4%8D%E6%98%A0%E5%B0%84%E9%97%AE%E9%A2%98/ rel=next title=FeignAmbiguousMapping重复映射问题><i class="fa fa-chevron-left"></i>FeignAmbiguousMapping重复映射问题</a></div><div class="post-nav-prev post-nav-item"><a href=https://1162492411.github.io/docs/post/github%E7%AB%99%E7%82%B9443%E8%B6%85%E6%97%B6%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/ rel=prev title=Github站点443超时问题解决>Github站点443超时问题解决 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap></li><li class=sidebar-nav-overview data-target=site-overview></li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=https://1162492411.github.io/docs/img/author.jpg alt=zyg><p class=site-author-name itemprop=name>zyg</p><p class="site-description motion-element" itemprop=description>Programmer & Architect</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=https://1162492411.github.io/docs/post/><span class=site-state-item-count>28</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-categories"><a href=https://1162492411.github.io/docs/categories/><span class=site-state-item-count>27</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-tags"><a href=https://1162492411.github.io/docs/tags/><span class=site-state-item-count>47</span>
+<span class=site-state-item-name></span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/1162492411/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>GitHub</a></span></div><div class="links-of-blogroll motion-element inline"><script type=text/javascript src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&m=0&s=220&c=ff0000&cr1=ffffff&f=arial&l=33&bv=35" async></script></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#refresh>refresh</a></li><li><a href=#merge>merge</a></li></ul><ul><li><a href=#场景一--根据批量的商品码删除es数据>场景一 : 根据批量的商品码删除ES数据</a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span itemprop=copyrightYear>&copy;
+2009 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span><span class=author itemprop=copyrightHolder></span></div><div class=powered-by>Powered by - <a class=theme-link href=http://gohugo.io target=_blank title=hugo>Hugo v0.68.3</a></div><div class=theme-info>Theme by - <a class=theme-link href=https://github.com/xtfly/hugo-theme-next target=_blank>NexT</a></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i><span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript>if(Object.prototype.toString.call(window.Promise)!=='[object Function]'){window.Promise=null;}</script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery/index.js?v=2.1.3"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.min.js?v=1.2.1"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="https://1162492411.github.io/docs/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script><script src="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script><script type=text/javascript src=https://1162492411.github.io/docs/js/utils.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/motion.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/affix.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/schemes/pisces.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/scrollspy.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/post-details.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/toc.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/bootstrap.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/search.js></script><script type=text/x-mathjax-config>
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script></body></html>

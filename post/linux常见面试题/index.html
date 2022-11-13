@@ -1,0 +1,125 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Linux常见面试题 -</title><meta name=keywords content="zyg,独立,博客,程序员,个人,思考,读书,笔记,技术,分享,java"><meta property="og:title" content="Linux常见面试题"><meta property="og:site_name" content><meta property="og:image" content="/img/author.jpg"><meta name=title content="Linux常见面试题 -"><meta name=description content="zyg | 博客 | 软件 |  Java"><link rel="shortcut icon" href=https://1162492411.github.io/docs/img/favicon.ico><link rel=apple-touch-icon href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link href="https://1162492411.github.io/docs/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel=stylesheet type=text/css><link href="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/main.css rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/syntax.css rel=stylesheet type=text/css><script type=text/javascript id=hexo.configuration>var NexT=window.NexT||{};var CONFIG={scheme:'Pisces',sidebar:{"position":"left","display":"post"},fancybox:true,motion:true};</script></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class="site-meta custom-logo"><div class=custom-logo-site-title><a href=https://1162492411.github.io/docs/ class=brand rel=start><span class=logo-line-before><i></i></span><span class=site-title></span><span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>人生天地间，忽如远行客</p></div><div class=site-nav-toggle><button>
+<span class=btn-bar></span><span class=btn-bar></span><span class=btn-bar></span></button></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=https://1162492411.github.io/docs/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E6%8A%80%E6%9C%AF/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>技术</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>实战</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E7%AC%94%E8%AE%B0/ rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>笔记</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=section><i class="menu-item-icon fa fa-fw fa-leaf"></i><br>面试题</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/post/ rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/about/ rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br></a></li></ul><div class=site-search><div class=popup><span class="search-icon fa fa-search"></span><input type=text id=local-search-input><div id=local-search-result></div><span class=popup-btn-close>close</span></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://1162492411.github.io/docs/post/linux%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/ itemprop=url>Linux常见面试题</a></h1><div class=post-meta><span class=post-time><span class=post-meta-item-icon><i class="fa fa-calendar-o"></i></span><span class=post-meta-item-text></span><time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2020-12-23">2020-12-23</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-folder-o"></i></span><span class=post-meta-item-text></span><span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98 itemprop=url rel=index><span itemprop=name>面试题</span></a>
+&nbsp;</span></span>
+<span>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-eye"></i></span><span class=post-meta-item-text></span><span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><span class=spoiler></span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=内存>内存</h1><p>如何查看系统内存</p><span class=spoiler>free</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><p>如何清理系统内存</p><span class=spoiler>```shell
+# 仅清除页面缓存（PageCache）
+echo 1 > /proc/sys/vm/drop_caches
+# 清除目录项和inode
+echo 2 > /proc/sys/vm/drop_caches
+# 清除页面缓存，目录项和inode
+echo 3 > /proc/sys/vm/drop_caches
+```</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=内核>内核</h1><p>用户态如何切换到内核态
+<span class=spoiler>1. 系统调用，例如fork()
+2. 异常
+3. 外围设备的中断</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style></p><h1 id=系统函数>系统函数</h1><p>select和epoll的区别</p><h1 id=cpu>CPU</h1><p>cpu的load值不同时，cpu有哪几种模式(空闲，轻度负载，高负载)</p><h1 id=文件系统>文件系统</h1><p>Linux，查找磁盘上最大的文件的命令</p><h1 id=常用命令>常用命令</h1><h2 id=如何查看系统负载>如何查看系统负载</h2><span class=spoiler>使用top命令 ，执行后效果如下
+```
+top - 01:06:48 up 1:22, 1 user, load average: 0.06, 0.60, 0.48
+Tasks: 29 total, 1 running, 28 sleeping, 0 stopped, 0 zombie
+Cpu(s): 0.3% us, 1.0% sy, 0.0% ni, 98.7% id, 0.0% wa, 0.0% hi, 0.0% si
+Mem: 191272k total, 173656k used, 17616k free, 22052k buffers
+Swap: 192772k total, 0k used, 192772k free, 123988k cached
+PID USER PR NI VIRT RES SHR S %CPU %MEM TIME+ COMMAND
+1379 root 16 0 7976 2456 1980 S 0.7 1.3 0:11.03 sshd
+14704 root 16 0 2128 980 796 R 0.7 0.5 0:02.72 top
+1 root 16 0 1992 632 544 S 0.0 0.3 0:00.90 init
+2 root 34 19 0 0 0 S 0.0 0.0 0:00.00 ksoftirqd/0
+3 root RT 0 0 0 0 S 0.0 0.0 0:00.00 watchdog/0
+```
+第一行是任务队列信息 ：分别表示系统当前时间、系统运行时间、当前登陆用户数量、系统负载(即任务队列的平均长度,三个数值分别为 1分钟、5分钟、15分钟前到现在的平均值)
+第二、三行是进程和CPU的信息 ：
+```
+total 进程总数
+running 正在运行的进程数
+sleeping 睡眠的进程数
+stopped 停止的进程数
+zombie 僵尸进程数
+Cpu(s):
+0.3% us 用户空间占用CPU百分比
+1.0% sy 内核空间占用CPU百分比
+0.0% ni 用户进程空间内改变过优先级的进程占用CPU百分比
+98.7% id 空闲CPU百分比
+0.0% wa 等待输入输出的CPU时间百分比
+0.0%hi：硬件CPU中断占用百分比
+0.0%si：软中断占用百分比
+0.0%st：虚拟机占用百分比
+```
+第四、五行是内存信息
+```
+Mem:
+191272k total 物理内存总量
+173656k used 使用的物理内存总量
+17616k free 空闲内存总量
+22052k buffers 用作内核缓存的内存量
+Swap:
+192772k total 交换区总量
+0k used 使用的交换区总量
+192772k free 空闲交换区总量
+123988k cached 缓冲的交换区总量
+```
+剩下的是进程信息区统计信息区域，它显示了各个进程的详细信息，各列的含义如下
+```
+序号 列名 含义
+a PID 进程id
+b PPID 父进程id
+c RUSER Real user name
+d UID 进程所有者的用户id
+e USER 进程所有者的用户名
+f GROUP 进程所有者的组名
+g TTY 启动进程的终端名。不是从终端启动的进程则显示为 ?
+h PR 优先级
+i NI nice值。负值表示高优先级，正值表示低优先级
+j P 最后使用的CPU，仅在多CPU环境下有意义
+k %CPU 上次更新到现在的CPU时间占用百分比
+l TIME 进程使用的CPU时间总计，单位秒
+m TIME+ 进程使用的CPU时间总计，单位1/100秒
+n %MEM 进程使用的物理内存百分比
+o VIRT 进程使用的虚拟内存总量，单位kb。VIRT=SWAP+RES
+p SWAP 进程使用的虚拟内存中，被换出的大小，单位kb。
+q RES 进程使用的、未被换出的物理内存大小，单位kb。RES=CODE+DATA
+r CODE 可执行代码占用的物理内存大小，单位kb
+s DATA 可执行代码以外的部分(数据段+栈)占用的物理内存大小，单位kb
+t SHR 共享内存大小，单位kb
+u nFLT 页面错误次数
+v nDRT 最后一次写入到现在，被修改过的页面数。
+w S 进程状态(D=不可中断的睡眠状态,R=运行,S=睡眠,T=跟踪/停止,Z=僵尸进程)
+x COMMAND 命令名/命令行
+y WCHAN 若该进程在睡眠，则显示睡眠中的系统函数名
+z Flags 任务标志，参考 sched.h
+```</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=vmstat命令各字段含义>vmstat命令各字段含义</h2><span class=spoiler>- r: 运行队列中进程数量（当数量大于CPU核数表示有阻塞的线程）
+- b: 等待IO的进程数量
+- swpd: 使用虚拟内存大小
+- free: 空闲物理内存大小
+- buff: 用作缓冲的内存大小(内存和硬盘的缓冲区)
+- cache: 用作缓存的内存大小（CPU和内存之间的缓冲区）
+- si: 每秒从交换区写到内存的大小，由磁盘调入内存
+- so: 每秒写入交换区的内存大小，由内存调入磁盘
+- bi: 每秒读取的块数
+- bo: 每秒写入的块数
+- in: 每秒中断数，包括时钟中断。
+- cs: 每秒上下文切换数。
+- us: 用户进程执行时间百分比(user time)
+- sy: 内核系统进程执行时间百分比(system time)
+- wa: IO等待时间百分比
+- id: 空闲时间百分比</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style></div><footer class=post-footer><div class=post-tags><a href=https://1162492411.github.io/docs/tags/linux rel=tag title=Linux>#Linux#</a>
+<a href=https://1162492411.github.io/docs/tags/%e9%9d%a2%e8%af%95%e9%a2%98 rel=tag title=面试题>#面试题#</a></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://1162492411.github.io/docs/post/spring%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=next title=Spring常见面试题><i class="fa fa-chevron-left"></i>Spring常见面试题</a></div><div class="post-nav-prev post-nav-item"><a href=https://1162492411.github.io/docs/post/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=prev title=数据库常见面试题>数据库常见面试题 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap></li><li class=sidebar-nav-overview data-target=site-overview></li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=https://1162492411.github.io/docs/img/author.jpg alt=zyg><p class=site-author-name itemprop=name>zyg</p><p class="site-description motion-element" itemprop=description>Programmer & Architect</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=https://1162492411.github.io/docs/post/><span class=site-state-item-count>28</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-categories"><a href=https://1162492411.github.io/docs/categories/><span class=site-state-item-count>27</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-tags"><a href=https://1162492411.github.io/docs/tags/><span class=site-state-item-count>47</span>
+<span class=site-state-item-name></span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/1162492411/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>GitHub</a></span></div><div class="links-of-blogroll motion-element inline"><script type=text/javascript src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&m=0&s=220&c=ff0000&cr1=ffffff&f=arial&l=33&bv=35" async></script></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#如何查看系统负载>如何查看系统负载</a></li><li><a href=#vmstat命令各字段含义>vmstat命令各字段含义</a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span itemprop=copyrightYear>&copy;
+2009 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span><span class=author itemprop=copyrightHolder></span></div><div class=powered-by>Powered by - <a class=theme-link href=http://gohugo.io target=_blank title=hugo>Hugo v0.68.3</a></div><div class=theme-info>Theme by - <a class=theme-link href=https://github.com/xtfly/hugo-theme-next target=_blank>NexT</a></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i><span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript>if(Object.prototype.toString.call(window.Promise)!=='[object Function]'){window.Promise=null;}</script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery/index.js?v=2.1.3"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.min.js?v=1.2.1"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="https://1162492411.github.io/docs/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script><script src="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script><script type=text/javascript src=https://1162492411.github.io/docs/js/utils.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/motion.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/affix.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/schemes/pisces.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/scrollspy.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/post-details.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/toc.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/bootstrap.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/search.js></script><script type=text/x-mathjax-config>
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script></body></html>

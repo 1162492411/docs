@@ -1,0 +1,316 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Jackson实现入参多态 -</title><meta name=keywords content="zyg,独立,博客,程序员,个人,思考,读书,笔记,技术,分享,java"><meta property="og:title" content="Jackson实现入参多态"><meta property="og:site_name" content><meta property="og:image" content="/img/author.jpg"><meta name=title content="Jackson实现入参多态 -"><meta name=description content="zyg | 博客 | 软件 |  Java"><link rel="shortcut icon" href=https://1162492411.github.io/docs/img/favicon.ico><link rel=apple-touch-icon href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link href="https://1162492411.github.io/docs/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel=stylesheet type=text/css><link href="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/main.css rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/syntax.css rel=stylesheet type=text/css><script type=text/javascript id=hexo.configuration>var NexT=window.NexT||{};var CONFIG={scheme:'Pisces',sidebar:{"position":"left","display":"post"},fancybox:true,motion:true};</script></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class="site-meta custom-logo"><div class=custom-logo-site-title><a href=https://1162492411.github.io/docs/ class=brand rel=start><span class=logo-line-before><i></i></span><span class=site-title></span><span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>人生天地间，忽如远行客</p></div><div class=site-nav-toggle><button>
+<span class=btn-bar></span><span class=btn-bar></span><span class=btn-bar></span></button></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=https://1162492411.github.io/docs/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E6%8A%80%E6%9C%AF/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>技术</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>实战</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E7%AC%94%E8%AE%B0/ rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>笔记</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=section><i class="menu-item-icon fa fa-fw fa-leaf"></i><br>面试题</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/post/ rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/about/ rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br></a></li></ul><div class=site-search><div class=popup><span class="search-icon fa fa-search"></span><input type=text id=local-search-input><div id=local-search-result></div><span class=popup-btn-close>close</span></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://1162492411.github.io/docs/post/jackson%E5%AE%9E%E7%8E%B0%E5%85%A5%E5%8F%82%E5%A4%9A%E6%80%81/ itemprop=url>Jackson实现入参多态</a></h1><div class=post-meta><span class=post-time><span class=post-meta-item-icon><i class="fa fa-calendar-o"></i></span><span class=post-meta-item-text></span><time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-11-13">2022-11-13</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-folder-o"></i></span><span class=post-meta-item-text></span><span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98 itemprop=url rel=index><span itemprop=name>实战</span></a>
+&nbsp;</span></span>
+<span>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-eye"></i></span><span class=post-meta-item-text></span><span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><h1 id=需求>需求</h1><p>在Spring项目中,我们在接收入参时,一般使用@RequestBody,将HTTP报文反序列化为具体的入参对象。但有时情况会略微复杂一些，需要将入参解析为不同的子类对象。这里我们以经典的学校人员管理系统为例，讲解如何实现该功能。
+具体的需求为：该系统中的人员类型分为学生/老师，在信息录入接口中需要根据人员类型,执行不同的信息录入方法。
+在各序列化框架中调研后，发现Jackson中的@JsonTypeInfo可以用来进行多态的序列化和反序列化，该注解作用在接口/类上，被用来开启多态类型的处理，对基类/接口和子类/实现类都有效。</p><h1 id=代码实现>代码实现</h1><p>这里我们先给出一个简单方案。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>// 定义一个抽象的父类,在这里指定入参与子类的映射关系
+</span><span style=color:#75715e></span><span style=color:#f92672>import</span> com.fasterxml.jackson.annotation.JsonSubTypes<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> com.fasterxml.jackson.annotation.JsonTypeInfo<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.*<span style=color:#f92672>;</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#a6e22e>@AllArgsConstructor</span>
+<span style=color:#a6e22e>@NoArgsConstructor</span>
+<span style=color:#a6e22e>@JsonTypeInfo</span><span style=color:#f92672>(</span>use <span style=color:#f92672>=</span> JsonTypeInfo<span style=color:#f92672>.</span><span style=color:#a6e22e>Id</span><span style=color:#f92672>.</span><span style=color:#a6e22e>NAME</span><span style=color:#f92672>,</span> property <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;type&#34;</span><span style=color:#f92672>,</span> visible <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span><span style=color:#f92672>,</span>
+        defaultImpl <span style=color:#f92672>=</span> InfoReqBaseParam<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>,</span> include <span style=color:#f92672>=</span> JsonTypeInfo<span style=color:#f92672>.</span><span style=color:#a6e22e>As</span><span style=color:#f92672>.</span><span style=color:#a6e22e>EXISTING_PROPERTY</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@JsonSubTypes</span><span style=color:#f92672>({</span>
+        <span style=color:#a6e22e>@JsonSubTypes.Type</span><span style=color:#f92672>(</span>value <span style=color:#f92672>=</span> StudentInfoParam<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>,</span> name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;code_student&#34;</span><span style=color:#f92672>),</span>
+        <span style=color:#a6e22e>@JsonSubTypes.Type</span><span style=color:#f92672>(</span>value <span style=color:#f92672>=</span> TeacherInfoParam<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>,</span> name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;code_teacher&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#f92672>})</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>InfoReqBaseParam</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> String type<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>// 定义子类
+</span><span style=color:#75715e></span><span style=color:#f92672>import</span> lombok.*<span style=color:#f92672>;</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#a6e22e>@EqualsAndHashCode</span><span style=color:#f92672>(</span>callSuper <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@AllArgsConstructor</span>
+<span style=color:#a6e22e>@NoArgsConstructor</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>StudentInfoParam</span> <span style=color:#66d9ef>extends</span> InfoReqBaseParam<span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> String no<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>//定义子类
+</span><span style=color:#75715e></span><span style=color:#f92672>import</span> lombok.*<span style=color:#f92672>;</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#a6e22e>@EqualsAndHashCode</span><span style=color:#f92672>(</span>callSuper <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@AllArgsConstructor</span>
+<span style=color:#a6e22e>@NoArgsConstructor</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TeacherInfoParam</span> <span style=color:#66d9ef>extends</span> InfoReqBaseParam<span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Integer classNumber<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>//使用转换换后的子类
+</span><span style=color:#75715e></span><span style=color:#f92672>import</span> com.fasterxml.jackson.core.JsonProcessingException<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> com.fasterxml.jackson.databind.ObjectMapper<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.extern.slf4j.Slf4j<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.util.StringUtils<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.bind.annotation.RequestBody<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.bind.annotation.RequestMapping<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.bind.annotation.RestController<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> java.util.Objects<span style=color:#f92672>;</span>
+<span style=color:#a6e22e>@RestController</span>
+<span style=color:#a6e22e>@RequestMapping</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;demo&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@Slf4j</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>IDemoController</span> <span style=color:#66d9ef>implements</span> IDemoApi<span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>receive</span><span style=color:#f92672>(</span><span style=color:#a6e22e>@RequestBody</span> InfoReqBaseParam req<span style=color:#f92672>)</span> <span style=color:#66d9ef>throws</span> JsonProcessingException <span style=color:#f92672>{</span>
+        log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;接收到入参:{}&#34;</span><span style=color:#f92672>,</span><span style=color:#66d9ef>new</span> ObjectMapper<span style=color:#f92672>().</span><span style=color:#a6e22e>writeValueAsString</span><span style=color:#f92672>(</span>req<span style=color:#f92672>));</span>
+        <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>Objects<span style=color:#f92672>.</span><span style=color:#a6e22e>isNull</span><span style=color:#f92672>(</span>req<span style=color:#f92672>)</span> <span style=color:#f92672>||</span> StringUtils<span style=color:#f92672>.</span><span style=color:#a6e22e>isEmpty</span><span style=color:#f92672>(</span>req<span style=color:#f92672>.</span><span style=color:#a6e22e>getType</span><span style=color:#f92672>())){</span>
+            <span style=color:#66d9ef>return</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>switch</span> <span style=color:#f92672>(</span>req<span style=color:#f92672>.</span><span style=color:#a6e22e>getType</span><span style=color:#f92672>()){</span>
+            <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;code_student&#34;</span> <span style=color:#f92672>:</span>
+                log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;mockStudentMethod,object type:{}&#34;</span><span style=color:#f92672>,</span> req<span style=color:#f92672>.</span><span style=color:#a6e22e>getClass</span><span style=color:#f92672>());</span>
+                <span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;code_teacher&#34;</span> <span style=color:#f92672>:</span>
+                log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;mockTeacherMethod,object type:{}&#34;</span><span style=color:#f92672>,</span> req<span style=color:#f92672>.</span><span style=color:#a6e22e>getClass</span><span style=color:#f92672>());</span>
+                <span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span> log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;no method match&#34;</span><span style=color:#f92672>);</span> <span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>这样，我们就可以通过在入参中为InfoReqBaseParam的type指定不同的值，来自动转换为不同的子类：type=code_student时将入参转换为StudentInfoParam.class;type=code_teacher时将入参转换为TeacherInfoParam.class;默认情况下将入参转换为InfoReqBaseParam。这个转换关系我们在@JsonTypeInfo与@JsonSubTypes中进行维护</p><h1 id=入参解析代码改进>入参解析代码改进</h1><p>上述方案已经基本满足我们的需求,但是在实际的业务场景中，也许会出现子类对象也有type字段，为了解决这种情况，我们可以通过如下方式来满足需求：我们将type字段放在另外一个大对象中，根据大对象中的reqType字段，来将入参转换为reqParam的不同子类。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//定义父类
+</span><span style=color:#75715e></span><span style=color:#f92672>import</span> com.fasterxml.jackson.annotation.JsonTypeInfo<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.AllArgsConstructor<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.Data<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.NoArgsConstructor<span style=color:#f92672>;</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#a6e22e>@AllArgsConstructor</span>
+<span style=color:#a6e22e>@NoArgsConstructor</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>InfoReqDto</span><span style=color:#f92672>&lt;</span>T <span style=color:#66d9ef>extends</span> InfoReqBaseParam<span style=color:#f92672>&gt;</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> String reqType<span style=color:#f92672>;</span>
+    <span style=color:#a6e22e>@JsonTypeInfo</span><span style=color:#f92672>(</span>
+            use <span style=color:#f92672>=</span> JsonTypeInfo<span style=color:#f92672>.</span><span style=color:#a6e22e>Id</span><span style=color:#f92672>.</span><span style=color:#a6e22e>NAME</span><span style=color:#f92672>,</span>
+            property <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;reqType&#34;</span><span style=color:#f92672>,</span>
+            visible <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span><span style=color:#f92672>,</span>
+            defaultImpl <span style=color:#f92672>=</span> com<span style=color:#f92672>.</span><span style=color:#a6e22e>study</span><span style=color:#f92672>.</span><span style=color:#a6e22e>jackson</span><span style=color:#f92672>.</span><span style=color:#a6e22e>sample</span><span style=color:#f92672>.</span><span style=color:#a6e22e>resolveBySelf</span><span style=color:#f92672>.</span><span style=color:#a6e22e>InfoReqBaseParam</span><span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>,</span>
+            include <span style=color:#f92672>=</span> JsonTypeInfo<span style=color:#f92672>.</span><span style=color:#a6e22e>As</span><span style=color:#f92672>.</span><span style=color:#a6e22e>EXTERNAL_PROPERTY</span>
+    <span style=color:#f92672>)</span>
+    <span style=color:#66d9ef>private</span> T reqParam<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>//定义映射关系
+</span><span style=color:#75715e></span><span style=color:#f92672>import</span> com.fasterxml.jackson.annotation.JsonSubTypes<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.AllArgsConstructor<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.Data<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.NoArgsConstructor<span style=color:#f92672>;</span>
+
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#a6e22e>@JsonSubTypes</span><span style=color:#f92672>({</span>
+        <span style=color:#a6e22e>@JsonSubTypes.Type</span><span style=color:#f92672>(</span>value <span style=color:#f92672>=</span> StudentInfoParam<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>,</span> name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;code_student&#34;</span><span style=color:#f92672>),</span>
+        <span style=color:#a6e22e>@JsonSubTypes.Type</span><span style=color:#f92672>(</span>value <span style=color:#f92672>=</span> TeacherInfoParam<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>,</span> name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;code_teacher&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#f92672>})</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>InfoReqBaseParam</span> <span style=color:#f92672>{</span>
+
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>// 定义子类
+</span><span style=color:#75715e></span><span style=color:#f92672>import</span> lombok.*<span style=color:#f92672>;</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#a6e22e>@EqualsAndHashCode</span><span style=color:#f92672>(</span>callSuper <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@AllArgsConstructor</span>
+<span style=color:#a6e22e>@NoArgsConstructor</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>StudentInfoParam</span> <span style=color:#66d9ef>extends</span> InfoReqBaseParam <span style=color:#f92672>{</span>
+
+    <span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>private</span> String no<span style=color:#f92672>;</span>
+
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>// 定义子类
+</span><span style=color:#75715e></span><span style=color:#f92672>import</span> lombok.*<span style=color:#f92672>;</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#a6e22e>@EqualsAndHashCode</span><span style=color:#f92672>(</span>callSuper <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@AllArgsConstructor</span>
+<span style=color:#a6e22e>@NoArgsConstructor</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TeacherInfoParam</span> <span style=color:#66d9ef>extends</span> InfoReqBaseParam <span style=color:#f92672>{</span>
+
+    <span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+
+    <span style=color:#66d9ef>private</span> Integer classNumber<span style=color:#f92672>;</span>
+
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>//使用
+</span><span style=color:#75715e></span><span style=color:#f92672>import</span> com.fasterxml.jackson.core.JsonProcessingException<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> com.fasterxml.jackson.databind.ObjectMapper<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.extern.slf4j.Slf4j<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.util.StringUtils<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.bind.annotation.RequestBody<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.bind.annotation.RequestMapping<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.bind.annotation.RestController<span style=color:#f92672>;</span>
+
+<span style=color:#f92672>import</span> java.util.Objects<span style=color:#f92672>;</span>
+
+<span style=color:#a6e22e>@Slf4j</span>
+<span style=color:#a6e22e>@RestController</span>
+<span style=color:#a6e22e>@RequestMapping</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>IOtherController</span> <span style=color:#66d9ef>implements</span> IOtherApi <span style=color:#f92672>{</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>receiveDto</span><span style=color:#f92672>(</span><span style=color:#a6e22e>@RequestBody</span> InfoReqDto req<span style=color:#f92672>)</span> <span style=color:#66d9ef>throws</span> JsonProcessingException <span style=color:#f92672>{</span>
+        log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;接收到入参:{}&#34;</span><span style=color:#f92672>,</span><span style=color:#66d9ef>new</span> ObjectMapper<span style=color:#f92672>().</span><span style=color:#a6e22e>writeValueAsString</span><span style=color:#f92672>(</span>req<span style=color:#f92672>));</span>
+        <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>Objects<span style=color:#f92672>.</span><span style=color:#a6e22e>isNull</span><span style=color:#f92672>(</span>req<span style=color:#f92672>)</span> <span style=color:#f92672>||</span> StringUtils<span style=color:#f92672>.</span><span style=color:#a6e22e>isEmpty</span><span style=color:#f92672>(</span>req<span style=color:#f92672>.</span><span style=color:#a6e22e>getReqType</span><span style=color:#f92672>())){</span>
+            <span style=color:#66d9ef>return</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>switch</span> <span style=color:#f92672>(</span>req<span style=color:#f92672>.</span><span style=color:#a6e22e>getReqType</span><span style=color:#f92672>()){</span>
+            <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;code_student&#34;</span> <span style=color:#f92672>:</span>
+                log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;mockStudentMethod,object type:{}&#34;</span><span style=color:#f92672>,</span> req<span style=color:#f92672>.</span><span style=color:#a6e22e>getReqParam</span><span style=color:#f92672>().</span><span style=color:#a6e22e>getClass</span><span style=color:#f92672>());</span>
+                <span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>case</span> <span style=color:#e6db74>&#34;code_teacher&#34;</span> <span style=color:#f92672>:</span>
+                log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;mockTeacherMethod,object type:{}&#34;</span><span style=color:#f92672>,</span> req<span style=color:#f92672>.</span><span style=color:#a6e22e>getReqParam</span><span style=color:#f92672>().</span><span style=color:#a6e22e>getClass</span><span style=color:#f92672>());</span>
+                <span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+            <span style=color:#66d9ef>default</span><span style=color:#f92672>:</span> log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;no method match&#34;</span><span style=color:#f92672>);</span> <span style=color:#66d9ef>break</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h1 id=子类映射代码改进>子类映射代码改进</h1><p>以上两种方式已经可以使用在实际业务场景中了，但是仍然存在一个不太优雅的地方：每次增加一个子类，就要修改@JsonSubTypes，这违反了“开闭原则”(对扩展开放、对修改封闭)，那么有什么方法可以改进吗？有以下两种方式可以实现我们想要的效果</p><h2 id=方式一扫描子类并注册>方式一：扫描子类并注册</h2><p>现在我们是对@JsonSubTypes进行硬编码的，只要想办法将其改为动态编码即可,我们可以拆成三步实现：在子类添加某个注解；使用工具扫描包含有该注解的类，生成一个class列表；将该列表注册到Jackson中</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//这里只给出第三步的demo代码
+</span><span style=color:#75715e></span>ObjectMapper om <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ObjectMapper<span style=color:#f92672>();</span>
+classList<span style=color:#f92672>.</span><span style=color:#a6e22e>stream</span><span style=color:#f92672>().</span><span style=color:#a6e22e>foreach</span><span style=color:#f92672>(</span>item <span style=color:#f92672>-&gt;</span> om<span style=color:#f92672>.</span><span style=color:#a6e22e>registerSubTypes</span><span style=color:#f92672>(</span>item<span style=color:#f92672>));</span>
+</code></pre></div><h2 id=方式二自定义typeidresolver>方式二：自定义TypeIdResolver</h2><p>仍然借助Jackson的@JsonTypeInfo，使用JsonTypeInfo.Id.CUSTOM策略，然后自定义解析规则(思路来自<a href=https://www.jianshu.com/p/684794b02d19>网友实现</a>)</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//在抽象父类添加该代码
+</span><span style=color:#75715e></span><span style=color:#a6e22e>@JsonTypeInfo</span><span style=color:#f92672>(</span>use <span style=color:#f92672>=</span> JsonTypeInfo<span style=color:#f92672>.</span><span style=color:#a6e22e>Id</span><span style=color:#f92672>.</span><span style=color:#a6e22e>CUSTOM</span><span style=color:#f92672>,</span> property <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;type&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@JsonTypeIdResolver</span><span style=color:#f92672>(</span>JacksonTypeIdResolver<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>)</span>
+<span style=color:#75715e>//自定义一个TypeIdResolver
+</span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>JacksonTypeIdResolver</span> <span style=color:#66d9ef>implements</span> TypeIdResolver <span style=color:#f92672>{</span><span style=color:#66d9ef>private</span> JavaType baseType<span style=color:#f92672>;</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>init</span><span style=color:#f92672>(</span>JavaType javaType<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        baseType <span style=color:#f92672>=</span> javaType<span style=color:#f92672>;}</span>
+
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> String <span style=color:#a6e22e>idFromValue</span><span style=color:#f92672>(</span>Object o<span style=color:#f92672>)</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> idFromValueAndType<span style=color:#f92672>(</span>o<span style=color:#f92672>,</span> o<span style=color:#f92672>.</span><span style=color:#a6e22e>getClass</span><span style=color:#f92672>());}</span><span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 序列化时填充什么对象
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> String <span style=color:#a6e22e>idFromValueAndType</span><span style=color:#f92672>(</span>Object o<span style=color:#f92672>,</span> Class<span style=color:#f92672>&lt;?&gt;</span> aClass<span style=color:#f92672>)</span> <span style=color:#f92672>{</span><span style=color:#75715e>//有出现同名类时可以用这个来做区别
+</span><span style=color:#75715e></span>        JsonTypeName annotation <span style=color:#f92672>=</span> aClass<span style=color:#f92672>.</span><span style=color:#a6e22e>getAnnotation</span><span style=color:#f92672>(</span>JsonTypeName<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span><span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>annotation <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> annotation<span style=color:#f92672>.</span><span style=color:#a6e22e>value</span><span style=color:#f92672>();}</span>
+        String name <span style=color:#f92672>=</span> aClass<span style=color:#f92672>.</span><span style=color:#a6e22e>getName</span><span style=color:#f92672>();</span>
+        String<span style=color:#f92672>[]</span> splits <span style=color:#f92672>=</span> StringUtils<span style=color:#f92672>.</span><span style=color:#a6e22e>split</span><span style=color:#f92672>(</span>name<span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;.&#34;</span><span style=color:#f92672>);</span>
+        String className <span style=color:#f92672>=</span> splits<span style=color:#f92672>[</span>splits<span style=color:#f92672>.</span><span style=color:#a6e22e>length</span> <span style=color:#f92672>-</span> 1<span style=color:#f92672>];</span><span style=color:#66d9ef>return</span> className<span style=color:#f92672>;}</span><span style=color:#75715e>/**
+</span><span style=color:#75715e>     * idFromValueAndType 是序列化的时候告诉序列化器怎么生成标识符
+</span><span style=color:#75715e>     * &lt;p&gt;
+</span><span style=color:#75715e>     * typeFromId是反序列化的时候告诉序列化器怎么根据标识符来识别到具体类型，这里用了反射,在程序启动时，把要加载的包通过Reflections加载进来
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> JavaType <span style=color:#a6e22e>typeFromId</span><span style=color:#f92672>(</span>DatabindContext databindContext<span style=color:#f92672>,</span> String type<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        Class<span style=color:#f92672>&lt;?&gt;</span> clazz <span style=color:#f92672>=</span> getSubType<span style=color:#f92672>(</span>type<span style=color:#f92672>);</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>clazz <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> IllegalStateException<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;cannot find class &#39;&#34;</span> <span style=color:#f92672>+</span> type <span style=color:#f92672>+</span> <span style=color:#e6db74>&#34;&#39;&#34;</span><span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>return</span> databindContext<span style=color:#f92672>.</span><span style=color:#a6e22e>constructSpecializedType</span><span style=color:#f92672>(</span>baseType<span style=color:#f92672>,</span> clazz<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#66d9ef>public</span> Class<span style=color:#f92672>&lt;?&gt;</span> getSubType<span style=color:#f92672>(</span>String type<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        Reflections reflections <span style=color:#f92672>=</span> ReflectionsCache<span style=color:#f92672>.</span><span style=color:#a6e22e>getReflections</span><span style=color:#f92672>();</span>
+        Set<span style=color:#f92672>&lt;</span>Class<span style=color:#f92672>&lt;?&gt;&gt;</span> subTypes <span style=color:#f92672>=</span> reflections<span style=color:#f92672>.</span><span style=color:#a6e22e>getSubTypesOf</span><span style=color:#f92672>((</span>Class<span style=color:#f92672>&lt;</span>Object<span style=color:#f92672>&gt;)</span> baseType<span style=color:#f92672>.</span><span style=color:#a6e22e>getRawClass</span><span style=color:#f92672>());</span>
+        <span style=color:#66d9ef>for</span> <span style=color:#f92672>(</span>Class<span style=color:#f92672>&lt;?&gt;</span> subType <span style=color:#f92672>:</span> subTypes<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            JsonTypeName annotation <span style=color:#f92672>=</span> subType<span style=color:#f92672>.</span><span style=color:#a6e22e>getAnnotation</span><span style=color:#f92672>(</span>JsonTypeName<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span><span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>annotation <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>&amp;&amp;</span> annotation<span style=color:#f92672>.</span><span style=color:#a6e22e>value</span><span style=color:#f92672>().</span><span style=color:#a6e22e>equals</span><span style=color:#f92672>(</span>type<span style=color:#f92672>))</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> subType<span style=color:#f92672>;}</span> <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>subType<span style=color:#f92672>.</span><span style=color:#a6e22e>getSimpleName</span><span style=color:#f92672>().</span><span style=color:#a6e22e>equals</span><span style=color:#f92672>(</span>type<span style=color:#f92672>)</span> <span style=color:#f92672>||</span> subType<span style=color:#f92672>.</span><span style=color:#a6e22e>getName</span><span style=color:#f92672>().</span><span style=color:#a6e22e>equals</span><span style=color:#f92672>(</span>type<span style=color:#f92672>))</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> subType<span style=color:#f92672>;}}</span><span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;}</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> String <span style=color:#a6e22e>idFromBaseType</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> idFromValueAndType<span style=color:#f92672>(</span><span style=color:#66d9ef>null</span><span style=color:#f92672>,</span> baseType<span style=color:#f92672>.</span><span style=color:#a6e22e>getClass</span><span style=color:#f92672>());}</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> String <span style=color:#a6e22e>getDescForKnownTypeIds</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;}</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> JsonTypeInfo<span style=color:#f92672>.</span><span style=color:#a6e22e>Id</span> <span style=color:#a6e22e>getMechanism</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>return</span> JsonTypeInfo<span style=color:#f92672>.</span><span style=color:#a6e22e>Id</span><span style=color:#f92672>.</span><span style=color:#a6e22e>CUSTOM</span><span style=color:#f92672>;}</span>
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>//使用-父类定义
+</span><span style=color:#75715e></span><span style=color:#a6e22e>@Data</span>
+<span style=color:#a6e22e>@JsonTypeInfo</span><span style=color:#f92672>(</span>use <span style=color:#f92672>=</span> JsonTypeInfo<span style=color:#f92672>.</span><span style=color:#a6e22e>Id</span><span style=color:#f92672>.</span><span style=color:#a6e22e>CUSTOM</span><span style=color:#f92672>,</span> property <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;type&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@JsonTypeIdResolver</span><span style=color:#f92672>(</span>JacksonTypeIdResolver<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Animal</span> <span style=color:#f92672>{</span><span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>//使用-子类(无需添加任何注解)
+</span><span style=color:#75715e></span><span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Dog</span> <span style=color:#66d9ef>extends</span> Animal <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>int</span> age<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h1 id=另一种思路-自定义参数解析器>另一种思路-自定义参数解析器</h1><p>之前的思路都是在使用Jackson的前提下进行技术改造，那么对于不使用Jackson的项目，我们可以通过自行实现参数解析器来达到我们想要的效果，这里只给出来实现思路，具体代码自行实现：继承AbstractMessageConverterMethodArgumentResolver，覆写resolveArgument方法</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#f92672>import</span> com.alibaba.fastjson.JSON<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> com.alibaba.fastjson.JSONObject<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> lombok.extern.slf4j.Slf4j<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.apache.commons.io.IOUtils<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.core.Conventions<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.core.MethodParameter<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.validation.BindingResult<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.bind.MethodArgumentNotValidException<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.bind.WebDataBinder<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.bind.support.WebDataBinderFactory<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.context.request.NativeWebRequest<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.method.support.ModelAndViewContainer<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodArgumentResolver<span style=color:#f92672>;</span>
+
+<span style=color:#f92672>import</span> javax.servlet.http.HttpServletRequest<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> java.io.IOException<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> java.nio.charset.StandardCharsets<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> java.util.Collections<span style=color:#f92672>;</span>
+<span style=color:#f92672>import</span> java.util.stream.Stream<span style=color:#f92672>;</span>
+
+<span style=color:#75715e>/**
+</span><span style=color:#75715e> * 自定义参数解析
+</span><span style=color:#75715e> */</span>
+<span style=color:#a6e22e>@Slf4j</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>xxxModelArgumentResolver</span> <span style=color:#66d9ef>extends</span> AbstractMessageConverterMethodArgumentResolver <span style=color:#f92672>{</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>SettlementApplyModelArgumentResolver</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>super</span><span style=color:#f92672>(</span>Collections<span style=color:#f92672>.</span><span style=color:#a6e22e>singletonList</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> FastJsonHttpMessageConverter<span style=color:#f92672>()));</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>supportsParameter</span><span style=color:#f92672>(</span>MethodParameter parameter<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> parameter<span style=color:#f92672>.</span><span style=color:#a6e22e>hasParameterAnnotation</span><span style=color:#f92672>(</span>xxxBaseModel<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> Object <span style=color:#a6e22e>resolveArgument</span><span style=color:#f92672>(</span>MethodParameter parameter<span style=color:#f92672>,</span> ModelAndViewContainer mavContainer<span style=color:#f92672>,</span> NativeWebRequest webRequest<span style=color:#f92672>,</span>
+                                  WebDataBinderFactory binderFactory<span style=color:#f92672>)</span> <span style=color:#66d9ef>throws</span> Exception <span style=color:#f92672>{</span>
+        SettlementApplyReqModel model <span style=color:#f92672>=</span> resolveModel<span style=color:#f92672>(</span>webRequest<span style=color:#f92672>);</span>
+        parameter <span style=color:#f92672>=</span> parameter<span style=color:#f92672>.</span><span style=color:#a6e22e>nestedIfOptional</span><span style=color:#f92672>();</span>
+        String name <span style=color:#f92672>=</span> Conventions<span style=color:#f92672>.</span><span style=color:#a6e22e>getVariableNameForParameter</span><span style=color:#f92672>(</span>parameter<span style=color:#f92672>);</span>
+        WebDataBinder binder <span style=color:#f92672>=</span> binderFactory<span style=color:#f92672>.</span><span style=color:#a6e22e>createBinder</span><span style=color:#f92672>(</span>webRequest<span style=color:#f92672>,</span> model<span style=color:#f92672>,</span> name<span style=color:#f92672>);</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>model <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#75715e>// 使用 Spring Validator 进行参数校验
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>validateIfApplicable</span><span style=color:#f92672>(</span>binder<span style=color:#f92672>,</span> parameter<span style=color:#f92672>);</span>
+            <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>binder<span style=color:#f92672>.</span><span style=color:#a6e22e>getBindingResult</span><span style=color:#f92672>().</span><span style=color:#a6e22e>hasErrors</span><span style=color:#f92672>()</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>isBindExceptionRequired</span><span style=color:#f92672>(</span>binder<span style=color:#f92672>,</span> parameter<span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
+                <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> MethodArgumentNotValidException<span style=color:#f92672>(</span>parameter<span style=color:#f92672>,</span> binder<span style=color:#f92672>.</span><span style=color:#a6e22e>getBindingResult</span><span style=color:#f92672>());</span>
+            <span style=color:#f92672>}</span>
+        <span style=color:#f92672>}</span>
+        mavContainer<span style=color:#f92672>.</span><span style=color:#a6e22e>addAttribute</span><span style=color:#f92672>(</span>BindingResult<span style=color:#f92672>.</span><span style=color:#a6e22e>MODEL_KEY_PREFIX</span> <span style=color:#f92672>+</span> name<span style=color:#f92672>,</span> binder<span style=color:#f92672>.</span><span style=color:#a6e22e>getBindingResult</span><span style=color:#f92672>());</span>
+        <span style=color:#66d9ef>return</span> model<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 解析请求参数中的场景码，反序列化特定的 Model 类型
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>private</span> SettlementApplyReqModel <span style=color:#a6e22e>resolveModel</span><span style=color:#f92672>(</span>NativeWebRequest webRequest<span style=color:#f92672>)</span> <span style=color:#66d9ef>throws</span> IOException <span style=color:#f92672>{</span>
+        HttpServletRequest request <span style=color:#f92672>=</span> webRequest<span style=color:#f92672>.</span><span style=color:#a6e22e>getNativeRequest</span><span style=color:#f92672>(</span>HttpServletRequest<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+        String body <span style=color:#f92672>=</span> IOUtils<span style=color:#f92672>.</span><span style=color:#a6e22e>toString</span><span style=color:#f92672>(</span>request<span style=color:#f92672>.</span><span style=color:#a6e22e>getInputStream</span><span style=color:#f92672>(),</span> StandardCharsets<span style=color:#f92672>.</span><span style=color:#a6e22e>UTF_8</span><span style=color:#f92672>);</span>
+        log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;参数解析请求体：{}&#34;</span><span style=color:#f92672>,</span> body<span style=color:#f92672>);</span>
+        JSONObject jsonObject <span style=color:#f92672>=</span> JSON<span style=color:#f92672>.</span><span style=color:#a6e22e>parseObject</span><span style=color:#f92672>(</span>body<span style=color:#f92672>);</span>
+        Integer sceneCode <span style=color:#f92672>=</span> jsonObject<span style=color:#f92672>.</span><span style=color:#a6e22e>getInteger</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;sceneCode&#34;</span><span style=color:#f92672>);</span>
+        AssertUtil<span style=color:#f92672>.</span><span style=color:#a6e22e>isNotNull</span><span style=color:#f92672>(</span>sceneCode<span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;场景码为必传参数！&#34;</span><span style=color:#f92672>);</span>
+        <span style=color:#75715e>//下面根据不同的sceneCode解析不同的代码
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>return</span> jsonObject<span style=color:#f92672>.</span><span style=color:#a6e22e>toJavaObject</span><span style=color:#f92672>(</span>xxxx<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+<span style=color:#f92672>}</span>
+</code></pre></div></div><footer class=post-footer><div class=post-tags><a href=https://1162492411.github.io/docs/tags/spring rel=tag title=Spring>#Spring#</a>
+<a href=https://1162492411.github.io/docs/tags/%e5%ae%9e%e6%88%98 rel=tag title=实战>#实战#</a></div><div class=post-nav><div class="post-nav-next post-nav-item"></div><div class="post-nav-prev post-nav-item"><a href=https://1162492411.github.io/docs/post/mapstruct%E7%AE%80%E8%A6%81%E6%8C%87%E5%8D%97/ rel=prev title=MapStruct简要指南>MapStruct简要指南 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap></li><li class=sidebar-nav-overview data-target=site-overview></li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=https://1162492411.github.io/docs/img/author.jpg alt=zyg><p class=site-author-name itemprop=name>zyg</p><p class="site-description motion-element" itemprop=description>Programmer & Architect</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=https://1162492411.github.io/docs/post/><span class=site-state-item-count>28</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-categories"><a href=https://1162492411.github.io/docs/categories/><span class=site-state-item-count>27</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-tags"><a href=https://1162492411.github.io/docs/tags/><span class=site-state-item-count>47</span>
+<span class=site-state-item-name></span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/1162492411/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>GitHub</a></span></div><div class="links-of-blogroll motion-element inline"><script type=text/javascript src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&m=0&s=220&c=ff0000&cr1=ffffff&f=arial&l=33&bv=35" async></script></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#方式一扫描子类并注册>方式一：扫描子类并注册</a></li><li><a href=#方式二自定义typeidresolver>方式二：自定义TypeIdResolver</a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span itemprop=copyrightYear>&copy;
+2009 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span><span class=author itemprop=copyrightHolder></span></div><div class=powered-by>Powered by - <a class=theme-link href=http://gohugo.io target=_blank title=hugo>Hugo v0.68.3</a></div><div class=theme-info>Theme by - <a class=theme-link href=https://github.com/xtfly/hugo-theme-next target=_blank>NexT</a></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i><span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript>if(Object.prototype.toString.call(window.Promise)!=='[object Function]'){window.Promise=null;}</script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery/index.js?v=2.1.3"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.min.js?v=1.2.1"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="https://1162492411.github.io/docs/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script><script src="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script><script type=text/javascript src=https://1162492411.github.io/docs/js/utils.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/motion.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/affix.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/schemes/pisces.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/scrollspy.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/post-details.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/toc.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/bootstrap.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/search.js></script><script type=text/x-mathjax-config>
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script></body></html>

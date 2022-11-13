@@ -1,0 +1,253 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Spring中Async的使用与源码解析 -</title><meta name=keywords content="zyg,独立,博客,程序员,个人,思考,读书,笔记,技术,分享,java"><meta property="og:title" content="Spring中Async的使用与源码解析"><meta property="og:site_name" content><meta property="og:image" content="/img/author.jpg"><meta name=title content="Spring中Async的使用与源码解析 -"><meta name=description content="Article description."><link rel="shortcut icon" href=https://1162492411.github.io/docs/img/favicon.ico><link rel=apple-touch-icon href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link href="https://1162492411.github.io/docs/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel=stylesheet type=text/css><link href="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/main.css rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/syntax.css rel=stylesheet type=text/css><script type=text/javascript id=hexo.configuration>var NexT=window.NexT||{};var CONFIG={scheme:'Pisces',sidebar:{"position":"left","display":"post"},fancybox:true,motion:true};</script></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class="site-meta custom-logo"><div class=custom-logo-site-title><a href=https://1162492411.github.io/docs/ class=brand rel=start><span class=logo-line-before><i></i></span><span class=site-title></span><span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>人生天地间，忽如远行客</p></div><div class=site-nav-toggle><button>
+<span class=btn-bar></span><span class=btn-bar></span><span class=btn-bar></span></button></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=https://1162492411.github.io/docs/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E6%8A%80%E6%9C%AF/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>技术</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>实战</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E7%AC%94%E8%AE%B0/ rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>笔记</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=section><i class="menu-item-icon fa fa-fw fa-leaf"></i><br>面试题</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/post/ rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/about/ rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br></a></li></ul><div class=site-search><div class=popup><span class="search-icon fa fa-search"></span><input type=text id=local-search-input><div id=local-search-result></div><span class=popup-btn-close>close</span></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://1162492411.github.io/docs/post/spring%E4%B8%ADasync%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B8%8E%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/ itemprop=url>Spring中Async的使用与源码解析</a></h1><div class=post-meta><span class=post-time><span class=post-meta-item-icon><i class="fa fa-calendar-o"></i></span><span class=post-meta-item-text></span><time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2020-11-26">2020-11-26</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-folder-o"></i></span><span class=post-meta-item-text></span><span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/springboot itemprop=url rel=index><span itemprop=name>SpringBoot</span></a>
+&nbsp;</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/%E7%BA%BF%E7%A8%8B%E6%B1%A0 itemprop=url rel=index><span itemprop=name>线程池</span></a>
+&nbsp;</span></span>
+<span>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-eye"></i></span><span class=post-meta-item-text></span><span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><h1 id=背景介绍>背景介绍</h1><p>对于异步方法调用，从Spring3开始提供了@Async注解，该注解可以被标注在方法上，以便异步地调用该方法。调用者将在调用时立即返回，方法的实际执行将提交给Spring TaskExecutor的任务中，由指定的线程池中的线程执行。</p><h1 id=常见的场景>常见的场景</h1><ul><li>系统日志记录</li><li>耗时任务的执行</li></ul><h1 id=使用方法>使用方法</h1><p>1.启动类增加@EnableAsync注解(since Spring 3.1)</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@EnableAsync</span>
+<span style=color:#a6e22e>@SpringBootApplication</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SpringBootDemoAsyncApplication</span> <span style=color:#f92672>{</span>
+
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>main</span><span style=color:#f92672>(</span>String<span style=color:#f92672>[]</span> args<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        SpringApplication<span style=color:#f92672>.</span><span style=color:#a6e22e>run</span><span style=color:#f92672>(</span>SpringBootDemoAsyncApplication<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>,</span> args<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+<span style=color:#f92672>}</span>
+</code></pre></div><p>2.如有需要，可以自定义线程池</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Configuration</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ExecutorConfiguration</span> <span style=color:#f92672>{</span>
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 配置应用访问日志专用线程池
+</span><span style=color:#75715e>     * @return
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>@Bean</span><span style=color:#f92672>(</span>name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;sodAppLogAsyncExecutor&#34;</span><span style=color:#f92672>)</span>
+    <span style=color:#66d9ef>public</span> ThreadPoolTaskExecutor <span style=color:#a6e22e>asyncExecutor</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        ThreadPoolTaskExecutor threadPool <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ThreadPoolTaskExecutor<span style=color:#f92672>();</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setThreadNamePrefix</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;drs-sodAppLog-&#34;</span><span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setCorePoolSize</span><span style=color:#f92672>(</span>3<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setMaxPoolSize</span><span style=color:#f92672>(</span>4<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setKeepAliveSeconds</span><span style=color:#f92672>(</span>60<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setQueueCapacity</span><span style=color:#f92672>(</span>11<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setRejectedExecutionHandler</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> ThreadPoolExecutor<span style=color:#f92672>.</span><span style=color:#a6e22e>DiscardPolicy</span><span style=color:#f92672>());</span>
+        <span style=color:#75715e>//优雅关闭
+</span><span style=color:#75715e></span>        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setWaitForTasksToCompleteOnShutdown</span><span style=color:#f92672>(</span><span style=color:#66d9ef>true</span><span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setAwaitTerminationSeconds</span><span style=color:#f92672>(</span>60 <span style=color:#f92672>*</span> 15<span style=color:#f92672>);</span>
+        <span style=color:#66d9ef>return</span> threadPool<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>3.在需要使用异步的方法上添加@Async注解，可以通过value属性指定线程池,返回值支持void、Future、ListenableFuture、CompletableFuture，如果不指定value，那么采用默认线程池</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 模拟5秒的异步任务
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>@Async</span>
+    <span style=color:#66d9ef>public</span> Future<span style=color:#f92672>&lt;</span>Boolean<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>asyncTask1</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>throws</span> InterruptedException <span style=color:#f92672>{</span>
+        doTask<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;asyncTask1&#34;</span><span style=color:#f92672>,</span> 5<span style=color:#f92672>);</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> AsyncResult<span style=color:#f92672>&lt;&gt;(</span>Boolean<span style=color:#f92672>.</span><span style=color:#a6e22e>TRUE</span><span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 模拟业务代码
+</span><span style=color:#75715e>     * @param taskName
+</span><span style=color:#75715e>     * @param time
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>doTask</span><span style=color:#f92672>(</span>String taskName<span style=color:#f92672>,</span> Integer time<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        log<span style=color:#f92672>.</span><span style=color:#a6e22e>info</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;{}模拟执行【{}】,线程内存地址:{}&#34;</span><span style=color:#f92672>,</span> taskName<span style=color:#f92672>,</span> Thread<span style=color:#f92672>.</span><span style=color:#a6e22e>currentThread</span><span style=color:#f92672>().</span><span style=color:#a6e22e>getName</span><span style=color:#f92672>(),</span> UnsafeUtil<span style=color:#f92672>.</span><span style=color:#a6e22e>addressOf</span><span style=color:#f92672>(</span>Thread<span style=color:#f92672>.</span><span style=color:#a6e22e>currentThread</span><span style=color:#f92672>()));</span>
+    <span style=color:#f92672>}</span>
+</code></pre></div><h1 id=spring实现的线程池>Spring实现的线程池</h1><p><img src=https://gitee.com/1162492411/pic/raw/master/Spring%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%B1%BB%E5%9B%BE.png alt=image-2020112616444257></p><ul><li>SimpleAsyncTaskExecutor：默认线程池，每次调用都启动一个新线程(并不会复用线程池已有线程),支持对并发总数设限（ConcurrencyLimit，默认-1不限制，0不允许），当超过线程并发总数限制时，阻塞新的调用</li><li>ThreadPoolTaskExecutor:对JDK的ThreadPoolExecutor的封装，SpringBoot通过TaskExecutionAutoConfiguration自动装配了一个名为applicationTaskExecutor的ThreadPoolTaskExecutor</li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@ConditionalOnClass</span><span style=color:#f92672>(</span>ThreadPoolTaskExecutor<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@Configuration</span>
+<span style=color:#a6e22e>@EnableConfigurationProperties</span><span style=color:#f92672>(</span>TaskExecutionProperties<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TaskExecutionAutoConfiguration</span> <span style=color:#f92672>{</span>
+	<span style=color:#a6e22e>@Bean</span>
+	<span style=color:#a6e22e>@ConditionalOnMissingBean</span>
+	<span style=color:#66d9ef>public</span> TaskExecutorBuilder <span style=color:#a6e22e>taskExecutorBuilder</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+		TaskExecutionProperties<span style=color:#f92672>.</span><span style=color:#a6e22e>Pool</span> pool <span style=color:#f92672>=</span> <span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>properties</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getPool</span><span style=color:#f92672>();</span>
+		TaskExecutorBuilder builder <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> TaskExecutorBuilder<span style=color:#f92672>();</span>
+		builder <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>queueCapacity</span><span style=color:#f92672>(</span>pool<span style=color:#f92672>.</span><span style=color:#a6e22e>getQueueCapacity</span><span style=color:#f92672>());</span>
+		builder <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>corePoolSize</span><span style=color:#f92672>(</span>pool<span style=color:#f92672>.</span><span style=color:#a6e22e>getCoreSize</span><span style=color:#f92672>());</span>
+		builder <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>maxPoolSize</span><span style=color:#f92672>(</span>pool<span style=color:#f92672>.</span><span style=color:#a6e22e>getMaxSize</span><span style=color:#f92672>());</span>
+		builder <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>allowCoreThreadTimeOut</span><span style=color:#f92672>(</span>pool<span style=color:#f92672>.</span><span style=color:#a6e22e>isAllowCoreThreadTimeout</span><span style=color:#f92672>());</span>
+		builder <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>keepAlive</span><span style=color:#f92672>(</span>pool<span style=color:#f92672>.</span><span style=color:#a6e22e>getKeepAlive</span><span style=color:#f92672>());</span>
+		builder <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>threadNamePrefix</span><span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>properties</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getThreadNamePrefix</span><span style=color:#f92672>());</span>
+		builder <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>customizers</span><span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>taskExecutorCustomizers</span><span style=color:#f92672>);</span>
+		builder <span style=color:#f92672>=</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>taskDecorator</span><span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>taskDecorator</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getIfUnique</span><span style=color:#f92672>());</span>
+		<span style=color:#66d9ef>return</span> builder<span style=color:#f92672>;</span>
+	<span style=color:#f92672>}</span>
+
+	<span style=color:#a6e22e>@Lazy</span>
+	<span style=color:#a6e22e>@Bean</span><span style=color:#f92672>(</span>name <span style=color:#f92672>=</span> APPLICATION_TASK_EXECUTOR_BEAN_NAME<span style=color:#f92672>)</span>
+	<span style=color:#a6e22e>@ConditionalOnMissingBean</span><span style=color:#f92672>(</span>Executor<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>)</span>
+	<span style=color:#66d9ef>public</span> ThreadPoolTaskExecutor <span style=color:#a6e22e>applicationTaskExecutor</span><span style=color:#f92672>(</span>TaskExecutorBuilder builder<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+		<span style=color:#66d9ef>return</span> builder<span style=color:#f92672>.</span><span style=color:#a6e22e>build</span><span style=color:#f92672>();</span>
+	<span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h2 id=simpleasynctaskexecutor>SimpleAsyncTaskExecutor</h2><p>属性列表</p><ul><li>Daemon:是否为守护线程，默认false</li><li>ThreadPriority:线程优先级,默认5</li><li>ThreadNamePrefix:线程名前缀，默认"SimpleAsyncTaskExecutor&rdquo;</li><li>ConcurrencyLimit:并发上限,默认-1不限制，0表示不允许并发？？？？</li></ul><h2 id=threadpooltaskexecutor>ThreadPoolTaskExecutor</h2><p>属性列表</p><ul><li>CorePoolSize：线程池创建时候初始化的线程数,默认1</li><li>MaxPoolSize：线程池最大的线程数，只有在缓冲队列满了之后才会申请超过核心线程数的线程，默认Integer.MAX</li><li>QueueCapacity：用来缓冲执行任务的队列的队列大小，默认Integer.MAX</li><li>KeepAliveSeconds：线程的空闲时间，单位/s，当超过了核心线程出之外的线程在空闲时间到达之后会被销毁,默认60</li><li>ThreadNamePrefix：线程池中线程名的前缀，继承自父类ExecutorConfigurationSupport，默认是BeanName/方法名</li><li>RejectedExecutionHandler：线程池对拒绝任务的处理策略，自父类ExecutorConfigurationSupport,（策略为JDK ThreadPoolExecutor自带）<ul><li>AbortPolicy：默认策略，直接抛出异常 RejectedExecutionException</li><li>CallerRunsPolicy：直接在 execute 方法的调用线程中运行被拒绝的任务；如果执行程序已关闭，则会丢弃该任务</li><li>DiscardPolicy：该策略直接丢弃</li><li>DiscardOldestPolicy：该策略会先将最早入队列的未执行的任务丢弃掉，然后尝试执行新的任务。如果执行程序已关闭，则会丢弃该任务</li></ul></li><li>waitForTasksToCompleteOnShutdown：关闭程序时是否等待任务执行完毕，继承自父类ExecutorConfigurationSupport，默认false表示中断正在执行的任务，清空队列</li><li>awaitTerminationSeconds：关闭程序时的等待时间，需配合waitForTasksToCompleteOnShutdown使用，继承自父类ExecutorConfigurationSupport，默认0</li></ul><h2 id=线程处理流程>线程处理流程</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java>    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * Executes the given task sometime in the future.  The task
+</span><span style=color:#75715e>     * may execute in a new thread or in an existing pooled thread.
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * If the task cannot be submitted for execution, either because this
+</span><span style=color:#75715e>     * executor has been shutdown or because its capacity has been reached,
+</span><span style=color:#75715e>     * the task is handled by the current {@code RejectedExecutionHandler}.
+</span><span style=color:#75715e>     *
+</span><span style=color:#75715e>     * @param command the task to execute
+</span><span style=color:#75715e>     * @throws RejectedExecutionException at discretion of
+</span><span style=color:#75715e>     *         {@code RejectedExecutionHandler}, if the task
+</span><span style=color:#75715e>     *         cannot be accepted for execution
+</span><span style=color:#75715e>     * @throws NullPointerException if {@code command} is null
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>execute</span><span style=color:#f92672>(</span>Runnable command<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>command <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>)</span>
+            <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> NullPointerException<span style=color:#f92672>();</span>
+        <span style=color:#75715e>/*
+</span><span style=color:#75715e>         * Proceed in 3 steps:
+</span><span style=color:#75715e>         *
+</span><span style=color:#75715e>         * 1. If fewer than corePoolSize threads are running, try to
+</span><span style=color:#75715e>         * start a new thread with the given command as its first
+</span><span style=color:#75715e>         * task.  The call to addWorker atomically checks runState and
+</span><span style=color:#75715e>         * workerCount, and so prevents false alarms that would add
+</span><span style=color:#75715e>         * threads when it shouldn&#39;t, by returning false.
+</span><span style=color:#75715e>         *
+</span><span style=color:#75715e>         * 2. If a task can be successfully queued, then we still need
+</span><span style=color:#75715e>         * to double-check whether we should have added a thread
+</span><span style=color:#75715e>         * (because existing ones died since last checking) or that
+</span><span style=color:#75715e>         * the pool shut down since entry into this method. So we
+</span><span style=color:#75715e>         * recheck state and if necessary roll back the enqueuing if
+</span><span style=color:#75715e>         * stopped, or start a new thread if there are none.
+</span><span style=color:#75715e>         *
+</span><span style=color:#75715e>         * 3. If we cannot queue task, then we try to add a new
+</span><span style=color:#75715e>         * thread.  If it fails, we know we are shut down or saturated
+</span><span style=color:#75715e>         * and so reject the task.
+</span><span style=color:#75715e>         */</span>
+        <span style=color:#66d9ef>int</span> c <span style=color:#f92672>=</span> ctl<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>workerCountOf<span style=color:#f92672>(</span>c<span style=color:#f92672>)</span> <span style=color:#f92672>&lt;</span> corePoolSize<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>addWorker<span style=color:#f92672>(</span>command<span style=color:#f92672>,</span> <span style=color:#66d9ef>true</span><span style=color:#f92672>))</span>
+                <span style=color:#66d9ef>return</span><span style=color:#f92672>;</span>
+            c <span style=color:#f92672>=</span> ctl<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>();</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>isRunning<span style=color:#f92672>(</span>c<span style=color:#f92672>)</span> <span style=color:#f92672>&amp;&amp;</span> workQueue<span style=color:#f92672>.</span><span style=color:#a6e22e>offer</span><span style=color:#f92672>(</span>command<span style=color:#f92672>))</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>int</span> recheck <span style=color:#f92672>=</span> ctl<span style=color:#f92672>.</span><span style=color:#a6e22e>get</span><span style=color:#f92672>();</span>
+            <span style=color:#66d9ef>if</span> <span style=color:#f92672>(!</span> isRunning<span style=color:#f92672>(</span>recheck<span style=color:#f92672>)</span> <span style=color:#f92672>&amp;&amp;</span> remove<span style=color:#f92672>(</span>command<span style=color:#f92672>))</span>
+                reject<span style=color:#f92672>(</span>command<span style=color:#f92672>);</span>
+            <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span>workerCountOf<span style=color:#f92672>(</span>recheck<span style=color:#f92672>)</span> <span style=color:#f92672>==</span> 0<span style=color:#f92672>)</span>
+                addWorker<span style=color:#f92672>(</span><span style=color:#66d9ef>null</span><span style=color:#f92672>,</span> <span style=color:#66d9ef>false</span><span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> <span style=color:#f92672>(!</span>addWorker<span style=color:#f92672>(</span>command<span style=color:#f92672>,</span> <span style=color:#66d9ef>false</span><span style=color:#f92672>))</span>
+            reject<span style=color:#f92672>(</span>command<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+</code></pre></div><ul><li>如果此时线程池中的数量<strong>小于</strong>corePoolSize，即使线程池中的线程都处于空闲状态，也要<strong>创建新</strong>的线程来处理被添加的任务。</li><li>如果此时线程池中的数量<strong>等于</strong> corePoolSize，但是缓冲队列 workQueue未满，那么任务被放入缓冲队列。</li><li>如果此时线程池中的数量<strong>大于</strong>corePoolSize，缓冲队列workQueue满，并且线程池中的数量小于maxPoolSize，那么建新的线程来处理被添加的任务。</li><li>如果此时线程池中的数量<strong>大于</strong>corePoolSize，缓冲队列workQueue满，并且线程池中的数量等于maxPoolSize，那么通过handler所指定的策略来处理此任务。（也就是：处理任务的优先级为：核心线程corePoolSize、任务队列workQueue、最大线程 maxPoolSize，如果三者都满了，使用handler处理被拒绝的任务）</li><li>当线程池中的线程数量<strong>大于</strong>corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止。这样，线程池可以动态的调整池中的线程数</li></ul><h1 id=自定义线程池>自定义线程池</h1><p>自定义线程池有如下模式：</p><ul><li>配置由自定义的TaskExecutor</li><li>重新实现接口AsyncConfigurer</li><li>继承AsyncConfigurerSupport</li></ul><h2 id=方式一自定义taskexecutor>方式一：自定义TaskExecutor</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Configuration</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ExecutorConfiguration</span> <span style=color:#f92672>{</span>
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 配置应用访问日志专用线程池
+</span><span style=color:#75715e>     * @return
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>@Bean</span><span style=color:#f92672>(</span>name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;sodAppLogAsyncExecutor&#34;</span><span style=color:#f92672>)</span>
+    <span style=color:#66d9ef>public</span> ThreadPoolTaskExecutor <span style=color:#a6e22e>asyncExecutor</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        ThreadPoolTaskExecutor threadPool <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ThreadPoolTaskExecutor<span style=color:#f92672>();</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setThreadNamePrefix</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;drs-sodAppLog-&#34;</span><span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setCorePoolSize</span><span style=color:#f92672>(</span>3<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setMaxPoolSize</span><span style=color:#f92672>(</span>4<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setKeepAliveSeconds</span><span style=color:#f92672>(</span>60<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setQueueCapacity</span><span style=color:#f92672>(</span>11<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setRejectedExecutionHandler</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> ThreadPoolExecutor<span style=color:#f92672>.</span><span style=color:#a6e22e>DiscardPolicy</span><span style=color:#f92672>());</span>
+        <span style=color:#75715e>//优雅关闭
+</span><span style=color:#75715e></span>        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setWaitForTasksToCompleteOnShutdown</span><span style=color:#f92672>(</span><span style=color:#66d9ef>true</span><span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setAwaitTerminationSeconds</span><span style=color:#f92672>(</span>60 <span style=color:#f92672>*</span> 15<span style=color:#f92672>);</span>
+        <span style=color:#66d9ef>return</span> threadPool<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h2 id=方式二实现asyncconfigurer>方式二：实现AsyncConfigurer</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>/**
+</span><span style=color:#75715e> * 自定义线程池方法二：自定义类，配置默认Executor与默认异步异常处理器
+</span><span style=color:#75715e> * @author zyg
+</span><span style=color:#75715e> */</span>
+<span style=color:#a6e22e>@Configuration</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CusAsyncConfigure</span> <span style=color:#66d9ef>implements</span> AsyncConfigurer <span style=color:#f92672>{</span>
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 配置默认Executor
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> Executor <span style=color:#a6e22e>getAsyncExecutor</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        ThreadPoolTaskExecutor threadPool <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ThreadPoolTaskExecutor<span style=color:#f92672>();</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setThreadNamePrefix</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;cus-async-configure-&#34;</span><span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setCorePoolSize</span><span style=color:#f92672>(</span>2<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setMaxPoolSize</span><span style=color:#f92672>(</span>3<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setKeepAliveSeconds</span><span style=color:#f92672>(</span>60<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setQueueCapacity</span><span style=color:#f92672>(</span>5<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setRejectedExecutionHandler</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> ThreadPoolExecutor<span style=color:#f92672>.</span><span style=color:#a6e22e>DiscardPolicy</span><span style=color:#f92672>());</span>
+        <span style=color:#66d9ef>return</span> threadPool<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 配置默认异步异常处理器
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> AsyncUncaughtExceptionHandler <span style=color:#a6e22e>getAsyncUncaughtExceptionHandler</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> CusAsyncUncaughtExceptionHandler<span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>（原理是ProxyAsyncConfiguration的父类AbstractAsyncConfiguration的setConfigurers(Collection)中执行了AsyncConfigurer的方法来配置Executor与AsyncUncaughtExceptionHandler）</p><h2 id=方式三继承asyncconfigurersupport>方式三：继承AsyncConfigurerSupport</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>/**
+</span><span style=color:#75715e> * 自定义线程池方法三:继承AsyncConfigurerSupport,重写getAsyncExecutor与getAsyncUncaughtExceptionHandler
+</span><span style=color:#75715e> * @author zyg
+</span><span style=color:#75715e> */</span>
+<span style=color:#a6e22e>@Configuration</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CusAsyncConfigurerSupport</span> <span style=color:#66d9ef>extends</span> AsyncConfigurerSupport <span style=color:#f92672>{</span>
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 配置默认Executor
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> Executor <span style=color:#a6e22e>getAsyncExecutor</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        ThreadPoolTaskExecutor threadPool <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> ThreadPoolTaskExecutor<span style=color:#f92672>();</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setThreadNamePrefix</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;cus-async-configure-support-&#34;</span><span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setCorePoolSize</span><span style=color:#f92672>(</span>2<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setMaxPoolSize</span><span style=color:#f92672>(</span>3<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setKeepAliveSeconds</span><span style=color:#f92672>(</span>60<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setQueueCapacity</span><span style=color:#f92672>(</span>5<span style=color:#f92672>);</span>
+        threadPool<span style=color:#f92672>.</span><span style=color:#a6e22e>setRejectedExecutionHandler</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> ThreadPoolExecutor<span style=color:#f92672>.</span><span style=color:#a6e22e>DiscardPolicy</span><span style=color:#f92672>());</span>
+        <span style=color:#66d9ef>return</span> threadPool<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>     * 配置默认异步异常处理器
+</span><span style=color:#75715e>     */</span>
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> AsyncUncaughtExceptionHandler <span style=color:#a6e22e>getAsyncUncaughtExceptionHandler</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> CusAsyncUncaughtExceptionHandler<span style=color:#f92672>();</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>（原理是AsyncConfigurerSupport的父类是AsyncConfigurer）</p><h1 id=异常处理>异常处理</h1><p>如果任务的返回类型是Future，那么将直接抛出异常，否则异常由AsyncUncaughtExceptionHandler的handleUncaughtException()进行处理，Spring自4.1默认提供了SimpleAsyncUncaughtExceptionHandler，该类处理异常的逻辑是通过日志打印错误，如有需要可以自定义类继承AsyncUncaughtExceptionHandler，复写其handleUncaughtException()方法。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>/**
+</span><span style=color:#75715e> * 自定义线程池方法二：自定义默认异步异常处理器
+</span><span style=color:#75715e> * @author zyg
+</span><span style=color:#75715e> */</span>
+<span style=color:#a6e22e>@Component</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CusAsyncUncaughtExceptionHandler</span> <span style=color:#66d9ef>implements</span> AsyncUncaughtExceptionHandler <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Logger logger <span style=color:#f92672>=</span> LoggerFactory<span style=color:#f92672>.</span><span style=color:#a6e22e>getLogger</span><span style=color:#f92672>(</span><span style=color:#66d9ef>this</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getClass</span><span style=color:#f92672>());</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>handleUncaughtException</span><span style=color:#f92672>(</span>Throwable ex<span style=color:#f92672>,</span> Method method<span style=color:#f92672>,</span> Object<span style=color:#f92672>...</span> params<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        logger<span style=color:#f92672>.</span><span style=color:#a6e22e>error</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;自定义异步异常处理器捕捉到异常，&#34;</span><span style=color:#f92672>,</span>ex<span style=color:#f92672>);</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h1 id=enableasync加载流程>@EnableAsync加载流程</h1><h2 id=前置知识点>前置知识点</h2><ul><li>@Import注解的作用</li><li>BeanPostProcessor在Spring中的作用</li><li>Aware类接口在Spring中的作用</li><li>切面与通知的概念与作用</li></ul><h2 id=代码分析>代码分析：</h2><ul><li>@EnableAsync中Import了AsyncConfigurationSelector；</li><li>AsyncConfigurationSelector的作用是通过配置确定是调用ProxyAsyncConfiguration还是AspectJ的AspectJAsyncConfiguration；</li><li>在ProxyAsyncConfiguration的asyncAdvisor()方法可以看到，其中定义了后置处理器AsyncAnnotationBeanPostProcessor</li><li>AsyncAnnotationBeanPostProcessor直接或间接实现了BeanFactoryAware、BeanPostProcessor两个接口，既然AsyncAnnotationBeanPostProcessor实现了BeanFactoryAware，那么就会执行setBeanFactory(BeanFactory)方法,该方法中设置了切面AsyncAnnotationAdvisor<ul><li>切面中定义了切点：类上标注@Async、@Asynchronous注解的切点与在方法上标注@Async、@Asynchronous注解的切点</li><li>切面中定义了通知：通知Executor与SimpleAsyncUncaughtExceptionHandler，</li><li>通知具体的实现类为AnnotationAsyncExecutionInterceptor，它的父类AsyncExecutionInterceptor进行了实际的通知处理操作</li></ul></li></ul><h2 id=配置默认executor>配置默认Executor</h2><p>在生成切面AsyncAnnotationAdvisor对象时，生成了AnnotationAsyncExecutionInterceptor对象，调用了AnnotationAsyncExecutionInterceptor的configure(Supplier,Supplier)方法,在该方法中，调用了getDefaultExecutor(BeanFactory)来寻找默认Executor，查找Executor的优先级如下：</p><ul><li>从BeanFactory中查找类型为TaskExecutor的对象</li><li>从BeanFactory中查找类型为Executor、Bean名称为taskExecutor的对象</li><li>如果上述步骤中找不到，那么子类AsyncExecutionInterceptor中生成SimpleAsyncTaskExecutor对象</li></ul><h1 id=通知的处理>通知的处理</h1><ul><li>通过determineAsyncExecutor(Method)方法查找AsyncExecutor</li><li>包装一下任务，当任务出现异常时调用AsyncUncaughtExceptionHandler的handleUncaughtException()处理异常</li><li>调用AsyncExecutor的submit()/submitListenable()/CompletableFuture.supplyAsync()等方法提交任务</li></ul><h2 id=查找asyncexecutor>查找AsyncExecutor</h2><p>AsyncExecutionAspectSupport的determineAsyncExecutor(Method)中查找了AsyncEexcutor，逻辑如下</p><ul><li>首先尝试从成员变量Map&lt;Method, AsyncTaskExecutor> executors查找是否存在，如果存在则返回</li><li>然后从AsyncExecutionAspectSupport.getExecutorQualifier()获取专属于该Method的AsyncExecutor的Bean名称，如果存在，则向BeanFactory获取类型为Executor、Bean名称为该名称的Executor并返回</li><li>从成员变量SingletonSupplier获取，如果存在则返回</li><li>如果经过上述几步查找仍然无法找到那么就返回空</li><li>如果经过上述几步找到了Executor，判断Executor的类型<ul><li>如果是AsyncListenableTaskExecutor，将其强制转换为AsyncListenableTaskExecutor后放入到成员变量executors中</li><li>如果不是AsyncListenableTaskExecutor，通过TaskExecutorAdapter包装一个concurrentExecutor然后放入到成员变量executors中</li></ul></li></ul><h1 id=异步事务>异步事务</h1><p>在@Async标注的方法，同时也适用了@Transactional进行了标注；在其调用数据库操作时，将无法产生事务管理的控制，原因就在于其是基于异步处理的操作。
+那该如何给这些操作添加事务管理呢？可以将需要事务管理操作的方法放置到异步方法内部，在内部被调用的方法上添加@Transactional.
+例如： 方法A，同时使用了@Async/@Transactional来标注，但是无法产生事务控制的目的。
+方法B，使用了@Async来标注， B中调用了方法C、D，方法C、D分别使用@Transactional做了标注，则可实现事务控制的目的。</p></div><footer class=post-footer><div class=post-tags><a href=https://1162492411.github.io/docs/tags/%e7%ba%bf%e7%a8%8b%e6%b1%a0 rel=tag title=线程池>#线程池#</a>
+<a href=https://1162492411.github.io/docs/tags/%e5%bc%82%e6%ad%a5 rel=tag title=异步>#异步#</a>
+<a href=https://1162492411.github.io/docs/tags/springboot rel=tag title=SpringBoot>#SpringBoot#</a></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://1162492411.github.io/docs/post/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/ rel=next title="Docker 常用命令"><i class="fa fa-chevron-left"></i>Docker 常用命令</a></div><div class="post-nav-prev post-nav-item"><a href=https://1162492411.github.io/docs/post/netty%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/ rel=prev title=Netty架构简介>Netty架构简介 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap></li><li class=sidebar-nav-overview data-target=site-overview></li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=https://1162492411.github.io/docs/img/author.jpg alt=zyg><p class=site-author-name itemprop=name>zyg</p><p class="site-description motion-element" itemprop=description>Programmer & Architect</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=https://1162492411.github.io/docs/post/><span class=site-state-item-count>28</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-categories"><a href=https://1162492411.github.io/docs/categories/><span class=site-state-item-count>27</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-tags"><a href=https://1162492411.github.io/docs/tags/><span class=site-state-item-count>47</span>
+<span class=site-state-item-name></span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/1162492411/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>GitHub</a></span></div><div class="links-of-blogroll motion-element inline"><script type=text/javascript src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&m=0&s=220&c=ff0000&cr1=ffffff&f=arial&l=33&bv=35" async></script></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#simpleasynctaskexecutor>SimpleAsyncTaskExecutor</a></li><li><a href=#threadpooltaskexecutor>ThreadPoolTaskExecutor</a></li><li><a href=#线程处理流程>线程处理流程</a></li></ul><ul><li><a href=#方式一自定义taskexecutor>方式一：自定义TaskExecutor</a></li><li><a href=#方式二实现asyncconfigurer>方式二：实现AsyncConfigurer</a></li><li><a href=#方式三继承asyncconfigurersupport>方式三：继承AsyncConfigurerSupport</a></li></ul><ul><li><a href=#前置知识点>前置知识点</a></li><li><a href=#代码分析>代码分析：</a></li><li><a href=#配置默认executor>配置默认Executor</a></li></ul><ul><li><a href=#查找asyncexecutor>查找AsyncExecutor</a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span itemprop=copyrightYear>&copy;
+2009 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span><span class=author itemprop=copyrightHolder></span></div><div class=powered-by>Powered by - <a class=theme-link href=http://gohugo.io target=_blank title=hugo>Hugo v0.68.3</a></div><div class=theme-info>Theme by - <a class=theme-link href=https://github.com/xtfly/hugo-theme-next target=_blank>NexT</a></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i><span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript>if(Object.prototype.toString.call(window.Promise)!=='[object Function]'){window.Promise=null;}</script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery/index.js?v=2.1.3"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.min.js?v=1.2.1"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="https://1162492411.github.io/docs/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script><script src="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script><script type=text/javascript src=https://1162492411.github.io/docs/js/utils.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/motion.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/affix.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/schemes/pisces.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/scrollspy.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/post-details.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/toc.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/bootstrap.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/search.js></script><script type=text/x-mathjax-config>
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script></body></html>

@@ -1,0 +1,345 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>Java常见面试题 -</title><meta name=keywords content="zyg,独立,博客,程序员,个人,思考,读书,笔记,技术,分享,java"><meta property="og:title" content="Java常见面试题"><meta property="og:site_name" content><meta property="og:image" content="/img/author.jpg"><meta name=title content="Java常见面试题 -"><meta name=description content="zyg | 博客 | 软件 |  Java"><link rel="shortcut icon" href=https://1162492411.github.io/docs/img/favicon.ico><link rel=apple-touch-icon href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link href="https://1162492411.github.io/docs/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel=stylesheet type=text/css><link href="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/main.css rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/syntax.css rel=stylesheet type=text/css><script type=text/javascript id=hexo.configuration>var NexT=window.NexT||{};var CONFIG={scheme:'Pisces',sidebar:{"position":"left","display":"post"},fancybox:true,motion:true};</script></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class="site-meta custom-logo"><div class=custom-logo-site-title><a href=https://1162492411.github.io/docs/ class=brand rel=start><span class=logo-line-before><i></i></span><span class=site-title></span><span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>人生天地间，忽如远行客</p></div><div class=site-nav-toggle><button>
+<span class=btn-bar></span><span class=btn-bar></span><span class=btn-bar></span></button></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=https://1162492411.github.io/docs/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E6%8A%80%E6%9C%AF/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>技术</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>实战</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E7%AC%94%E8%AE%B0/ rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>笔记</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=section><i class="menu-item-icon fa fa-fw fa-leaf"></i><br>面试题</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/post/ rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/about/ rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br></a></li></ul><div class=site-search><div class=popup><span class="search-icon fa fa-search"></span><input type=text id=local-search-input><div id=local-search-result></div><span class=popup-btn-close>close</span></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://1162492411.github.io/docs/post/java%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/ itemprop=url>Java常见面试题</a></h1><div class=post-meta><span class=post-time><span class=post-meta-item-icon><i class="fa fa-calendar-o"></i></span><span class=post-meta-item-text></span><time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2020-12-27">2020-12-27</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-folder-o"></i></span><span class=post-meta-item-text></span><span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98 itemprop=url rel=index><span itemprop=name>面试题</span></a>
+&nbsp;</span>
+<span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/java itemprop=url rel=index><span itemprop=name>Java</span></a>
+&nbsp;</span></span>
+<span>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-eye"></i></span><span class=post-meta-item-text></span><span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><h1 id=基础篇>基础篇</h1><h2 id=object都有哪些方法各自作用是什么>Object都有哪些方法，各自作用是什么</h2><span class=spoiler>对象相等的相关方法：equals()、hashcode();
+对象的基本方法 ： toString()、getClass()、clone()、finalize()
+锁相关方法 : wait()、nofity()、notifyAll()</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=java有哪些修饰符作用域>Java有哪些修饰符/作用域</h2><span class=spoiler>private、default、protected、public</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=数据结构篇>数据结构篇</h1><h2 id=hashcode为什么采用31作为乘数>HashCode为什么采用31作为乘数</h2><span class=spoiler>1. 31 是一个奇质数，如果选择偶数会导致乘积运算时数据溢出
+2. 使用 31、33、37、39 和 41 作为乘积，得到的碰撞几率较小</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=hashmap底层实现>HashMap底层实现</h2><span class=spoiler>1.7及以前是数组+链表，1.8以后是数组+链表+红黑树</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=为什么hashmap初始化时采用数组链表而不是红黑树>为什么HashMap初始化时采用数组+链表而不是红黑树</h2><span class=spoiler>* 时空平衡 ：数组+链表时间复杂度小,为O(1),插入方便，并且单个节点内存小；红黑树时间复杂度高,为O(n)，插入复杂，它需要通过旋转来平衡，并且单个节点内存大
+* 数据分布 : 当hashCode算法足够好时，数据会尽量均匀分布，几乎不会出现单个链表元素数量超过8的情况；当hashCode算法不好时，本身hashmap做了一次hash扰动了，并且足够理想的情况下，随机数据分散程度遵循泊松分布，几率为0.0000006，也几乎不会出现单个链表元素数量超过8的情况</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=hashmap在18中为什么相比17增加了红黑树>HashMap在1.8中为什么相比1.7增加了红黑树</h2><span class=spoiler>防止恶意的hashcode导致数据分布不均匀，在某些链表中元素过多导致查询效率变低</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=hashmap在什么情况下会出现数组链表---红黑树-的相互转换为什么>HashMap在什么情况下会出现数组+链表 &lt;&ndash;>红黑树 的相互转换，为什么</h2><span class=spoiler>* 链表长度为8时转换为红黑树
+* 红黑树元素数量为6时转换为数组+链表
+* 原因 ： 理想情况下随机hashCode算法下所有bin中节点的分布频率会遵循泊松分布，为6的概率为十万分之一，为7的概率为十万分之一的百分之七，为8的概率为十万分之一的万分之四。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=链表和红黑树是否可能共存在同一个hashmap>链表和红黑树是否可能共存在同一个HashMap</h2><span class=spoiler>是的，数组+链表/数组+红黑树，各个数组间互相不影响</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=hashmap的默认初始大小为什么是16扩容阈值为什么是075>HashMap的默认初始大小为什么是16，扩容阈值为什么是0.75</h2><span class=spoiler>* 初始化大小为16 ： 分配过小容易扩容，分配过大浪费资源
+* 扩容阈值为0.75 ： 经验所得</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=hashmap的put如何实现>HashMap的put如何实现</h2><span class=spoiler>1.对key的hashCode()做hash，然后再计算index;
+2.校验桶数组是否被初始化 ： 如果未被初始化则进行初始化
+3.校验某个桶中是否为空 : 如果为空，将本次待插入的数据放入该桶;如果桶非空
+3.1 如果目前是红黑树,调用红黑树的插入方法，并将插入后的数据赋值给临时变量e
+3.2 如果不是红黑树，并且当前桶的首个数据等于本次待插入的数据，将本次待插入的数据赋值给临时变量e
+3.3 其他情况下遍历整个链表,查找待插入数据是否已存在于该Map，如果存在则赋值给临时变量e，如果不存在也将待插入的数据赋值给临时变量e
+3.4 上边三步进行完之后，如果临时变量e非空，将Map中指定位置的值替换为本次待插入的数据，同时执行afterNodeAccess扩展方法
+4.键值对数量超过阈值时，则进行扩容
+5.执行afterNodeInsertion扩展方法</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=hashmap的插入方式在17和18有什么区别>HashMap的插入方式在1.7和1.8有什么区别</h2><span class=spoiler>1.7头插法并且会使得链表反转，1.8尾插法</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=hashmap扩容策略在17和18有什么区别>HashMap扩容策略在1.7和1.8有什么区别</h2><span class=spoiler>* 数据插入与扩容顺序 ： 1.7先扩容再插入数据，1.8先插入数据再扩容
+* 插入方法 ： 1.7头插法，1.8尾插法
+* 数据移动 ： 1.7重新计算rehash，1.8要么数据保留在原位要么固定向后移动n位(n指扩容前的hashmap大小)</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=hashmap是否是线程安全的扩容时的锁在什么情况下会出现>HashMap是否是线程安全的，扩容时的锁在什么情况下会出现</h2><span class=spoiler>* 不安全，导致不安全的情况包括以下几种
+* 多线程put导致扩容时会形成环形结构从而导致死循环
+* modCount的修改不是原子性的
+* 扩容时由于插入数据导致判断的值不一定准确
+* 锁 (todo占位)</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=如何实现线程安全的hashmap>如何实现线程安全的HashMap</h2><span class=spoiler>* 操作时采用 Synchronized/直接改用HashTable
+* 使用Collections.synchronizedMap
+* 改用ConcurrentHashMap</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=concurrenthashmap如何实现线程安全>ConcurrentHashMap如何实现线程安全</h2><span class=spoiler>* 使用volatile保证当Node中的值变化时对于其他线程是可见的
+* 使用table数组的头结点作为synchronized的锁来保证写操作的安全
+* 当头结点为null时，使用CAS操作来保证数据能正确的写入</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=io篇>IO篇</h1><h2 id=unix-系统有哪些常见的io模型>UNIX 系统有哪些常见的IO模型</h2><span class=spoiler>UNIX 系统下， IO 模型一共有 5 种： **同步阻塞 I/O**、**同步非阻塞 I/O**、**I/O 多路复用**、**信号驱动 I/O** 和**异步 I/O**</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=linux中几种io模型有什么不同>Linux中几种IO模型有什么不同</h2><p><img src=https://gitee.com/1162492411/pic/raw/master/LinuxIO%E6%A8%A1%E5%9E%8B.png alt=img></p><h2 id=java中有哪些io模型>Java中有哪些IO模型</h2><span class=spoiler>IO流程实际上包括两个阶段： `发起调用`与`实际IO`，发起调用指的是用户态发起系统调用，内核态进行数据的准备(网络 I/O 的情况就是等待远端数据陆续抵达；磁盘I/O的情况就是等待磁盘数据从磁盘上读取到内核态内存中)，实际IO指的是内核态将数据拷贝到用户态。
+阻塞/非阻塞指的是发起调用阶段，线程/调用者是否需要等待该阶段的完成，如果需要等待(阻塞)，那么在该阶段完成前一直等待，如果不需要等待(非阻塞)，在该阶段完成前调用者可以继续做其他事情；
+同步/非同步指的是实际IO阶段，线程/调用者是否需要自己参与（即线程是否需要询问IO操作完成），如果需要参与(同步)，那么线程需要不断轮询实际IO是否完成，如果不需要参与(非同步)，那么就是内核态完成实际IO后主动通知/回调线程
+BIO ： 同步阻塞
+NIO ： 同步非阻塞
+AIO/NIO2 ： 异步非阻塞</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=线程篇>线程篇</h1><h2 id=线程---线程和进程的区别>线程 - 线程和进程的区别</h2><span class=spoiler>进程是资源分配的最小单位，线程是CPU调度的最小单位</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程---进程和线程中各自存储什么内容>线程 - 进程和线程中各自存储什么内容</h2><span class=spoiler>| 进程 | 线程 |
+| ------------------ | ---------- |
+| 地址空间 | 程序计数器 |
+| 全局变量 | 寄存器 |
+| 打开文件 | 堆栈 |
+| 子进程 | 状态 |
+| 即将发生的报警 | |
+| 信号与信号处理程序 | |
+| 账户信号 | |
+| 同步、互斥信号量 | |</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程---线程有哪几种状态>线程 - 线程有哪几种状态</h2><p><img src=https://gitee.com/1162492411/pic/raw/master/java-%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81%E5%9B%BE.jpeg alt=java-线程状态图></p><h2 id=线程---线程的实现方式有哪些这些方式之间有什么区别>线程 - 线程的实现方式有哪些，这些方式之间有什么区别</h2><span class=spoiler>* 继承Thread类、实现Runnable接口、实现Callback接口
+* 实现Runnable/Callable接口相比继承Thread类的优势
+* 适合多个线程进行资源共享
+* 可以避免java中单继承的限制
+* 增加程序的健壮性，代码和数据独立
+* 线程池只能放入Runable或Callable接口实现类，不能直接放入继承Thread的类
+* Callable和Runnable的区别
+* call()方法执行后可以有返回值，run()方法没有返回值
+* Callable重写的是call()方法，Runnable重写的方法是run()方法
+* call()方法可以抛出异常，run()方法不可以
+* 运行Callable任务可以拿到一个Future对象，表示异步计算的结果 。通过Future对象可以了解任务执行情况，可取消任务的执行，还可获取执行结果</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程---thread类包含start和run方法它们的区别是什么>线程 - Thread类包含start()和run()方法，它们的区别是什么</h2><span class=spoiler>start() : 它的作用是启动一个新线程，新线程会执行相应的run()方法。start()不能被重复调用。
+run() : run()就和普通的成员方法一样，可以被重复调用。单独调用run()的话，会在当前线程中执行run()，而并不会启动新线程</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程---为什么notify-wait等函数定义在object中而不是thread中>线程 - 为什么notify(), wait()等函数定义在Object中，而不是Thread中</h2><span class=spoiler>notify(), wait()依赖于“同步锁”，而“同步锁”是对象锁持有，并且每个对象有且仅有一个</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程---sleep-与-wait的比较>线程 - sleep() 与 wait()的比较</h2><span class=spoiler>wait()的作用是让当前线程由“运行状态”进入“等待(阻塞)状态”的同时，也会释放同步锁。
+而sleep()的作用是也是让当前线程由“运行状态”进入到“休眠(阻塞)状态”。
+但是，wait()会释放对象的同步锁，而sleep()则不会释放锁</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程---join方法的作用和原理>线程 - join()方法的作用和原理</h2><span class=spoiler>作用是让“主线程”等待“子线程”结束之后才能继续运行，原理就是对应的native方法中先是主线程调用了wait然后在子线程threadA执行完毕之后，JVM会调用lock.notify_all(thread)来唤醒就是主线程</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程---nofity和nofityall的区别>线程 - nofity和nofityAll的区别</h2><span class=spoiler>notify()方法只随机唤醒一个 wait 线程，而notifyAll()方法唤醒所有 wait 线程</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程---如何实现线程安全各个实现方法有什么区别>线程 - 如何实现线程安全，各个实现方法有什么区别</h2><span class=spoiler></span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=怎么唤醒一个阻塞的线程>怎么唤醒一个阻塞的线程</h2><span class=spoiler>* wait()、notify() ：在synchronized中调用wait来释放当前线程的锁，然后调用notify来随机唤醒其他线程
+* await()、signal() ： 使用Condition对象提供的await()来释放当前线程的锁，然后调用signal()来随机唤醒其他线程
+* park()、unpark() : 使用LockSupport提供的park获取许可证(如果许可证的状态是未被获取，那么将获取许可证；否则将会阻塞，该方法不支持重入，多次调用会导致阻塞，许可证默认状态是已被获取)，unpark释放许可证(该方法可多次调用，不会影响许可证的获取)</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程池---jdk自带的有哪几种线程池>线程池 - JDK自带的有哪几种线程池</h2><span class=spoiler>* newFixedThreadPool ：创建指定线程数量的线程池，无界阻塞队列LinkedBlockingQueue，适合执行较快的任务,
+* newCachedThreadPool ：根据需要自动创建线程，无界阻塞队列SynchronousQueue,适合用在**短时间内有大量短任务的场景**
+* newScheduledThreadPool ： 主要用来延迟执行任务或者定期执行任务，延迟队列DelayedWorkQueue
+* newWorkStealingPool : 窃取任务，并行stream就是使用的该线程池，建议线程数量为cpu核数 - 1
+* newSingleThreadExecutor : 固定一个线程，无界阻塞队列LinkedBlockingQueue，**能保证任务是按顺序执行**</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程池---线程池的参数有哪些各自作用是什么>线程池 - 线程池的参数有哪些，各自作用是什么</h2><span class=spoiler>* CorePoolSize：线程池创建时候初始化的线程数,默认1
+- MaxPoolSize：线程池最大的线程数，只有在缓冲队列满了之后才会申请超过核心线程数的线程，默认Integer.MAX
+- QueueCapacity：用来缓冲执行任务的队列的队列大小，默认Integer.MAX
+- KeepAliveSeconds：线程的空闲时间，单位/s，当超过了核心线程出之外的线程在空闲时间到达之后会被销毁,默认60
+- ThreadNamePrefix：线程池中线程名的前缀，继承自父类ExecutorConfigurationSupport，默认是BeanName/方法名
+- RejectedExecutionHandler：线程池对拒绝任务的处理策略，自父类ExecutorConfigurationSupport,（策略为JDK ThreadPoolExecutor自带）
+- AbortPolicy：默认策略，直接抛出异常 RejectedExecutionException
+- CallerRunsPolicy：直接在 execute 方法的调用线程中运行被拒绝的任务；如果执行程序已关闭，则会丢弃该任务
+- DiscardPolicy：该策略直接丢弃
+- DiscardOldestPolicy：该策略会先将最早入队列的未执行的任务丢弃掉，然后尝试执行新的任务。如果执行程序已关闭，则会丢弃该任务</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=线程池的execute和submit的区别与联系>线程池的execute和submit的区别与联系</h2><span class=spoiler>* 任务类型 ：execute只能提交Runnable类型的任务，而submit既能提交Runnable类型任务也能提交Callable类型任务
+* 异常 ： execute直接抛出异常，submit会吃掉异常，可用future的get捕获
+* 顶层接口 ：execute所属顶层接口是Executor,submit所属顶层接口是ExecutorService</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---java的线程模型>理论 - Java的线程模型</h2><span class=spoiler>线程又分为用户线程和内核线程。
+* 用户线程：语言层面创建的线程，比如 java语言中多线程技术，通过语言提供的线程库来创建、销毁线程。
+* 内核线程：内核线程又称为守护线程 Daemon线程，用户线程的运行必须依赖内核线程，通过内核线程调度器来分配到相应的处理器上。
+Java的线程模型采用的是一对一，即一个内核线程对应一个用户线程。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=并发篇>并发篇</h1><h2 id=理论---并发与并行的区别>理论 - 并发与并行的区别</h2><span class=spoiler>* 并发 ： 同**一个时间段内**多个任务都在执行
+* 并行 ： 在**单位时间内**多个任务都在执行</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---主内存和工作内存各自存储什么>理论 - 主内存和工作内存各自存储什么</h2><span class=spoiler>* 主内存 —— 即*main memory*。在java中，实例域、静态域和数组元素是线程之间共享的数据，它们存储在**主内存**中。
+* 本地内存 —— 即*local memory*。 局部变量，方法定义参数 和 异常处理器参数是不会在线程之间共享的，它们存储在线程的**本地内存**中。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---并发编程三要素>理论 - 并发编程三要素</h2><span class=spoiler>* 原子性 ：不可分割，一个或多个操作要么全部执行成功要么全部执行失败。它们不会被线程打断
+* 有序性 ：程序执行的顺序按照代码的先后顺序执行
+* 可见性 ：一个线程对共享变量的修改,另一个线程能够立刻看到</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---为什么会产生原子性问题>理论 - 为什么会产生原子性问题</h2><span class=spoiler>对于 64 位的数据，如 long 和 double，允许虚拟机实现选择可以不保证 64 位数据类型的 load、store、read 和 write 这四个操作的原子性，即如果有多个线程共享一个并未声明为 volatile 的 long 或 double 类型的变量，并且同时对它们进行读取和修改操作，那么某些线程可能会读取到一个既非原值，也不是其他线程修改值的代表了“半个变量”的数值</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---为什么会产生有序性问题>理论 - 为什么会产生有序性问题</h2><span class=spoiler>“编译器和处理器”为了提高性能，在程序执行时会对程序进行重排序，这打破了有序性</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---为什么会产生可见性问题>理论 - 为什么会产生可见性问题</h2><span class=spoiler>* 线程对变量的所有操作都必须在工作内存中进行，而不能直接读写主内存中的变量。
+* 线程之间无法直接访问对方的工作内存中的变量，线程间变量的传递均需要通过主内存来完成。
+* 简言之，只要直接采用了多线程的并发模型，并采用共享内存的方式作为数据的通讯方式，就一定有可见性问题</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---什么是上下文切换>理论 - 什么是上下文切换</h2><span class=spoiler>* 含义 ：CPU从一个进程或线程切换到另一个进程或线程
+* 内容 ：上下文是指某一时间点 CPU 寄存器和程序计数器的内容
+* 切换种类 ：
+* 线程切换 : 同一进程中的两个线程之间的切换
+* 进程切换 : 两个进程之间的切换
+* 模式切换 : 在给定线程中，用户模式和内核模式的切换
+* 地址空间切换 : 将虚拟内存切换到物理内存</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---概述进程切换的步骤>理论 - 概述进程切换的步骤</h2><span class=spoiler></span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---概述线程切换的步骤>理论 - 概述线程切换的步骤</h2><span class=spoiler></span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---线程切换的原因有哪些>理论 - 线程切换的原因有哪些</h2><span class=spoiler>引起线程上下文切换的原因，主要存在三种情况如下：
+> 1. **中断处理**：在中断处理中，其他程序”打断”了当前正在运行的程序。当CPU接收到中断请求时，会在正在运行的程序和发起中断请求的程序之间进行一次上下文切换。**中断分为硬件中断和软件中断**，软件中断包括因为IO阻塞、未抢到资源或者用户代码等原因，线程被挂起。
+> 2. **多任务处理**：在多任务处理中，CPU会在不同程序之间来回切换，每个程序都有相应的处理时间片，CPU在两个时间片的间隔中进行上下文切换。
+> 3. **用户态切换**：对于一些操作系统，当进行用户态切换时也会进行一次上下文切换，虽然这不是必须的。
+对于我们经常 **使用的抢占式操作系统** 而言，引起线程上下文切换的原因大概有以下几种：
+> 1. 当前执行任务的时间片用完之后，系统CPU正常调度下一个任务；
+> 2. 当前执行任务碰到IO阻塞，调度器将此任务挂起，继续下一任务；
+> 3. 多个任务抢占锁资源，当前任务没有抢到锁资源，被调度器挂起，继续下一任务；
+> 4. 用户代码挂起当前任务，让出CPU时间；
+> 5. 硬件中断；</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---上下文切换有哪些损耗>理论 - 上下文切换有哪些损耗</h2><span class=spoiler>1. **直接消耗**：指的是CPU寄存器需要保存和加载, 系统调度器的代码需要执行, TLB实例需要重新加载, CPU 的pipeline需要刷掉；
+2. **间接消耗**：指的是多核的cache之间得共享数据, 间接消耗对于程序的影响要看线程工作区操作数据的大小</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=如何减少线程的上下文切换>如何减少线程的上下文切换</h2><span class=spoiler>* 无锁并发**：多线程竞争时，会引起上下文切换，所以多线程处理数据时，可以用一些办法来避免使用锁，如将数据的ID按照Hash取模分段，不同的线程处理不同段的数据；
+* CAS算法**：Java的Atomic包使用CAS算法来更新数据，而不需要加锁；
+* 最少线程**：避免创建不需要的线程，比如任务很少，但是创建了很多线程来处理，这样会造成大量线程都处于等待状态；
+* 使用协程**：在单线程里实现多任务的调度，并在单线程里维持多个任务间的切换(Java没有协程，线程模型限制所致)</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---什么是happens-before原则>理论 - 什么是happens-before原则</h2><span class=spoiler>在JMM中，如果一个操作执行的结果需要对另一个操作可见，那么这2个操作之间必须要存在happens-before关系。
+- 定义: 如果一个操作在另一个操作之前发生(happens-before),那么第一个操作的执行结果将对第二个操作可见, 而且第一个操作的执行顺序排在第二个操作之前。
+- 两个操作之间存在happens-before关系，并不意味着一定要按照happens-before原则制定的顺序来执行。如果重排序之后的执行结果与按照happens-before关系来执行的结果一致，那么这种重排序并不非法。
+- happens-before规则：
+1. 程序次序规则：在一个线程内一段代码的执行结果是有序的。就是还会指令重排，但是随便它怎么排，结果是按照我们代码的顺序生成的不会变！
+2. 锁定规则：一个unLock操作先行发生于后面对同一个锁的lock操作；论是单线程还是多线程，必须要先释放锁，然后其他线程才能进行lock操作
+3. volatile变量规则：就是如果一个线程先去写一个volatile变量，然后一个线程去读这个变量，那么这个写操作的结果一定对读的这个线程可见。
+4. 传递规则：如果操作A先行发生于操作B，而操作B又先行发生于操作C，则可以得出操作A先行发生于操作C
+5. 线程启动规则：在主线程A执行过程中，启动子线程B，那么线程A在启动子线程B之前对共享变量的修改结果对线程B可见
+6. 线程终止规则：在主线程A执行过程中，子线程B终止，那么线程B在终止之前对共享变量的修改结果在线程A中可见。
+7. 线程中断规则：对线程interrupt()方法的调用先行发生于被中断线程代码检测到中断事件的发生，可以通过Thread.interrupted()检测到是否发生中断
+8. 对象终结规则：这个也简单的，就是一个对象的初始化的完成，也就是构造函数执行的结束一定 happens-before它的finalize()方法。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---什么是as-if-serial语义>理论 - 什么是as-if-serial语义</h2><span class=spoiler>不管怎么重排序(编译器和处理器为了提高并行度做的优化),(单线程)程序的执行结果不会改变
+- 有序性规则表现在以下两种场景: 线程内和线程间
+1. 线程内: 指令会按照一种“串行”(as-if-serial)的方式执行，此种方式已经应用于顺序编程语言。
+2. 线程间: 一个线程“观察”到其他线程并发地执行非同步的代码时，任何代码都有可能交叉执行。唯一起作用的约束是：对于同步方法，同步块以及volatile字段的操作仍维持相对有序。
+- As-if-serial只是保障单线程不会出问题，所以有序性保障，可以理解为把As-if-serial扩展到多线程，那么在多线程中也不会出现问题
+- 从底层的角度来看，是借助于处理器提供的相关指令内存屏障来实现的
+- 对于Java语言本身来说，Java已经帮我们与底层打交道，我们不会直接接触内存屏障指令，java提供的关键字synchronized和volatile，可以达到这个效果，保障有序性（借助于显式锁Lock也是一样的，Lock逻辑与synchronized一致）</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---jmm有哪八个原子操作指令>理论 - JMM有哪八个原子操作指令</h2><span class=spoiler>* **read** 读取：作用于主内存，将共享变量从主内存传动到线程的工作内存中，供后面的 load 动作使用。
+* **load** 载入：作用于工作内存，把 read 读取的值放到工作内存中的副本变量中。
+* **store** 存储：作用于工作内存，把工作内存中的变量传送到主内存中，为随后的 write 操作使用。
+* **write** 写入：作用于主内存，把 store 传送值写到主内存的变量中。
+* **use** 使用：作用于工作内存，把工作内存的值传递给执行引擎，当虚拟机遇到一个需要使用这个变量的指令，就会执行这个动作。
+* **assign** 赋值：作用于工作内存，把执行引擎获取到的值赋值给工作内存中的变量，当虚拟机栈遇到给变量赋值的指令，执行该操作。比如 `int i = 1;`
+* **lock（锁定）** 作用于主内存，把变量标记为线程独占状态。
+* **unlock（解锁）** 作用于主内存，它将释放独占状态</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><p><img src=https://gitee.com/1162492411/pic/raw/master/Java-JMM-jmm%E5%85%AB%E7%A7%8D%E6%8C%87%E4%BB%A4.png alt=jmm八种指令></p><h2 id=理论---如何实现可见性>理论 - 如何实现可见性</h2><span class=spoiler>- 通过**volatile关键字**标记内存屏障保证可见性。
+- 通过**synchronized关键字**定义同步代码块或者同步方法保障可见性。
+- 通过**Lock接口**保障可见性。
+- 通过**Atomic类型**保障可见性。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---为了实现可见性volatile和synchronized所使用的方法有何不同>理论 - 为了实现可见性，volatile和synchronized所使用的方法有何不同</h2><span class=spoiler>volatile通过内存屏障来实现，而synchronized通过系统内核互斥实现，相当于JMM中的lock、unlock，退出代码块时刷新变量到主内存</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---volatilesynchronizedlockatomic对原子性一致性有序性的保障情况>理论 - volatile、synchronized、Lock、Atomic对原子性、一致性、有序性的保障情况</h2><span class=spoiler>| 特性 | volatile关键字 | synchronized关键字 | Lock接口 | Atomic变量 |
+| ------ | -------------- | ------------------ | -------- | ---------- |
+| 原子性 | 无法保障 | 可以保障 | 可以保障 | 可以保障 |
+| 可见性 | 可以保障 | 可以保障 | 可以保障 | 可以保障 |
+| 有序性 | 一定程度保障 | 可以保障 | 可以保障 | 无法保障 |</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><p>实现可见性的方法有哪些？
+常用的并发工具类有哪些？
+CyclicBarrier 和 CountDownLatch 的区别
+synchronized 的作用？
+volatile 关键字的作用
+sleep 方法和 wait 方法有什么区别?
+什么是 CAS
+CAS 的问题
+什么是 Future？
+什么是 AQS
+AQS 支持两种同步方式
+ReadWriteLock 是什么
+FutureTask 是什么
+synchronized 和 ReentrantLock 的区别
+线程 B 怎么知道线程 A 修改了变量
+synchronized、volatile、CAS 比较
+为什么 wait()方法和 notify()/notifyAll()方法要在同步块中被调用
+多线程同步有哪几种方法？
+线程的调度策略
+ConcurrentHashMap 的并发度是什么？
+如果你提交任务时，线程池队列已满，这时会发生什么？
+Java 中用到的线程调度算法是什么？
+什么是线程调度器(Thread Scheduler)和时间分片(TimeSlicing)？
+什么是自旋？
+Java Concurrency API 中的 Lock 接口(Lock interface)是什么？对比同步它有什么优势？</p><h2 id=理论---volatile关键字的作用>理论 - volatile关键字的作用</h2><span class=spoiler>1.保证线程间的可见性
+2.禁止CPU进行指令重排</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---简述volatile的内存语义>理论 - 简述volatile的内存语义</h2><span class=spoiler>* volatile****写**：当写一个volatile变量时，JMM会把该线程对应的本地内存中的共享变量刷新到主内存。
+* volatile****读**：当读一个volatile变量时，JMM会把该线程对应的本地内存置为无效。线程接下来将从主内存中读取共享变量。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---jmm如何实现volatile的禁止指令重排>理论 - JMM如何实现volatile的禁止指令重排</h2><span class=spoiler>首先要讲一下内存屏障，内存屏障可以分为以下几类：
+- LoadLoad 屏障：对于这样的语句Load1，LoadLoad，Load2。在Load2及后续读取操作要读取的数据被访问前，保证Load1要读取的数据被读取完毕。
+- StoreStore屏障：对于这样的语句Store1， StoreStore， Store2，在Store2及后续写入操作执行前，保证Store1的写入操作对其它处理器可见。
+- LoadStore 屏障：对于这样的语句Load1， LoadStore，Store2，在Store2及后续写入操作被刷出前，保证Load1要读取的数据被读取完毕。
+- StoreLoad 屏障：对于这样的语句Store1， StoreLoad，Load2，在Load2及后续所有读取操作执行前，保证Store1的写入对所有处理器可见。
+在每个volatile读操作后插入LoadLoad屏障，在读操作后插入LoadStore屏障
+在每个volatile写操作的前面插入一个StoreStore屏障，后面插入一个SotreLoad屏障。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---什么是mesi>理论 - 什么是MESI</h2><span class=spoiler>​ 在多核CPU中某核发生修改，可能产生数据不一致，一致性协议正是为了保证多个CPU cache之间的缓存共享数据的一致性。其中MESI对应modify(修改)、exclusive(独占)、shared(共享)、invalid（失效）。
+| 状态 | 描述 |
+| ------------ | ------------------------------------------------------------ |
+| M(modify) | 该缓存行中的内容被修改了，并且该缓存行只缓存在该CPU中,而且和主存数据不一致 |
+| E(exclusive) | 只有当前CPU中有数据，其他CPU中没有该数据，当前CPU和主存的数据一致 |
+| S(shared) | 当前CPU和其他CPU中都有共同的数据，并且和主存中的数据一致 |
+| I(invalid) | 当前CPU中的数据失效，数据应该从主存中获取 |
+- 目前CPU的写，主要是2种策略
+- 1、write back：即CPU向内存写数据时，先把数据写入store buffer中，后续某个时间点会将store buffer中的数据刷新到内存
+- 2、write through：即CPU向内存写数据，同步完成写store buffer与内存
+- CPU大多采用write back策略
+```markdown
+1、CPU异步完成写内存产生的延时是可以接受的，而且延迟很短，只有在多线程环境下需要严格保证内存可见等极少数特殊情况下才需要保证CPU的写在外界看来是同步完成的。
+2、编译器和CPU可以保证输出结果一样的情况下对指令重排序。插入内存屏障，相当于告诉CPU和编译器先于这个命令的先执行，后于的命令必须后执行。
+3、使用Lock前缀指令，会使多核心CPU互斥使用这个内存地址。当指令执行完，这个锁定动作也消失。
+```</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=理论---有了mesi为什么还要有volatile>理论 - 有了MESI为什么还要有volatile</h2><span class=spoiler>CPU的MESI能够保证缓存一致性，但是不能保证一个线程对变量修改后其他线程立即可见。
+想象下：一个CPU0中的变量所在的cache line已经是invalid，但是在CPU1中缓存的该变量最新值还没有刷新到内存中。那么CPU0需要使用该变量，会从主存中读取到旧的值。
+使用volatile可以保证可见性，该CPU该volatile修饰的变量的写操作立即同步到主存。而且volatile内存屏障的作用，也会将之前的发生的数据更新刷新到内存中。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=简述final的特性>简述final的特性</h2><span class=spoiler>对于**基本类型**的final域，编译器和处理器要遵守两个重排序规则：
+(01) final写：“构造函数内对一个final域的写入”，与“随后把这个被构造对象的引用赋值给一个引用变量”，这两个操作之间不能重排序。
+(02) final读：“初次读一个包含final域的对象的引用”，与“随后初次读对象的final域”，这两个操作之间不能重排序。
+对于**引用类型**的final域，除上面两条之外，还有一条规则：
+(03) final写：在“构造函数内对一个final引用的对象的成员域的写入”，与“随后在构造函数外把这个被构造对象的引用赋值给一个引用变量”，这两个操作之间不能重排序。
+注意：
+写final域的重排序规则可以确保：在引用变量为任意线程可见之前，该引用变量指向的对象的final域已经在构造函数中被正确初始化过了。其实要得到这个效果，还需要一个保证：在构造函数内部，不能让这个被构造对象的引用为其他线程可见，也就是对象引用不能在构造函数中“逸出”。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=实践---jmm如何实现final的特性>实践 - JMM如何实现final的特性</h2><span class=spoiler>通过“内存屏障”实现。
+在final域的写之后，构造函数return之前，插入一个StoreStore障屏。在读final域的操作前面插入一个LoadLoad屏障。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=锁篇>锁篇</h1><h2 id=什么是可重入锁>什么是可重入锁</h2><span class=spoiler>允许一个线程多次请求自己持有对象锁的临界资源</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=synchronized的可重入锁原理>synchronized的可重入锁原理</h2><span class=spoiler>synchronized 锁对象有个计数器，会随着线程获 取锁后 +1 计数，当线程执行完毕后 -1，直到清零释放锁</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=reentrantlock的可重入锁原理>ReentrantLock的可重入锁原理</h2><span class=spoiler>基于AQS的同步状态：state。
+其原理大致为：当某一线程获取锁后，将state值+1，并记录下当前持有锁的线程，再有线程来获取锁时，判断这个线程与持有锁的线程是否是同一个线程，如果是，将state值再+1，如果不是，阻塞线程。 当线程释放锁时，将state值-1，当state值减为0时，表示当前线程彻底释放了锁，然后将记录当前持有锁的线程的那个字段设置为null，并唤醒其他线程，使其重新竞争锁</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=公平锁和非公平锁的区别为什么公平锁效率低于非公平锁>公平锁和非公平锁的区别，为什么公平锁效率低于非公平锁</h2><h2 id=同步队列器aqs思想以及基于aqs实现的lock>同步队列器AQS思想，以及基于AQS实现的lock</h2><h2 id=偏向锁轻量级锁重量级锁三者各自的应用场景>偏向锁、轻量级锁、重量级锁三者各自的应用场景</h2><span class=spoiler>偏向锁：只有一个线程进入临界区；
+轻量级锁：多个线程交替进入临界区；
+重量级锁：多个线程同时进入临界区</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=java中对锁有哪些优化>Java中对锁有哪些优化</h2><span class=spoiler>1. 减少锁持有时间
+- 不需要同步执行的代码，能不放在同步快里面执行就不要放在同步快内，可以让锁尽快释放；
+2. 减少锁的粒度
+- 它的思想是将物理上的一个锁，拆成逻辑上的多个锁，增加并行度，从而降低锁竞争。它的思想也是用空间来换时间；
+- java中很多数据结构都是采用这种方法提高并发操作的效率：
+- ConcurrentHashMap: 使用Segment数组,Segment继承自ReenTrantLock，所以每个Segment就是个可重入锁，每个Segment 有一个HashEntry< K,V >数组用来存放数据，put操作时，先确定往哪个Segment放数据，只需要锁定这个Segment，执行put，其它的Segment不会被锁定；所以数组中有多少个Segment就允许同一时刻多少个线程存放数据，这样增加了并发能力。
+- LongAdder:实现思路也类似ConcurrentHashMap，LongAdder有一个根据当前并发状况动态改变的Cell数组，Cell对象里面有一个long类型的value用来存储值;开始没有并发争用的时候或者是cells数组正在初始化的时候，会使用cas来将值累加到成员变量的base上，在并发争用的情况下，LongAdder会初始化cells数组，在Cell数组中选定一个Cell加锁，数组有多少个cell，就允许同时有多少线程进行修改，最后将数组中每个Cell中的value相加，在加上base的值，就是最终的值；cell数组还能根据当前线程争用情况进行扩容，初始长度为2，每次扩容会增长一倍，直到扩容到大于等于cpu数量就不再扩容，这也就是为什么LongAdder比cas和AtomicInteger效率要高的原因，后面两者都是volatile+cas实现的，他们的竞争维度是1，LongAdder的竞争维度为“Cell个数+1”为什么要+1？因为它还有一个base，如果竞争不到锁还会尝试将数值加到base上；
+- 拆锁的粒度不能无限拆，最多可以将一个锁拆为当前CPU数量即可；
+3. 锁粗化
+- 大部分情况下我们是要让锁的粒度最小化，锁的粗化则是要增大锁的粒度(如:循环内的操作);
+4. 锁分离
+- 使用读写锁: ReentrantReadWriteLock 是一个读写锁，读操作加读锁，可以并发读，写操作使用写锁，只能单线程写；
+- 读写分离: CopyOnWriteArrayList 、CopyOnWriteArraySet
+- CopyOnWrite容器即写时复制的容器。通俗的理解是当我们往一个容器添加元素的时候，不直接往当前容器添加，而是先将当前容器进行Copy，复制出一个新的容器，然后新的容器里添加元素，添加完元素之后，再将原容器的引用指向新的容器。这样做的好处是我们可以对CopyOnWrite容器进行并发的读，而不需要加锁，因为当前容器不会添加任何元素。所以CopyOnWrite容器也是一种读写分离的思想，读和写不同的容器
+- CopyOnWrite并发容器用于读多写少的并发场景，因为，读的时候没有锁，但是对其进行更改的时候是会加锁的，否则会导致多个线程同时复制出多个副本，各自修改各自的；
+- LinkedBlockingQueue: LinkedBlockingQueue也体现了这样的思想，在队列头入队，在队列尾出队，入队和出队使用不同的锁，相对于LinkedBlockingArray只有一个锁效率要高；
+5. 锁消除
+- 在即时编译时,如果发现不可能被共享的对象,则可以消除对象的锁操作
+6. 无锁
+(如CAS)
+- 如果需要同步的操作执行速度非常快，并且线程竞争并不激烈，这时候使用CAS效率会更高，因为加锁会导致线程的上下文切换，如果上下文切换的耗时比同步操作本身更耗时，且线程对资源的竞争不激烈，使用volatiled+CAS操作会是非常高效的选择；
+7. 消除缓存行的伪共享
+- 除了我们在代码中使用的同步锁和jvm自己内置的同步锁外，还有一种隐藏的锁就是缓存行，它也被称为性能杀手。在多核cpu的处理器中，每个cpu都有自己独占的一级缓存、二级缓存，甚至还有一个共享的三级缓存，为了提高性能，cpu读写数据是以缓存行为最小单元读写的；32位的cpu缓存行为32字节，64位cup的缓存行为64字节，这就导致了一些问题。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=死锁的条件有哪些>死锁的条件有哪些</h2><span class=spoiler>* 互斥条件(Mutual exclusion) ：资源不能被共享，只能由一个进程使用。
+* 请求与保持条件(Hold and wait)：进程已获得了一些资源，但因请求其它资源被阻塞时，对已获得的资源保持不放。
+* 不可抢占条件(No pre-emption) ：有些系统资源是不可抢占的，当某个进程已获得这种资源后，系统不能强行收回，只能由进程使用完时自己释放。
+* 循环等待条件(Circular wait) ：若干个进程形成环形链，每个都占用对方申请的下一个资源</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=死锁产生的原因>死锁产生的原因</h2><span class=spoiler>* 系统资源的竞争
+* 进程推进的顺序不当</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=处理死锁的策略有哪些>处理死锁的策略有哪些</h2><span class=spoiler>(1) 死锁预防：破坏导致死锁必要条件中的任意一个就可以预防死锁。例如，要求用户申请资源时一次性申请所需要的全部资源，这就破坏了保持和等待条件；将资源分层，得到上一层资源后，才能够申请下一层资源，它破坏了环路等待条件。预防通常会降低系统的效率。
+(2) 死锁避免：避免是指进程在每次申请资源时判断这些操作是否安全，例如，使用银行家算法（如果申请资源会导致死锁，那么拒绝申请；如果申请不会导致死锁，那么允许申请）。死锁避免算法的执行会增加系统的开销。
+(3) 死锁检测：死锁预防和避免都是事前措施，而死锁的检测则是判断系统是否处于死锁状态，如果是，则执行死锁解除策略。
+(4) 死锁解除：这是与死锁检测结合使用的，它使用的方式就是剥夺。即将某进程所拥有的资源强行收回，分配给其他的进程。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=synchoronized的的实现原理>synchoronized的的实现原理</h2><span class=spoiler>根据线程的竞争情况，锁状态的会逐渐升级 ：无锁--> 偏向锁 --> 轻量锁 --> 重量锁。线程运行完之后降级
+* 偏向锁
+* 适用场景 ：单个线程间断性获取锁
+* 加锁过程：持有偏向锁的线程以后每次进入这个锁相关的同步块时，只需比对一下 mark word 的线程 id 是否为本线程，如果是则获取锁成功，将线程id写入mark word中
+* 撤销过程 ：等待全局安全点后将其恢复到轻量锁或者无锁
+* 轻量锁
+* 适用场景 ：多个线程交替获取锁
+* 加锁过程 ：JVM 在当前线程的栈帧中创建 Lock Reocrd，并将对象头中的 Mark Word 复制到 Lock Reocrd 中；线程尝试使用 CAS 将对象头中的 Mark Word 替换为指向 Lock Reocrd 的指针，获取成功则加锁成功，否则膨胀为重量锁
+* 撤销过程 ：使用CAS将LockRecord还原，还原成功则释放，否则膨胀为重量锁
+* 重量锁
+* todo：流程有些复杂</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=synchronized和reentrantlock的区别>Synchronized和ReentrantLock的区别</h2><span class=spoiler>* Synchronized是JVM层次的锁实现，ReentrantLock是JDK层次的锁实现；
+* Synchronized的锁状态是无法在代码中直接判断的，但是ReentrantLock可以通过`ReentrantLock#isLocked`判断；
+* Synchronized是非公平锁，ReentrantLock是可以是公平也可以是非公平的；
+* Synchronized是不可以被中断的，而`ReentrantLock#lockInterruptibly`方法是可以被中断的；
+* 在发生异常时Synchronized会自动释放锁（由javac编译时自动实现），而ReentrantLock需要开发者在finally块中显示释放锁；
+* ReentrantLock获取锁的形式有多种：如立即返回是否成功的tryLock(),以及等待指定时长的获取，更加灵活；
+* Synchronized在特定的情况下**对于已经在等待的线程**是后来的线程先获得锁（上文有说），而ReentrantLock对于**已经在等待的线程**一定是先来的线程先获得锁</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=代理反射篇>代理反射篇</h1><h2 id=jdk动态代理和cglib代理区别>JDK动态代理和CGLiB代理区别</h2><span class=spoiler>* JDK 动态代理是基于接口的，所以**要求代理类一定是有定义接口的**。
+* CGLIB 基于ASM字节码生成工具，它是通过继承的方式来实现代理类，所以**要注意 final 方法**。
+* 执行效率方面 ：JDK高于CGLIB，调用次数为百万级别时JDK速度比CGLIB高30%，千万级别时JDK速度比CGLIB高100%</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=jdk动态代理的实现原理>JDK动态代理的实现原理</h2><span class=spoiler>1. 首先通过实现 InvocationHandler 接口得到一个切面类(干活的人)。
+2. 然后利用 Proxy 根据目标类的类加载器、接口和切面类得到一个代理类(协调管理的人)。
+3. 代理类的逻辑就是把所有接口方法的调用转发到切面类的 invoke() 方法上，然后根据反射调用目标类的方法。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=cglib代理的实现原理>CGLIB代理的实现原理</h2><span class=spoiler>核心思路与JDK动态代理类似，但是使用的原理是ASM字节码技术
+```java
+//1.new
+Enhancer en = new Enhancer();
+//2.设置父类，也就是代理目标类，上面提到了它是通过生成子类的方式
+en.setSuperclass(target.getClass());
+//3.设置回调函数，这个this其实就是代理逻辑实现类，也就是切面，可以理解为JDK 动态代理的handler
+en.setCallback(this);
+//4.创建代理对象，也就是目标类的子类了。
+return en.create();
+```</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=jvm篇>JVM篇</h1><h2 id=jvm的内存区域分为哪几块其中哪几块是线程共享的每一块存储什么>JVM的内存区域分为哪几块，其中哪几块是线程共享的，每一块存储什么</h2><p><img src=https://gitee.com/1162492411/pic/raw/master/Java-JVM%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84.png alt=img></p><span class=spoiler>* 堆 ： 存放实际对象，堆中一般分代，线程共享
+* 方法区 ： 存储虚拟机加载的类信息、常量、静态变量以及即时编译器编译后的代码等数据，永久代就是方法区的具体实现，线程共享
+* 常量池 ： 字符串常量池存放字面量，类常量池存放各种class，class被加载解析后的内容存放在运行时常量池
+* 程序计数器 ：主要存储字节码的行号指示器，控制程序的执行，线程不共享
+* 虚拟机栈 ：以栈帧为单位，每个栈帧对应一个被调用的Java方法，存放基本数据类型、对象引用、方法参数、操作数栈、方法出口等，线程不共享
+* 本地方法栈 ：与虚拟机栈类似，区别在于它对应的是native本地方法，线程不共享</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=内存溢出和内存泄露的区别>内存溢出和内存泄露的区别</h2><span class=spoiler>* 内存溢出 out of memory，是指**程序在申请内存时，没有足够的内存空间供其使用**，出现out of memory；
+* 内存泄露 memory leak，是指**程序在申请内存后，无法释放已申请的内存空间**，一次内存泄露危害可以忽略，但内存泄露堆积后果很严重，无论多少内存，迟早会被占光。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=如何判断哪些对象需要被gc>如何判断哪些对象需要被GC</h2><span class=spoiler>* 引用计数法 ： 引用计数为0的需要被回收
+* 可达性分析 ： 从GC Roots出发的不可达对象需要被回收</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=什么是gc-roots>什么是GC Roots</h2><span class=spoiler>* 方法区中的类静态属性引用的对象；
+* 方法区中常量引用的对象；
+* 虚拟机栈（栈帧中的本地变量表）中引用的对象；
+* 本地方法栈中JNI（即一般说的Native方法）中引用的对象</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=对象的访问定位方式>对象的访问定位方式</h2><span class=spoiler>* 使用句柄
+* 直接指针</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=强引用软引用弱引用虚引用是什么>强引用、软引用、弱引用、虚引用是什么</h2><span class=spoiler>* 强引用 ： 正常的对象引用
+* 软引用 ： 维护一些可有可无的对象。只有在内存不足时，系统则会回收软引用对象，如果回收了软引用对象之后仍然没有足够的内存，才会抛出内存溢出异常
+* 弱引用 ：比较软引用，要更加无用一些，它拥有更短的生命周期。当JVM进行垃圾回收时，无论内存是否充足，都会回收被弱引用关联的对象
+* 虚引用 ：形同虚设的引用，主要用来跟踪对象被垃圾回收的活动</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=gc的方法>GC的方法</h2><span class=spoiler>* 标记-清除
+* 标记-整理
+* 复制</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=对象在哪些情况下会从新生代进入老年代>对象在哪些情况下会从新生代进入老年代</h2><span class=spoiler>* 达到回收年龄，默认15
+* 动态对象年龄判断
+* 分配担保时新生代不够用会直接分配到老年代
+* 对象超出一定大小时直接分配到老年代</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=优化时调整过jvm的哪些参数>优化时调整过JVM的哪些参数</h2><span class=spoiler>* **Xms** ： 初始堆内存大小
+* **Xmx** ：最大堆内存大小
+* **Xmn** ：年轻代大小
+* **Xss** ：每个线程的内存大小
+* **XX:NewRatio** ：设置新生代和老年代的比值
+* **XX:SurvivorRatio** ： 新生代中Eden区与两个Survivor区的比值
+* **XX:+UseG1GC** : 使用G1垃圾收集器
+* **XX:+PrintGC** ：统计垃圾回收信息</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=内存溢出是什么有哪些原因如何解决>内存溢出是什么，有哪些原因，如何解决</h2><span class=spoiler>* 定义 ： 分配的内存空间超过系统内存
+* 原因 ：
+* 使用了大量的递归或无限递归
+* 在循环内大量创建对象
+* 使用了大量的static修饰变量，或者用static修饰了过大的数据
+* 有数组，List，Map中存放的是大量对象的引用而不是对象
+* 没有重新equals()和hashCode()方法，从而导致向数组/List/Map中添加时导致重复添加</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=内存泄漏是什么有哪些原因如何解决>内存泄漏是什么，有哪些原因，如何解决</h2><span class=spoiler>* 定义 ：系统分配的内存没有被回收
+* 原因 ：
+* 连接未关闭
+* finalize方法没有被执行从而导致jvm认为对象还无法被回收
+* ThreadLocal的错误使用，使用完之后未及时remove</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=minorgcmajorgcfullgc都什么时候发生>MinorGC，MajorGC、FullGC都什么时候发生</h2><span class=spoiler>MinorGC在年轻代空间不足的时候发生，MajorGC指的是老年代的GC，出现MajorGC一般经常伴有MinorGC。
+FullGC有三种情况。
+1. 当老年代无法再分配内存的时候
+2. 元空间不足的时候
+3. 显示调用System.gc的时候。另外，像CMS一类的垃圾回收器，在MinorGC出现promotion failure的时候也会发生FullGC</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=类加载的过程>类加载的过程</h2><span class=spoiler>* 加载 ：将二进制流搞到内存中来，生成一个 Class 类
+* 连接
+* 验证 ：验证加载进来的二进制流是否符合一定格式，是否规范，是否符合当前 JVM 版本
+* 准备 ：为静态变量(类变量)赋初始值(例如int默认赋值0)，也即为它们在方法区划分内存空间
+* 解析 ：将常量池的符号引用转化成直接引用
+* 初始化 ：执行一些静态代码块，为静态变量赋值(这里的赋值才是代码里面的赋值)</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=双亲委派>双亲委派</h2><span class=spoiler></span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><p>MinGC与FullGC各自指什么</p><span class=spoiler></span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><p>HotSpot的GC算法以及7种垃圾回收期</p><span class=spoiler></span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=设计模式篇>设计模式篇</h1><h2 id=简要介绍各设计模式中的关键点>简要介绍各设计模式中的关键点</h2><span class=spoiler>单例模式：某个类只能有一个实例，提供一个全局的访问点。
+简单工厂：一个工厂类根据传入的参量决定创建出那一种产品类的实例。
+工厂方法：定义一个创建对象的接口，让子类决定实例化那个类。
+抽象工厂：创建相关或依赖对象的家族，而无需明确指定具体类。
+建造者模式：封装一个复杂对象的构建过程，并可以按步骤构造。
+原型模式：通过复制现有的实例来创建新的实例。
+适配器模式：将一个类的方法接口转换成客户希望的另外一个接口。
+组合模式：将对象组合成树形结构以表示“”部分-整体“”的层次结构。
+装饰模式：动态的给对象添加新的功能。
+代理模式：为其他对象提供一个代理以便控制这个对象的访问。
+亨元（蝇量）模式：通过共享技术来有效的支持大量细粒度的对象。
+外观模式：对外提供一个统一的方法，来访问子系统中的一群接口。
+桥接模式：将抽象部分和它的实现部分分离，使它们都可以独立的变化。
+模板模式：定义一个算法结构，而将一些步骤延迟到子类实现。
+解释器模式：给定一个语言，定义它的文法的一种表示，并定义一个解释器。
+策略模式：定义一系列算法，把他们封装起来，并且使它们可以相互替换。
+状态模式：允许一个对象在其对象内部状态改变时改变它的行为。
+观察者模式：对象间的一对多的依赖关系。
+备忘录模式：在不破坏封装的前提下，保持对象的内部状态。
+中介者模式：用一个中介对象来封装一系列的对象交互。
+命令模式：将命令请求封装为一个对象，使得可以用不同的请求来进行参数化。
+访问者模式：在不改变数据结构的前提下，增加作用于一组对象元素的新功能。
+责任链模式：将请求的发送者和接收者解耦，使的多个对象都有处理这个请求的机会。
+迭代器模式：一种遍历访问聚合对象中各个元素的方法，不暴露该对象的内部结构。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h1 id=实战排查>实战排查</h1><h2 id=如何查找哪个线程使用-cpu-最长>如何查找哪个线程使用 CPU 最长</h2><span class=spoiler>（1）获取项目的pid，jps或者ps -ef | grep java
+（2）top -H -p pid，顺序不能改变
+这样可以打印出当前的项目进程，每条线程占用CPU时间的百分比</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=如何排查cpu问题过高>如何排查CPU问题过高</h2><span class=spoiler>* top -H查看CPU使用最高的进程，将其转换为十六进制，例如pid为67136，转换为16进制的1065b
+* `jstack`命令获取应用的栈信息，搜索这个16进制 ，例如`jstack -l 67136|grep 1065b`,-l作用是查询锁信息</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><h2 id=如何排查堆外内存>如何排查堆外内存</h2><span class=spoiler>进程占用的内存，可以使用top命令，看RES段占用的值。如果这个值大大超出我们设定的最大堆内存，则证明堆外内存占用了很大的区域。
+使用gdb可以将物理内存dump下来，通常能看到里面的内容。更加复杂的分析可以使用perf工具，或者谷歌开源的gperftools。那些申请内存最多的native函数，很容易就可以找到。</span><style>.spoiler{color:#000;background-color:#000;white-space:pre-line}.spoiler:hover{color:#fff}</style><p>如何排查线上出现的JVM问题</p></div><footer class=post-footer><div class=post-tags><a href=https://1162492411.github.io/docs/tags/%e9%9d%a2%e8%af%95%e9%a2%98 rel=tag title=面试题>#面试题#</a>
+<a href=https://1162492411.github.io/docs/tags/java rel=tag title=Java>#Java#</a>
+<a href=https://1162492411.github.io/docs/tags/java%e5%9f%ba%e7%a1%80 rel=tag title=Java基础>#Java基础#</a></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://1162492411.github.io/docs/post/mybatis%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=next title=MyBatis常见面试题><i class="fa fa-chevron-left"></i>MyBatis常见面试题</a></div><div class="post-nav-prev post-nav-item"><a href=https://1162492411.github.io/docs/post/spring%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=prev title=Spring常见面试题>Spring常见面试题 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=https://1162492411.github.io/docs/img/author.jpg alt=zyg><p class=site-author-name itemprop=name>zyg</p><p class="site-description motion-element" itemprop=description>Programmer & Architect</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=https://1162492411.github.io/docs/post/><span class=site-state-item-count>28</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-categories"><a href=https://1162492411.github.io/docs/categories/><span class=site-state-item-count>27</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-tags"><a href=https://1162492411.github.io/docs/tags/><span class=site-state-item-count>47</span>
+<span class=site-state-item-name></span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/1162492411/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>GitHub</a></span></div><div class="links-of-blogroll motion-element inline"><script type=text/javascript src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&m=0&s=220&c=ff0000&cr1=ffffff&f=arial&l=33&bv=35" async></script></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span itemprop=copyrightYear>&copy;
+2009 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span><span class=author itemprop=copyrightHolder></span></div><div class=powered-by>Powered by - <a class=theme-link href=http://gohugo.io target=_blank title=hugo>Hugo v0.68.3</a></div><div class=theme-info>Theme by - <a class=theme-link href=https://github.com/xtfly/hugo-theme-next target=_blank>NexT</a></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i><span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript>if(Object.prototype.toString.call(window.Promise)!=='[object Function]'){window.Promise=null;}</script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery/index.js?v=2.1.3"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.min.js?v=1.2.1"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="https://1162492411.github.io/docs/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script><script src="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script><script type=text/javascript src=https://1162492411.github.io/docs/js/utils.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/motion.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/affix.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/schemes/pisces.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/scrollspy.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/post-details.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/toc.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/bootstrap.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/search.js></script><script type=text/x-mathjax-config>
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script></body></html>

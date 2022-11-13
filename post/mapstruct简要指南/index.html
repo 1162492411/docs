@@ -1,0 +1,681 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>MapStruct简要指南 -</title><meta name=keywords content="zyg,独立,博客,程序员,个人,思考,读书,笔记,技术,分享,java"><meta property="og:title" content="MapStruct简要指南"><meta property="og:site_name" content><meta property="og:image" content="/img/author.jpg"><meta name=title content="MapStruct简要指南 -"><meta name=description content="zyg | 博客 | 软件 |  Java"><link rel="shortcut icon" href=https://1162492411.github.io/docs/img/favicon.ico><link rel=apple-touch-icon href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link href="https://1162492411.github.io/docs/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel=stylesheet type=text/css><link href="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/main.css rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/syntax.css rel=stylesheet type=text/css><script type=text/javascript id=hexo.configuration>var NexT=window.NexT||{};var CONFIG={scheme:'Pisces',sidebar:{"position":"left","display":"post"},fancybox:true,motion:true};</script></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class="site-meta custom-logo"><div class=custom-logo-site-title><a href=https://1162492411.github.io/docs/ class=brand rel=start><span class=logo-line-before><i></i></span><span class=site-title></span><span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>人生天地间，忽如远行客</p></div><div class=site-nav-toggle><button>
+<span class=btn-bar></span><span class=btn-bar></span><span class=btn-bar></span></button></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=https://1162492411.github.io/docs/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E6%8A%80%E6%9C%AF/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>技术</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>实战</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E7%AC%94%E8%AE%B0/ rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>笔记</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=section><i class="menu-item-icon fa fa-fw fa-leaf"></i><br>面试题</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/post/ rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/about/ rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br></a></li></ul><div class=site-search><div class=popup><span class="search-icon fa fa-search"></span><input type=text id=local-search-input><div id=local-search-result></div><span class=popup-btn-close>close</span></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://1162492411.github.io/docs/post/mapstruct%E7%AE%80%E8%A6%81%E6%8C%87%E5%8D%97/ itemprop=url>MapStruct简要指南</a></h1><div class=post-meta><span class=post-time><span class=post-meta-item-icon><i class="fa fa-calendar-o"></i></span><span class=post-meta-item-text></span><time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-11-13">2022-11-13</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-folder-o"></i></span><span class=post-meta-item-text></span><span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98 itemprop=url rel=index><span itemprop=name>实战</span></a>
+&nbsp;</span></span>
+<span>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-eye"></i></span><span class=post-meta-item-text></span><span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>MapStruct主要用于对象转换</p><ul><li>原理：大致原理与lombok类似，通过注解处理器，在代码编译时为带有MapStruct注解的接口生成实现类，这种实现方式在性能方面要高于基于反射一类对象转换组件，如BeanUtils。</li><li>使用方法：引入依赖，创建接口，在接口的方法中添加注解，编译代码即可生成完整的转换代码。
+下面我们以生活中常见的订单为例子进行讲解。</li></ul><h1 id=简单接入>简单接入</h1><p>引入依赖，创建接口，添加注解。我们以Maven为例，添加依赖包与编译插件</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-xml data-lang=xml><span style=color:#f92672>&lt;properties&gt;</span>
+    <span style=color:#f92672>&lt;org.mapstruct.version&gt;</span>1.5.2.Final<span style=color:#f92672>&lt;/org.mapstruct.version&gt;</span>
+    <span style=color:#f92672>&lt;maven.compiler.source&gt;</span>1.8<span style=color:#f92672>&lt;/maven.compiler.source&gt;</span>
+    <span style=color:#f92672>&lt;maven.compiler.target&gt;</span>1.8<span style=color:#f92672>&lt;/maven.compiler.target&gt;</span>
+<span style=color:#f92672>&lt;/properties&gt;</span>
+<span style=color:#f92672>&lt;dependencies&gt;</span>
+    <span style=color:#f92672>&lt;dependency&gt;</span>
+        <span style=color:#f92672>&lt;groupId&gt;</span>org.mapstruct<span style=color:#f92672>&lt;/groupId&gt;</span>
+        <span style=color:#f92672>&lt;artifactId&gt;</span>mapstruct<span style=color:#f92672>&lt;/artifactId&gt;</span>
+        <span style=color:#f92672>&lt;version&gt;</span>${org.mapstruct.version}<span style=color:#f92672>&lt;/version&gt;</span>
+    <span style=color:#f92672>&lt;/dependency&gt;</span>
+    <span style=color:#f92672>&lt;dependency&gt;</span>
+        <span style=color:#f92672>&lt;groupId&gt;</span>org.mapstruct<span style=color:#f92672>&lt;/groupId&gt;</span>
+        <span style=color:#f92672>&lt;artifactId&gt;</span>mapstruct-jdk8<span style=color:#f92672>&lt;/artifactId&gt;</span>
+        <span style=color:#f92672>&lt;version&gt;</span>${org.mapstruct.version}<span style=color:#f92672>&lt;/version&gt;</span>
+    <span style=color:#f92672>&lt;/dependency&gt;</span>
+    <span style=color:#f92672>&lt;dependency&gt;</span>
+        <span style=color:#f92672>&lt;groupId&gt;</span>org.mapstruct<span style=color:#f92672>&lt;/groupId&gt;</span>
+        <span style=color:#f92672>&lt;artifactId&gt;</span>mapstruct-processor<span style=color:#f92672>&lt;/artifactId&gt;</span>
+        <span style=color:#f92672>&lt;version&gt;</span>${org.mapstruct.version}<span style=color:#f92672>&lt;/version&gt;</span>
+    <span style=color:#f92672>&lt;/dependency&gt;</span>
+    <span style=color:#f92672>&lt;dependency&gt;</span>
+        <span style=color:#f92672>&lt;groupId&gt;</span>org.projectlombok<span style=color:#f92672>&lt;/groupId&gt;</span>
+        <span style=color:#f92672>&lt;artifactId&gt;</span>lombok<span style=color:#f92672>&lt;/artifactId&gt;</span>
+        <span style=color:#f92672>&lt;version&gt;</span>1.18.12<span style=color:#f92672>&lt;/version&gt;</span>
+        <span style=color:#f92672>&lt;scope&gt;</span>provided<span style=color:#f92672>&lt;/scope&gt;</span>
+    <span style=color:#f92672>&lt;/dependency&gt;</span>
+    <span style=color:#f92672>&lt;dependency&gt;</span>
+        <span style=color:#f92672>&lt;groupId&gt;</span>junit<span style=color:#f92672>&lt;/groupId&gt;</span>
+        <span style=color:#f92672>&lt;artifactId&gt;</span>junit<span style=color:#f92672>&lt;/artifactId&gt;</span>
+        <span style=color:#f92672>&lt;version&gt;</span>4.13.1<span style=color:#f92672>&lt;/version&gt;</span>
+        <span style=color:#f92672>&lt;scope&gt;</span>test<span style=color:#f92672>&lt;/scope&gt;</span>
+    <span style=color:#f92672>&lt;/dependency&gt;</span>
+<span style=color:#f92672>&lt;/dependencies&gt;</span>
+</code></pre></div><p>下面我们创建几个实体类</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Order</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long no<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Date createDate<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderRes</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long orderNo<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Date orderCreateDate<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Mapper</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderMapper</span> <span style=color:#f92672>{</span>
+    OrderMapper INSTANCE <span style=color:#f92672>=</span> Mappers<span style=color:#f92672>.</span><span style=color:#a6e22e>getMapper</span><span style=color:#f92672>(</span>OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    <span style=color:#a6e22e>@Mappings</span><span style=color:#f92672>({</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;no&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;orderNo&#34;</span><span style=color:#f92672>)</span>
+    <span style=color:#f92672>})</span>
+    OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>然后我们使用单元测试，查看代码运行效果</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperTest</span> <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@Test</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>personDTOToPerson</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#75715e>//准备入参
+</span><span style=color:#75715e></span>        OrderMapper orderMapper <span style=color:#f92672>=</span> OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>INSTANCE</span><span style=color:#f92672>;</span>
+        Order order <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Order<span style=color:#f92672>();</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span>222L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setNo</span><span style=color:#f92672>(</span>1L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setCreateDate</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> Date<span style=color:#f92672>());</span>
+        <span style=color:#75715e>//转换
+</span><span style=color:#75715e></span>        OrderRes orderRes <span style=color:#f92672>=</span> orderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>order<span style=color:#f92672>);</span>
+        <span style=color:#75715e>//判断出参
+</span><span style=color:#75715e></span>        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getOrderNo</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertNull</span><span style=color:#f92672>(</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getOrderCreateDate</span><span style=color:#f92672>());</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>从上面的例子可以看出，使用MapStruct定义一个对象转换器，分为以下几步</p><ol><li>创建一个对象转换接口，使用@Mapper注解</li><li>定义转换方法，设置需要转换的对象作为参数，返回值是转换后的对象</li><li>使用@Mapping注解方法，设置转换对应的属性，如果属性名相同，则不需要设置。</li><li>接口中定义一个属性，使用Mappers.getMapper方获取对应的实现，方便使用。
+通过上面4步，就可以定义出一个对象转换器。</li></ol><h1 id=获取mapper的方式>获取Mapper的方式</h1><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#75715e>//方式一:直接使用INSTANCE
+</span><span style=color:#75715e></span><span style=color:#a6e22e>@Mapper</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CarMapper</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>final</span> CarMapper INSTANCE <span style=color:#f92672>=</span> Mappers<span style=color:#f92672>.</span><span style=color:#a6e22e>getMapper</span><span style=color:#f92672>(</span>CarMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    
+    <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;numberOfSeats&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;seatCount&#34;</span><span style=color:#f92672>)</span>
+    CarDto <span style=color:#a6e22e>carToCarDto</span><span style=color:#f92672>(</span>Car car<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+<span style=color:#75715e>//方式二:交给DI托管,但这种在Mockito的时候似乎有问题
+</span><span style=color:#75715e></span><span style=color:#a6e22e>@Mapper</span><span style=color:#f92672>(</span>componentModel <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;spring&#34;</span><span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>CarInjectMapper</span> <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;numberOfSeats&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;seatCount&#34;</span><span style=color:#f92672>)</span>
+    CarDto <span style=color:#a6e22e>carToCarDto</span><span style=color:#f92672>(</span>Car car<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h1 id=mapping常用属性>Mapping常用属性</h1><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Repeatable</span><span style=color:#f92672>(</span>Mappings<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@Retention</span><span style=color:#f92672>(</span>RetentionPolicy<span style=color:#f92672>.</span><span style=color:#a6e22e>CLASS</span><span style=color:#f92672>)</span>
+<span style=color:#a6e22e>@Target</span><span style=color:#f92672>({</span>ElementType<span style=color:#f92672>.</span><span style=color:#a6e22e>METHOD</span><span style=color:#f92672>,</span> ElementType<span style=color:#f92672>.</span><span style=color:#a6e22e>ANNOTATION_TYPE</span><span style=color:#f92672>})</span>
+<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>@interface</span> Mapping <span style=color:#f92672>{</span>
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>    * 指的是目标对象或者出参对象的某字段
+</span><span style=color:#75715e>    **/</span>
+    String <span style=color:#a6e22e>target</span><span style=color:#f92672>();</span>
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>    * 指的是入参对象或者入参对象的某字段
+</span><span style=color:#75715e>    **/</span>
+    String <span style=color:#a6e22e>source</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>    * 用于进行日期格式化,将Date转换为String
+</span><span style=color:#75715e>    **/</span>
+    String <span style=color:#a6e22e>dateFormat</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+    String <span style=color:#a6e22e>numberFormat</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>    * 用于指定出参对象的某字段的值为某一个固定的值
+</span><span style=color:#75715e>    * eg. target=&#34;name&#34;,constant=&#34;哈哈&#34;,那么出参对象的name字段的值就是&#34;哈哈&#34;
+</span><span style=color:#75715e>    **/</span>
+    String <span style=color:#a6e22e>constant</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>    * 返回值会被赋给出参对象的某字段，注意expression中的值最好采用全类名
+</span><span style=color:#75715e>    * eg. target=&#34;createDate&#34;,expression=&#34;java(new java.util.Date())&#34;,那么出参对象的createDate字段的值就是此时此刻
+</span><span style=color:#75715e>    **/</span>
+    String <span style=color:#a6e22e>expression</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+    String <span style=color:#a6e22e>defaultExpression</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>    * 用于指定入参对象的某个字段是否不赋值给出参对象,
+</span><span style=color:#75715e>    * eg. source=&#34;product.name&#34;,ignore=&#34;true&#34;,那么入参对象的product对象的name字段将不会赋值给出参对象
+</span><span style=color:#75715e>    **/</span>
+    <span style=color:#66d9ef>boolean</span> <span style=color:#a6e22e>ignore</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#66d9ef>false</span><span style=color:#f92672>;</span>
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>    * 返回值会被赋给出参对象的某字段
+</span><span style=color:#75715e>    **/</span>
+    Class<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> Annotation<span style=color:#f92672>&gt;[]</span> <span style=color:#a6e22e>qualifiedBy</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#f92672>{};</span>
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>    * 返回值会被赋给出参对象的某字段
+</span><span style=color:#75715e>    **/</span>
+    String<span style=color:#f92672>[]</span> <span style=color:#a6e22e>qualifiedByName</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#f92672>{};</span>
+    Class<span style=color:#f92672>&lt;?&gt;</span> resultType<span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#66d9ef>void</span><span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>;</span>
+    String<span style=color:#f92672>[]</span> <span style=color:#a6e22e>dependsOn</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#f92672>{};</span>
+    <span style=color:#75715e>/**
+</span><span style=color:#75715e>    *
+</span><span style=color:#75715e>    **/</span>
+    String <span style=color:#a6e22e>defaultValue</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+    NullValueCheckStrategy <span style=color:#a6e22e>nullValueCheckStrategy</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> NullValueCheckStrategy<span style=color:#f92672>.</span><span style=color:#a6e22e>ON_IMPLICIT_CONVERSION</span><span style=color:#f92672>;</span>
+    NullValuePropertyMappingStrategy <span style=color:#a6e22e>nullValuePropertyMappingStrategy</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> NullValuePropertyMappingStrategy<span style=color:#f92672>.</span><span style=color:#a6e22e>SET_TO_NULL</span><span style=color:#f92672>;</span>
+    Class<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> Annotation<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>mappingControl</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> MappingControl<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h1 id=常用场景>常用场景</h1><h2 id=基本的转换>基本的转换</h2><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Order</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long no<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Date createDate<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderRes</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long orderNo<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Date orderCreateDate<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Mapper</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderMapper</span> <span style=color:#f92672>{</span>
+    OrderMapper INSTANCE <span style=color:#f92672>=</span> Mappers<span style=color:#f92672>.</span><span style=color:#a6e22e>getMapper</span><span style=color:#f92672>(</span>OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    <span style=color:#a6e22e>@Mappings</span><span style=color:#f92672>({</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;no&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;orderNo&#34;</span><span style=color:#f92672>)</span>
+    <span style=color:#f92672>})</span>
+    OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Generated</span><span style=color:#f92672>(</span>
+    value <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;org.mapstruct.ap.MappingProcessor&#34;</span><span style=color:#f92672>,</span>
+    date <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;2022-09-06T22:43:33+0800&#34;</span><span style=color:#f92672>,</span>
+    comments <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_262 (AdoptOpenJDK)&#34;</span>
+<span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperImpl</span> <span style=color:#66d9ef>implements</span> OrderMapper <span style=color:#f92672>{</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> order <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+
+        OrderRes orderRes <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> OrderRes<span style=color:#f92672>();</span>
+
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setOrderNo</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+
+        <span style=color:#66d9ef>return</span> orderRes<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>@Mapper注解作用是：在build-time时，MapStruct会自动生成一个实现PersonMapper接口的类。
+接口中定义的方法，在自动生成时，默认会将source对象（比如PersonDTO）中所有可读的属性拷贝到target（比如Person）对象中相关的属性，转换规则主要有以下两条：</p><ol><li>当target和source对象中属性名相同，则直接转换,部分情况下可以自动转换，日期Date转String需要在@Mapping中使用dateFormat进行格式化，long转int会出现精度丢失，包装类型转换为基础数据类型会进行null判断，详细的转换规则见官方文档</li><li>当target和source对象中属性名不同，名字的映射可以通过@Mapping注解来指定。比如上面no映射到orderNo属性上。</li></ol><h2 id=多个入参对象转换为一个出参对象>多个入参对象转换为一个出参对象</h2><p>MapStruct支持将多个入参对象的属性合并到一个出参对象中。例如我们需要将下单用户的信息和订单信息整合到一个订单详情对象中</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Merchant</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Byte sex<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Order</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long no<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Date createDate<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long recyclerId<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderRes</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long orderNo<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Date orderCreateDate<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long recyclerId<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> String recyclerName<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Mapper</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderMapper</span> <span style=color:#f92672>{</span>
+    OrderMapper INSTANCE <span style=color:#f92672>=</span> Mappers<span style=color:#f92672>.</span><span style=color:#a6e22e>getMapper</span><span style=color:#f92672>(</span>OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    <span style=color:#a6e22e>@Mappings</span><span style=color:#f92672>({</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;order.no&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;orderNo&#34;</span><span style=color:#f92672>),</span>
+            <span style=color:#75715e>//这里注意:出参对象中有id字段,入参对象有两个id字段,因此需要显式指定映射关系
+</span><span style=color:#75715e></span>            <span style=color:#75715e>//如果出参对象中不需要id,可以先任意指定一个id映射然后添加ignore=true
+</span><span style=color:#75715e></span>            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;order.id&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;id&#34;</span><span style=color:#f92672>),</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;mer.id&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;recyclerId&#34;</span><span style=color:#f92672>),</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;mer.name&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;recyclerName&#34;</span><span style=color:#f92672>)</span>
+    <span style=color:#f92672>})</span>
+    OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>,</span>Merchant mer<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Generated</span><span style=color:#f92672>(</span>
+    value <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;org.mapstruct.ap.MappingProcessor&#34;</span><span style=color:#f92672>,</span>
+    date <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;2022-09-06T22:43:33+0800&#34;</span><span style=color:#f92672>,</span>
+    comments <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_262 (AdoptOpenJDK)&#34;</span>
+<span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperImpl</span> <span style=color:#66d9ef>implements</span> OrderMapper <span style=color:#f92672>{</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>,</span> Merchant mer<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> order <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>&amp;&amp;</span> mer <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+
+        OrderRes orderRes <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> OrderRes<span style=color:#f92672>();</span>
+
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> order <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setOrderNo</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+            orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> mer <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setRecyclerId</span><span style=color:#f92672>(</span> mer<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+            orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setRecyclerName</span><span style=color:#f92672>(</span> mer<span style=color:#f92672>.</span><span style=color:#a6e22e>getName</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+
+        <span style=color:#66d9ef>return</span> orderRes<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperTest</span> <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@Test</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>personDTOToPerson</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#75715e>//准备入参
+</span><span style=color:#75715e></span>        OrderMapper orderMapper <span style=color:#f92672>=</span> OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>INSTANCE</span><span style=color:#f92672>;</span>
+        Order order <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Order<span style=color:#f92672>();</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span>222L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setNo</span><span style=color:#f92672>(</span>1L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setCreateDate</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> Date<span style=color:#f92672>());</span>
+        Merchant merchant <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Merchant<span style=color:#f92672>();</span>
+        merchant<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span>333L<span style=color:#f92672>);</span>
+        merchant<span style=color:#f92672>.</span><span style=color:#a6e22e>setName</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;张三&#34;</span><span style=color:#f92672>);</span>
+        <span style=color:#75715e>//转换
+</span><span style=color:#75715e></span>        OrderRes orderRes <span style=color:#f92672>=</span> orderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>order<span style=color:#f92672>,</span>merchant<span style=color:#f92672>);</span>
+        <span style=color:#75715e>//判断出参
+</span><span style=color:#75715e></span>        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getOrderNo</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertNull</span><span style=color:#f92672>(</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getOrderCreateDate</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>merchant<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getRecyclerId</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>merchant<span style=color:#f92672>.</span><span style=color:#a6e22e>getName</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getRecyclerName</span><span style=color:#f92672>());</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h2 id=将方法的返回值映射到字段>将方法的返回值映射到字段</h2><p>有的时候，某个字段的值无法通过简单的映射来解决，需要经过一定的逻辑，这种情况下MapStrut也是支持的</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Order</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long no<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderRes</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long orderNo<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> String orderDay<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Integer status<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Date createDate<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>enum</span> EnumOrderStatus <span style=color:#f92672>{</span>
+    UN_PAYED<span style=color:#f92672>(</span>1<span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;待支付&#34;</span><span style=color:#f92672>),</span>
+    PAYED<span style=color:#f92672>(</span>2<span style=color:#f92672>,</span> <span style=color:#e6db74>&#34;已支付&#34;</span><span style=color:#f92672>);</span>
+    <span style=color:#75715e>//...
+</span><span style=color:#75715e></span><span style=color:#f92672>}</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>BUtil</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> String <span style=color:#a6e22e>extractFromNo</span><span style=color:#f92672>(</span>Long input<span style=color:#f92672>){</span>
+        String inputString <span style=color:#f92672>=</span> input<span style=color:#f92672>.</span><span style=color:#a6e22e>toString</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>return</span> inputString<span style=color:#f92672>.</span><span style=color:#a6e22e>length</span><span style=color:#f92672>()</span> <span style=color:#f92672>&gt;=</span> 8 <span style=color:#f92672>?</span> inputString<span style=color:#f92672>.</span><span style=color:#a6e22e>substring</span><span style=color:#f92672>(</span>0<span style=color:#f92672>,</span>8<span style=color:#f92672>)</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;20220101&#34;</span><span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Mapper</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderMapper</span> <span style=color:#f92672>{</span>
+    OrderMapper INSTANCE <span style=color:#f92672>=</span> Mappers<span style=color:#f92672>.</span><span style=color:#a6e22e>getMapper</span><span style=color:#f92672>(</span>OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    <span style=color:#a6e22e>@Mappings</span><span style=color:#f92672>({</span>
+        <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;no&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;orderNo&#34;</span><span style=color:#f92672>),</span>
+        <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;orderDay&#34;</span><span style=color:#f92672>,</span> expression <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;java(com.study.mapstruct.sample.methodReturnToField.BUtil.extractFromNo(order.getNo()))&#34;</span><span style=color:#f92672>),</span>
+        <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;status&#34;</span><span style=color:#f92672>,</span> expression <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;java(com.study.mapstruct.sample.methodReturnToField.EnumOrderStatus.PAYED.getStatus())&#34;</span><span style=color:#f92672>),</span>
+        <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;createDate&#34;</span><span style=color:#f92672>,</span> expression <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;java(new java.util.Date())&#34;</span><span style=color:#f92672>)</span>
+    <span style=color:#f92672>})</span>
+    OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Generated</span><span style=color:#f92672>(</span>
+    value <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;org.mapstruct.ap.MappingProcessor&#34;</span><span style=color:#f92672>,</span>
+    date <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;2022-09-06T22:43:33+0800&#34;</span><span style=color:#f92672>,</span>
+    comments <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_262 (AdoptOpenJDK)&#34;</span>
+<span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperImpl</span> <span style=color:#66d9ef>implements</span> OrderMapper <span style=color:#f92672>{</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> order <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+
+        OrderRes orderRes <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> OrderRes<span style=color:#f92672>();</span>
+
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setOrderNo</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setOrderDay</span><span style=color:#f92672>(</span> com<span style=color:#f92672>.</span><span style=color:#a6e22e>study</span><span style=color:#f92672>.</span><span style=color:#a6e22e>mapstruct</span><span style=color:#f92672>.</span><span style=color:#a6e22e>sample</span><span style=color:#f92672>.</span><span style=color:#a6e22e>methodReturnToField</span><span style=color:#f92672>.</span><span style=color:#a6e22e>BUtil</span><span style=color:#f92672>.</span><span style=color:#a6e22e>extractFromNo</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>())</span> <span style=color:#f92672>);</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setStatus</span><span style=color:#f92672>(</span> com<span style=color:#f92672>.</span><span style=color:#a6e22e>study</span><span style=color:#f92672>.</span><span style=color:#a6e22e>mapstruct</span><span style=color:#f92672>.</span><span style=color:#a6e22e>sample</span><span style=color:#f92672>.</span><span style=color:#a6e22e>methodReturnToField</span><span style=color:#f92672>.</span><span style=color:#a6e22e>EnumOrderStatus</span><span style=color:#f92672>.</span><span style=color:#a6e22e>PAYED</span><span style=color:#f92672>.</span><span style=color:#a6e22e>getStatus</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setCreateDate</span><span style=color:#f92672>(</span> <span style=color:#66d9ef>new</span> java<span style=color:#f92672>.</span><span style=color:#a6e22e>util</span><span style=color:#f92672>.</span><span style=color:#a6e22e>Date</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+
+        <span style=color:#66d9ef>return</span> orderRes<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperTest</span> <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@Test</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>personDTOToPerson</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#75715e>//准备入参
+</span><span style=color:#75715e></span>        OrderMapper orderMapper <span style=color:#f92672>=</span> OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>INSTANCE</span><span style=color:#f92672>;</span>
+        Order order <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Order<span style=color:#f92672>();</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span>222L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setNo</span><span style=color:#f92672>(</span>1L<span style=color:#f92672>);</span>
+
+        <span style=color:#75715e>//转换
+</span><span style=color:#75715e></span>        OrderRes orderRes <span style=color:#f92672>=</span> orderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>order<span style=color:#f92672>);</span>
+        <span style=color:#75715e>//判断出参
+</span><span style=color:#75715e></span>        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getOrderNo</span><span style=color:#f92672>());</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>关于这种需求，也有一些其他方式可以做到，详见<a href=https://mapstruct.org/documentation/stable/reference/html/#invoking-custom-mapping-method>执行自定义方法</a>、<a href=https://mapstruct.org/documentation/stable/reference/html/#adding-custom-methods>向Mapper添加自定义方法</a>、<a href=https://mapstruct.org/documentation/stable/reference/html/#selection-based-on-qualifiers>调用其他映射器</a>、<a href=https://mapstruct.org/documentation/stable/reference/html/#passing-context>映射前后执行自定义方法</a>，
+当重名方法很多时，可以通过@Qualifer、@Named等注解来指定唯一方法</p><h2 id=映射集合字段>映射集合字段</h2><p>MapStruct支持对集合的映射，当入参对象中的某个字段为集合时，会遍历该集合，将该字段拷贝到出参对象的字段中,Java中常用的List、Map、Set、Steam都是支持的，MapStruct对集合接口类的默认实现见<a href=https://mapstruct.org/documentation/stable/reference/html/#implementation-types-for-collection-mappings>官方文档-6.3</a>。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Order</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long no<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> saleItemNameList<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Set<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> subNoSet<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderRes</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long orderNo<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> saleItemNames<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Set<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> subNoSet<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Mapper</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderMapper</span> <span style=color:#f92672>{</span>
+    OrderMapper INSTANCE <span style=color:#f92672>=</span> Mappers<span style=color:#f92672>.</span><span style=color:#a6e22e>getMapper</span><span style=color:#f92672>(</span>OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+    <span style=color:#a6e22e>@Mappings</span><span style=color:#f92672>({</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;no&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;orderNo&#34;</span><span style=color:#f92672>),</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;saleItemNameList&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;saleItemNames&#34;</span><span style=color:#f92672>)</span>
+    <span style=color:#f92672>})</span>
+    OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Generated</span><span style=color:#f92672>(</span>
+    value <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;org.mapstruct.ap.MappingProcessor&#34;</span><span style=color:#f92672>,</span>
+    date <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;2022-09-06T22:43:33+0800&#34;</span><span style=color:#f92672>,</span>
+    comments <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_262 (AdoptOpenJDK)&#34;</span>
+<span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperImpl</span> <span style=color:#66d9ef>implements</span> OrderMapper <span style=color:#f92672>{</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> order <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+
+        OrderRes orderRes <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> OrderRes<span style=color:#f92672>();</span>
+
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setOrderNo</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> list <span style=color:#f92672>=</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getSaleItemNameList</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> list <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setSaleItemNames</span><span style=color:#f92672>(</span> <span style=color:#66d9ef>new</span> ArrayList<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;(</span> list <span style=color:#f92672>)</span> <span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        Set<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> set <span style=color:#f92672>=</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getSubNoSet</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> set <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setSubNoSet</span><span style=color:#f92672>(</span> <span style=color:#66d9ef>new</span> HashSet<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;(</span> set <span style=color:#f92672>)</span> <span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+
+        <span style=color:#66d9ef>return</span> orderRes<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperTest</span> <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@Test</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>personDTOToPerson</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#75715e>//准备入参
+</span><span style=color:#75715e></span>        OrderMapper orderMapper <span style=color:#f92672>=</span> OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>INSTANCE</span><span style=color:#f92672>;</span>
+        Order order <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Order<span style=color:#f92672>();</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span>222L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setNo</span><span style=color:#f92672>(</span>1L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setSaleItemNameList</span><span style=color:#f92672>(</span>Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;商品1&#34;</span><span style=color:#f92672>,</span><span style=color:#e6db74>&#34;商品2&#34;</span><span style=color:#f92672>,</span><span style=color:#e6db74>&#34;商品3&#34;</span><span style=color:#f92672>));</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setSubNoSet</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> HashSet<span style=color:#f92672>&lt;&gt;(</span>Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;sub001&#34;</span><span style=color:#f92672>,</span><span style=color:#e6db74>&#34;sub002&#34;</span><span style=color:#f92672>)));</span>
+        <span style=color:#75715e>//转换
+</span><span style=color:#75715e></span>        OrderRes orderRes <span style=color:#f92672>=</span> orderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>order<span style=color:#f92672>);</span>
+        <span style=color:#75715e>//判断出参
+</span><span style=color:#75715e></span>        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getOrderNo</span><span style=color:#f92672>());</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><p>在Map映射方面，MapStruct提供的功能较为有限，需要通过@MapMapping注解来完成</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#66d9ef>public</span> <span style=color:#a6e22e>@interface</span> MapMapping <span style=color:#f92672>{</span>
+
+    String <span style=color:#a6e22e>keyDateFormat</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+
+    String <span style=color:#a6e22e>valueDateFormat</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+
+    String <span style=color:#a6e22e>keyNumberFormat</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+
+    String <span style=color:#a6e22e>valueNumberFormat</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#e6db74>&#34;&#34;</span><span style=color:#f92672>;</span>
+
+    Class<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> Annotation<span style=color:#f92672>&gt;[]</span> <span style=color:#a6e22e>keyQualifiedBy</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#f92672>{</span> <span style=color:#f92672>};</span>
+
+    String<span style=color:#f92672>[]</span> <span style=color:#a6e22e>keyQualifiedByName</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#f92672>{</span> <span style=color:#f92672>};</span>
+    
+    Class<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> Annotation<span style=color:#f92672>&gt;[]</span> <span style=color:#a6e22e>valueQualifiedBy</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#f92672>{</span> <span style=color:#f92672>};</span>
+    
+    String<span style=color:#f92672>[]</span> <span style=color:#a6e22e>valueQualifiedByName</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#f92672>{</span> <span style=color:#f92672>};</span>
+    
+    Class<span style=color:#f92672>&lt;?&gt;</span> keyTargetType<span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#66d9ef>void</span><span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>;</span>
+    
+    Class<span style=color:#f92672>&lt;?&gt;</span> valueTargetType<span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> <span style=color:#66d9ef>void</span><span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>;</span>
+    
+    NullValueMappingStrategy <span style=color:#a6e22e>nullValueMappingStrategy</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> NullValueMappingStrategy<span style=color:#f92672>.</span><span style=color:#a6e22e>RETURN_NULL</span><span style=color:#f92672>;</span>
+    
+    Class<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> Annotation<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>keyMappingControl</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> MappingControl<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>;</span>
+    
+    Class<span style=color:#f92672>&lt;?</span> <span style=color:#66d9ef>extends</span> Annotation<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>valueMappingControl</span><span style=color:#f92672>()</span> <span style=color:#66d9ef>default</span> MappingControl<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>SourceTargetMapper</span> <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@MapMapping</span><span style=color:#f92672>(</span>valueDateFormat <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;dd.MM.yyyy&#34;</span><span style=color:#f92672>)</span>
+    Map<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>,</span> String<span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>longDateMapToStringStringMap</span><span style=color:#f92672>(</span>Map<span style=color:#f92672>&lt;</span>Long<span style=color:#f92672>,</span> Date<span style=color:#f92672>&gt;</span> source<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h2 id=映射前后执行自定义方法>映射前后执行自定义方法</h2><p>有的时候，在MapsStruct进行字段简单映射的基础上，我们还想要在映射前或映射后执行一些自定义的方法，这种也是支持的，可以通过<a href=https://mapstruct.org/documentation/stable/reference/html/#passing-context>在映射中传递上下文参数</a>，借助@AfterMapping来实现。例如我们想要在映射后额外计算一下订单中的商品数量和是否包含子订单。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Order</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long no<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> saleItemNameList<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Set<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> subNoSet<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderRes</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long orderNo<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> saleItemNames<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Integer saleItemCount<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Set<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> subNoSet<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Boolean containsSubNo<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Mapper</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderMapper</span> <span style=color:#f92672>{</span>
+    OrderMapper INSTANCE <span style=color:#f92672>=</span> Mappers<span style=color:#f92672>.</span><span style=color:#a6e22e>getMapper</span><span style=color:#f92672>(</span>OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+
+    <span style=color:#a6e22e>@Mappings</span><span style=color:#f92672>({</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;no&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;orderNo&#34;</span><span style=color:#f92672>),</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;saleItemNameList&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;saleItemNames&#34;</span><span style=color:#f92672>)</span>
+    <span style=color:#f92672>})</span>
+    OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>);</span>
+
+    <span style=color:#a6e22e>@AfterMapping</span>
+    <span style=color:#66d9ef>default</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>quickReqToSearchModelAfter</span><span style=color:#f92672>(</span>Order ord<span style=color:#f92672>,</span> <span style=color:#a6e22e>@MappingTarget</span> OrderRes des<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#75715e>//设置商品数量
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span><span style=color:#f92672>(</span>CollectionUtils<span style=color:#f92672>.</span><span style=color:#a6e22e>isEmpty</span><span style=color:#f92672>(</span>ord<span style=color:#f92672>.</span><span style=color:#a6e22e>getSaleItemNameList</span><span style=color:#f92672>())){</span>
+            des<span style=color:#f92672>.</span><span style=color:#a6e22e>setSaleItemCount</span><span style=color:#f92672>(</span>0<span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span><span style=color:#66d9ef>else</span><span style=color:#f92672>{</span>
+            des<span style=color:#f92672>.</span><span style=color:#a6e22e>setSaleItemCount</span><span style=color:#f92672>(</span>ord<span style=color:#f92672>.</span><span style=color:#a6e22e>getSaleItemNameList</span><span style=color:#f92672>().</span><span style=color:#a6e22e>size</span><span style=color:#f92672>());</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#75715e>//设置是否包含子订单
+</span><span style=color:#75715e></span>        <span style=color:#75715e>//既然已经进行过字段映射了，其实也可以使用出参对象中的字段了
+</span><span style=color:#75715e></span>        des<span style=color:#f92672>.</span><span style=color:#a6e22e>setContainsSubNo</span><span style=color:#f92672>(!</span>CollectionUtils<span style=color:#f92672>.</span><span style=color:#a6e22e>isEmpty</span><span style=color:#f92672>(</span>des<span style=color:#f92672>.</span><span style=color:#a6e22e>getSubNoSet</span><span style=color:#f92672>()));</span>
+    <span style=color:#f92672>}</span>
+
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Generated</span><span style=color:#f92672>(</span>
+    value <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;org.mapstruct.ap.MappingProcessor&#34;</span><span style=color:#f92672>,</span>
+    date <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;2022-09-07T22:07:41+0800&#34;</span><span style=color:#f92672>,</span>
+    comments <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_262 (AdoptOpenJDK)&#34;</span>
+<span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperImpl</span> <span style=color:#66d9ef>implements</span> OrderMapper <span style=color:#f92672>{</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> order <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+
+        OrderRes orderRes <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> OrderRes<span style=color:#f92672>();</span>
+
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setOrderNo</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        List<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> list <span style=color:#f92672>=</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getSaleItemNameList</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> list <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setSaleItemNames</span><span style=color:#f92672>(</span> <span style=color:#66d9ef>new</span> ArrayList<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;(</span> list <span style=color:#f92672>)</span> <span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        Set<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;</span> set <span style=color:#f92672>=</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getSubNoSet</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> set <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setSubNoSet</span><span style=color:#f92672>(</span> <span style=color:#66d9ef>new</span> HashSet<span style=color:#f92672>&lt;</span>String<span style=color:#f92672>&gt;(</span> set <span style=color:#f92672>)</span> <span style=color:#f92672>);</span>
+        <span style=color:#f92672>}</span>
+
+        quickReqToSearchModelAfter<span style=color:#f92672>(</span> order<span style=color:#f92672>,</span> orderRes <span style=color:#f92672>);</span>
+ 
+        <span style=color:#66d9ef>return</span> orderRes<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperTest</span> <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@Test</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>personDTOToPerson</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#75715e>//准备入参
+</span><span style=color:#75715e></span>        OrderMapper orderMapper <span style=color:#f92672>=</span> OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>INSTANCE</span><span style=color:#f92672>;</span>
+        Order order <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Order<span style=color:#f92672>();</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span>222L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setNo</span><span style=color:#f92672>(</span>1L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setSaleItemNameList</span><span style=color:#f92672>(</span>Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;商品1&#34;</span><span style=color:#f92672>,</span><span style=color:#e6db74>&#34;商品2&#34;</span><span style=color:#f92672>,</span><span style=color:#e6db74>&#34;商品3&#34;</span><span style=color:#f92672>));</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setSubNoSet</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> HashSet<span style=color:#f92672>&lt;&gt;(</span>Arrays<span style=color:#f92672>.</span><span style=color:#a6e22e>asList</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;sub001&#34;</span><span style=color:#f92672>,</span><span style=color:#e6db74>&#34;sub002&#34;</span><span style=color:#f92672>)));</span>
+        <span style=color:#75715e>//转换
+</span><span style=color:#75715e></span>        OrderRes orderRes <span style=color:#f92672>=</span> orderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>order<span style=color:#f92672>);</span>
+        <span style=color:#75715e>//判断出参
+</span><span style=color:#75715e></span>        System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span>JSON<span style=color:#f92672>.</span><span style=color:#a6e22e>toJSONString</span><span style=color:#f92672>(</span>orderRes<span style=color:#f92672>));</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getOrderNo</span><span style=color:#f92672>());</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h2 id=映射枚举>映射枚举</h2><p>不知道怎么搞，官网链接有<a href=https://mapstruct.org/documentation/stable/reference/html/#_mapping_enum_to_enum_types>枚举A的值映射到枚举B</a></p><h2 id=映射嵌套对象对象引用>映射嵌套对象/对象引用</h2><p>对于嵌套对象的映射也是支持的，在@Mapping的source中使用入参对象中嵌套对象的名称即可</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Order</span><span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long no<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long recyclerId<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Merchant me<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Merchant</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> String name<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Byte sex<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Data</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderRes</span> <span style=color:#f92672>{</span>
+    <span style=color:#66d9ef>private</span> Long id<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long orderNo<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Date orderCreateDate<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Long recyclerId<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> String recyclerName<span style=color:#f92672>;</span>
+    <span style=color:#66d9ef>private</span> Merchant merchantInfo<span style=color:#f92672>;</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Mapper</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>OrderMapper</span> <span style=color:#f92672>{</span>
+    OrderMapper INSTANCE <span style=color:#f92672>=</span> Mappers<span style=color:#f92672>.</span><span style=color:#a6e22e>getMapper</span><span style=color:#f92672>(</span>OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+
+    <span style=color:#a6e22e>@Mappings</span><span style=color:#f92672>({</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;no&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;orderNo&#34;</span><span style=color:#f92672>),</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;me.id&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;recyclerId&#34;</span><span style=color:#f92672>),</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;me.name&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;recyclerName&#34;</span><span style=color:#f92672>),</span>
+            <span style=color:#a6e22e>@Mapping</span><span style=color:#f92672>(</span>source <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;me&#34;</span><span style=color:#f92672>,</span> target <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;merchantInfo&#34;</span><span style=color:#f92672>)</span>
+    <span style=color:#f92672>})</span>
+    OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+<span style=color:#a6e22e>@Generated</span><span style=color:#f92672>(</span>
+    value <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;org.mapstruct.ap.MappingProcessor&#34;</span><span style=color:#f92672>,</span>
+    date <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;2022-09-07T22:33:29+0800&#34;</span><span style=color:#f92672>,</span>
+    comments <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;version: 1.4.2.Final, compiler: javac, environment: Java 1.8.0_262 (AdoptOpenJDK)&#34;</span>
+<span style=color:#f92672>)</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperImpl</span> <span style=color:#66d9ef>implements</span> OrderMapper <span style=color:#f92672>{</span>
+
+    <span style=color:#a6e22e>@Override</span>
+    <span style=color:#66d9ef>public</span> OrderRes <span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> order <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+
+        OrderRes orderRes <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> OrderRes<span style=color:#f92672>();</span>
+
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setOrderNo</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setRecyclerId</span><span style=color:#f92672>(</span> orderMeId<span style=color:#f92672>(</span> order <span style=color:#f92672>)</span> <span style=color:#f92672>);</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setRecyclerName</span><span style=color:#f92672>(</span> orderMeName<span style=color:#f92672>(</span> order <span style=color:#f92672>)</span> <span style=color:#f92672>);</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setMerchantInfo</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getMe</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+        orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>()</span> <span style=color:#f92672>);</span>
+
+        <span style=color:#66d9ef>return</span> orderRes<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#66d9ef>private</span> Long <span style=color:#a6e22e>orderMeId</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> order <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+        Merchant me <span style=color:#f92672>=</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getMe</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> me <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+        Long id <span style=color:#f92672>=</span> me<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> id <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>return</span> id<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+
+    <span style=color:#66d9ef>private</span> String <span style=color:#a6e22e>orderMeName</span><span style=color:#f92672>(</span>Order order<span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> order <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+        Merchant me <span style=color:#f92672>=</span> order<span style=color:#f92672>.</span><span style=color:#a6e22e>getMe</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> me <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+        String name <span style=color:#f92672>=</span> me<span style=color:#f92672>.</span><span style=color:#a6e22e>getName</span><span style=color:#f92672>();</span>
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>(</span> name <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>)</span> <span style=color:#f92672>{</span>
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>null</span><span style=color:#f92672>;</span>
+        <span style=color:#f92672>}</span>
+        <span style=color:#66d9ef>return</span> name<span style=color:#f92672>;</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>OrderMapperTest</span> <span style=color:#f92672>{</span>
+    <span style=color:#a6e22e>@Test</span>
+    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> <span style=color:#a6e22e>personDTOToPerson</span><span style=color:#f92672>()</span> <span style=color:#f92672>{</span>
+        <span style=color:#75715e>//准备入参
+</span><span style=color:#75715e></span>        OrderMapper orderMapper <span style=color:#f92672>=</span> OrderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>INSTANCE</span><span style=color:#f92672>;</span>
+        Order order <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Order<span style=color:#f92672>();</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span>222L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setNo</span><span style=color:#f92672>(</span>1L<span style=color:#f92672>);</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setRecyclerId</span><span style=color:#f92672>(</span>333L<span style=color:#f92672>);</span>
+        Merchant merchant <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Merchant<span style=color:#f92672>();</span>
+        merchant<span style=color:#f92672>.</span><span style=color:#a6e22e>setId</span><span style=color:#f92672>(</span>333L<span style=color:#f92672>);</span>
+        merchant<span style=color:#f92672>.</span><span style=color:#a6e22e>setName</span><span style=color:#f92672>(</span><span style=color:#e6db74>&#34;张三&#34;</span><span style=color:#f92672>);</span>
+        merchant<span style=color:#f92672>.</span><span style=color:#a6e22e>setSex</span><span style=color:#f92672>(</span><span style=color:#66d9ef>new</span> Byte<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;1&#34;</span><span style=color:#f92672>));</span>
+        order<span style=color:#f92672>.</span><span style=color:#a6e22e>setMe</span><span style=color:#f92672>(</span>merchant<span style=color:#f92672>);</span>
+        <span style=color:#75715e>//转换
+</span><span style=color:#75715e></span>        OrderRes orderRes <span style=color:#f92672>=</span> orderMapper<span style=color:#f92672>.</span><span style=color:#a6e22e>dbToRes</span><span style=color:#f92672>(</span>order<span style=color:#f92672>);</span>
+        <span style=color:#75715e>//判断出参
+</span><span style=color:#75715e></span>        System<span style=color:#f92672>.</span><span style=color:#a6e22e>out</span><span style=color:#f92672>.</span><span style=color:#a6e22e>println</span><span style=color:#f92672>(</span>JSON<span style=color:#f92672>.</span><span style=color:#a6e22e>toJSONString</span><span style=color:#f92672>(</span>orderRes<span style=color:#f92672>));</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>order<span style=color:#f92672>.</span><span style=color:#a6e22e>getNo</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getOrderNo</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertNull</span><span style=color:#f92672>(</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getOrderCreateDate</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>merchant<span style=color:#f92672>.</span><span style=color:#a6e22e>getId</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getRecyclerId</span><span style=color:#f92672>());</span>
+        Assert<span style=color:#f92672>.</span><span style=color:#a6e22e>assertEquals</span><span style=color:#f92672>(</span>merchant<span style=color:#f92672>.</span><span style=color:#a6e22e>getName</span><span style=color:#f92672>(),</span>orderRes<span style=color:#f92672>.</span><span style=color:#a6e22e>getRecyclerName</span><span style=color:#f92672>());</span>
+    <span style=color:#f92672>}</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h2 id=批量调用已有的映射方法>批量调用已有的映射方法</h2><p>有的时候我们已经写好了单个入参对象转换为出参对象的方法，但是还需要一个批量的入参对象转换为出参对象的功能，这种情况下，直接List&lt;出参对象> methodName(List&lt;入参对象> xxList)即可实现。</p><h2 id=转换支持builder构建的对象>转换支持builder构建的对象</h2><p>如果builder存在，mapstruct会使用builder构建对象（默认使用set方法），父类不支持，就只会转换当前对象。
+解决方法是
+1.让父类支持builder ，例如使用lombok的时候加上superBuilder注解
+2.用下面方法指定mapstruct不用builder</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-java data-lang=java><span style=color:#a6e22e>@Mapper</span><span style=color:#f92672>(</span>builder <span style=color:#f92672>=</span> <span style=color:#a6e22e>@Builder</span><span style=color:#f92672>(</span>disableBuilder <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span><span style=color:#f92672>))</span>
+<span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>TaskSearchMapping</span> <span style=color:#f92672>{</span>
+
+    TaskSearchMapping INSTANCE <span style=color:#f92672>=</span> Mappers<span style=color:#f92672>.</span><span style=color:#a6e22e>getMapper</span><span style=color:#f92672>(</span>TaskSearchMapping<span style=color:#f92672>.</span><span style=color:#a6e22e>class</span><span style=color:#f92672>);</span>
+
+    TaskSearchModel <span style=color:#a6e22e>dto2Model</span><span style=color:#f92672>(</span>TaskSearchDto dto<span style=color:#f92672>);</span>
+
+    TaskSearchModel <span style=color:#a6e22e>h5DtoModel</span><span style=color:#f92672>(</span>H5TaskSearchDto dto<span style=color:#f92672>);</span>
+<span style=color:#f92672>}</span>
+</code></pre></div><h1 id=其他使用场景>其他使用场景</h1><ul><li><a href=https://mapstruct.org/documentation/stable/reference/html/#adding-custom-methods>将Map对象转换为Object对象</a></li><li><a href=https://mapstruct.org/documentation/stable/reference/html/#mapping-with-builders>通过Builder映射</a></li><li><a href=https://mapstruct.org/documentation/stable/reference/html/#mapping-with-constructors>通过构造器映射</a></li><li><a href=https://mapstruct.org/documentation/stable/reference/html/#inverse-mappings>逆向映射</a></li><li><a href=https://mapstruct.org/documentation/stable/reference/html/#conditional-mapping>有条件的映射</a></li><li><a href=https://mapstruct.org/documentation/stable/reference/html/#conditional-mapping>关于异常</a></li></ul><h1 id=映射规则>映射规则</h1><ul><li>字段名相同的情况下，如果字段类型相同，无需代码显式声明就可以自动映射；字段类型不同时，大部分也可以自动转换</li><li>字段名不同的情况下，可以通过@Mapping注解来直接映射关系</li><li>简单的字段和集合类字段都是可以直接映射的</li><li>支持将方法的返回值映射到一个字段上，并且方式有很多种</li><li>一个字段或对象可以进行多次映射</li><li>多个入参对象转换为一个出参对象，或者一个入参对象中存在多个或多层的嵌套对象，在@Mapping注解中使使用"入参名.xxx"就可以进行映射，也可以使用&rdquo;.&ldquo;代替很多目标字段</li><li>多个入参对象转换为一个出参对象时，默认情况下只有所有入参对象都为空时才不会进行转换(当然，这点可以修改配置来解决)</li><li>在映射前后也可以执行自定义方法</li></ul><h1 id=参考文档>参考文档</h1><ul><li><a href=https://mapstruct.org/documentation/stable/reference/html/#Preface>官方文档-v1.5.2</a></li><li><a href=https://mofan212.gitee.io/posts/MapStruct-User-Manual/>MapStruct使用手册</a></li><li><a href=https://blog.csdn.net/datastructure18/article/details/120208842>MapStruct原理解析</a></li></ul></div><footer class=post-footer><div class=post-tags><a href=https://1162492411.github.io/docs/tags/spring rel=tag title=Spring>#Spring#</a>
+<a href=https://1162492411.github.io/docs/tags/%e5%ae%9e%e6%88%98 rel=tag title=实战>#实战#</a>
+<a href=https://1162492411.github.io/docs/tags/%e6%95%b0%e6%8d%ae%e8%bd%ac%e6%8d%a2 rel=tag title=数据转换>#数据转换#</a></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://1162492411.github.io/docs/post/jackson%E5%AE%9E%E7%8E%B0%E5%85%A5%E5%8F%82%E5%A4%9A%E6%80%81/ rel=next title=Jackson实现入参多态><i class="fa fa-chevron-left"></i>Jackson实现入参多态</a></div><div class="post-nav-prev post-nav-item"><a href=https://1162492411.github.io/docs/post/feign%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/ rel=prev title=Feign源码分析>Feign源码分析 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap></li><li class=sidebar-nav-overview data-target=site-overview></li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=https://1162492411.github.io/docs/img/author.jpg alt=zyg><p class=site-author-name itemprop=name>zyg</p><p class="site-description motion-element" itemprop=description>Programmer & Architect</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=https://1162492411.github.io/docs/post/><span class=site-state-item-count>28</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-categories"><a href=https://1162492411.github.io/docs/categories/><span class=site-state-item-count>27</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-tags"><a href=https://1162492411.github.io/docs/tags/><span class=site-state-item-count>47</span>
+<span class=site-state-item-name></span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/1162492411/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>GitHub</a></span></div><div class="links-of-blogroll motion-element inline"><script type=text/javascript src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&m=0&s=220&c=ff0000&cr1=ffffff&f=arial&l=33&bv=35" async></script></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><a href=#基本的转换>基本的转换</a></li><li><a href=#多个入参对象转换为一个出参对象>多个入参对象转换为一个出参对象</a></li><li><a href=#将方法的返回值映射到字段>将方法的返回值映射到字段</a></li><li><a href=#映射集合字段>映射集合字段</a></li><li><a href=#映射前后执行自定义方法>映射前后执行自定义方法</a></li><li><a href=#映射枚举>映射枚举</a></li><li><a href=#映射嵌套对象对象引用>映射嵌套对象/对象引用</a></li><li><a href=#批量调用已有的映射方法>批量调用已有的映射方法</a></li><li><a href=#转换支持builder构建的对象>转换支持builder构建的对象</a></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span itemprop=copyrightYear>&copy;
+2009 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span><span class=author itemprop=copyrightHolder></span></div><div class=powered-by>Powered by - <a class=theme-link href=http://gohugo.io target=_blank title=hugo>Hugo v0.68.3</a></div><div class=theme-info>Theme by - <a class=theme-link href=https://github.com/xtfly/hugo-theme-next target=_blank>NexT</a></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i><span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript>if(Object.prototype.toString.call(window.Promise)!=='[object Function]'){window.Promise=null;}</script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery/index.js?v=2.1.3"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.min.js?v=1.2.1"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="https://1162492411.github.io/docs/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script><script src="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script><script type=text/javascript src=https://1162492411.github.io/docs/js/utils.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/motion.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/affix.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/schemes/pisces.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/scrollspy.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/post-details.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/toc.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/bootstrap.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/search.js></script><script type=text/x-mathjax-config>
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script></body></html>

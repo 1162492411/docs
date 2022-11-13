@@ -1,0 +1,115 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><title>服务压测调优 -</title><meta name=keywords content="zyg,独立,博客,程序员,个人,思考,读书,笔记,技术,分享,java"><meta property="og:title" content="服务压测调优"><meta property="og:site_name" content><meta property="og:image" content="/img/author.jpg"><meta name=title content="服务压测调优 -"><meta name=description content="zyg | 博客 | 软件 |  Java"><link rel="shortcut icon" href=https://1162492411.github.io/docs/img/favicon.ico><link rel=apple-touch-icon href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://1162492411.github.io/docs/img/apple-touch-icon.png><link href="https://1162492411.github.io/docs/js/vendor/font-awesome/css/font-awesome.min.css?v=4.6.2" rel=stylesheet type=text/css><link href="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.css?v=2.1.5" rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/main.css rel=stylesheet type=text/css><link href=https://1162492411.github.io/docs/css/syntax.css rel=stylesheet type=text/css><script type=text/javascript id=hexo.configuration>var NexT=window.NexT||{};var CONFIG={scheme:'Pisces',sidebar:{"position":"left","display":"post"},fancybox:true,motion:true};</script></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class="site-meta custom-logo"><div class=custom-logo-site-title><a href=https://1162492411.github.io/docs/ class=brand rel=start><span class=logo-line-before><i></i></span><span class=site-title></span><span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>人生天地间，忽如远行客</p></div><div class=site-nav-toggle><button>
+<span class=btn-bar></span><span class=btn-bar></span><span class=btn-bar></span></button></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=https://1162492411.github.io/docs/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E6%8A%80%E6%9C%AF/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>技术</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E5%AE%9E%E6%88%98/ rel=section><i class="menu-item-icon fa fa-fw fa-code"></i><br>实战</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E7%AC%94%E8%AE%B0/ rel=section><i class="menu-item-icon fa fa-fw fa-book"></i><br>笔记</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/categories/%E9%9D%A2%E8%AF%95%E9%A2%98/ rel=section><i class="menu-item-icon fa fa-fw fa-leaf"></i><br>面试题</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/post/ rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=https://1162492411.github.io/docs/about/ rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br></a></li></ul><div class=site-search><div class=popup><span class="search-icon fa fa-search"></span><input type=text id=local-search-input><div id=local-search-result></div><span class=popup-btn-close>close</span></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://1162492411.github.io/docs/post/%E6%9C%8D%E5%8A%A1%E5%8E%8B%E6%B5%8B%E8%B0%83%E4%BC%98/ itemprop=url>服务压测调优</a></h1><div class=post-meta><span class=post-time><span class=post-meta-item-icon><i class="fa fa-calendar-o"></i></span><span class=post-meta-item-text></span><time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2020-12-21">2020-12-21</time></span>
+<span class=post-category>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-folder-o"></i></span><span class=post-meta-item-text></span><span itemprop=about itemscope itemtype=https://schema.org/Thing><a href=https://1162492411.github.io/docs/categories/%E8%B0%83%E4%BC%98 itemprop=url rel=index><span itemprop=name>调优</span></a>
+&nbsp;</span></span>
+<span>&nbsp; | &nbsp;
+<span class=post-meta-item-icon><i class="fa fa-eye"></i></span><span class=post-meta-item-text></span><span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><h1 id=服务压测问题修复>服务压测问题修复</h1><h1 id=linux服务器环境优化>Linux服务器环境优化</h1><h3 id=调整linux最大线程数>调整linux最大线程数</h3><p>​ /etc/sysctl.conf 配置文件中，加入 sys.kernel.threads-max = 40960</p><h3 id=调整linux全局最大pid>调整linux全局最大pid</h3><p>​ /etc/sysctl.conf 配置文件中，加入 sys.kernel.pid_max = 40960</p><h3 id=调整linux-tcp进程参数>调整linux TCP进程参数</h3><p>​ /etc/sysctl.conf 配置文件中，加入 以下内容,执行：sysctl -p ，使设置立即生效：</p><pre><code># 进程可以同时打开的最大文件句柄数，这个参数直接限制最大并发连接数
+fs.file-max=999999
+
+############## TCP数据窗口相关参数 ##############
+# 默认的TCP数据接收窗口大小/字节,默认229376
+net.core.rmem_default = 256960
+# 最大的TCP数据接收窗口大小/字节,默认131071
+net.core.rmem_max = 513920
+# 默认的TCP数据发送窗口大小/字节,默认229376
+net.core.wmem_default = 256960
+# 最大的TCP数据发送窗口/字节,默认131071
+net.core.wmem_max = 513920
+
+################# TCP队列相关参数 ###############
+# 当网卡接收数据包的速度大于内核处理数据的时候，会有一个队列保存这些数据包,即接收队列长度。这个参数表示这个队列的最大值,默认1000
+net.core.netdev_max_backlog = 2000
+# TCP三次握手建立阶段服务器接收SYN请求队列的最大长度,即SYN半连接队列长度,对于超出该队列的请求直接丢弃
+net.ipv4.tcp_max_syn_backlog = 262144
+# 全局的每一个端口最大的监听队列的长度,默认128
+net.core.somaxconn = 2048
+
+############## TCP缓冲区相关参数 ###########
+# 全局的所有TCP的SocketBuffer配置,该SocketBuffer用于发送方发送数据/接收方接受数据时存储这些数据,有三个值，单位为内存页(通常为4K):当TCP使用了低于第一个值的内存页面数时，TCP不会考虑释放内存;当TCP使用了超过第二个值的内存页面数量时,TCP试图稳定其内存使用，进入pressure模式;当内存占用超过第三个值，系统拒绝分配socket,报错TCP: too many of orphaned sockets.默认94011 125351 188022
+net.ipv4.tcp_mem = 131072 262144 524288
+# TCP读缓冲区/字节,三个值分别表示TCP接收缓存（用于TCP接收滑动窗口）的最小值、默认值、最大值,默认4096 87380 4011232
+net.ipv4.tcp_rmem = 8760 256960 4088000
+# TCP写缓冲区/字节,三个值分别表示TCP发送缓存（用于TCP接收滑动窗口）的最小值、默认值、最大值,默认4096 16384 4011232
+net.ipv4.tcp_wmem = 8760 256960 4088000
+# 每个套接字所允许的最大缓冲区的大小/字节,默认20480
+net.core.optmem_max = 81920
+
+############### keepalive相关参数 #####################
+# CLOSE_WAIT 状态维持的秒数 = tcp_keepalive_time + tcp_keepalive_intvl * tcp_keepalive_probes
+# 当keepalive启用时，TCP发送keealive消息的频度,默认7200/秒
+net.ipv4.tcp_keepalive_time = 1800
+# 以该参数指定的秒数为时间间隔/s，向客户端发起对它的探测
+net.ipv4.tcp_keepalive_intvl = 30
+# 内核发起对客户端探测的次数，如果都没有得到响应，那么就断定客户端不可达或者已关闭，内核就关闭该TCP连接
+net.ipv4.tcp_keepalive_probes = 3
+
+############### Time_wait相关参数 #####################
+# 是否开启timstamp校验,该配置项会影响net.ipv4.tcp_tw_reuse、net.ipv4.tcp_tw_recycle,只有发起方和接收方都开启该项才会使得net.ipv4.tcp_tw_reuse、net.ipv4.tcp_tw_recycle生效,该配置项提供以下两个功能:a.更加准确的RTT测量数据，尤其是有丢包时 – RTTM b. 保证了在极端情况下，TCP的可靠性 – PAWS
+net.ipv4.tcp_timestamps = 1
+# 是否允许将TIME—WAIT状态的socket重新用于新的TCP连接,默认0,1开启,开启后将会在Time_wait状态的1s后复用socket
+net.ipv4.tcp_tw_reuse = 1
+# 设置是否对TIME_WAIT状态的TCP进行快速回收,默认0,1开启
+net.ipv4.tcp_tw_recycle = 1
+# 当服务器主动关闭连接的时候，主动关闭方的socket保持在FIN-WAIT-2状态的最大时间/秒,默认60
+net.ipv4.tcp_fin_timeout = 30
+
+############### 其他参数 #####################
+# 是否启用有选择的应答,开启此项后,可以让发送方只发送丢失部分的数据,即支持乱序接收
+net.ipv4.tcp_sack = 1
+# 是否打开FACK拥塞避免和快速重传功能
+net.ipv4.tcp_fack = 1
+# 是否支持更大的TCP窗口,如果TCP窗口最大超过65535(64K), 必须设置该数值为1
+net.ipv4.tcp_window_scaling = 1
+# 是否打开SYN Cookie功能，该功能可以防止部分SYN flood攻击
+net.ipv4.tcp_syncookies = 1
+# 在UDP和TCP连接本地端口的取值范围
+net.ipv4.ip_local_port_range = 1024 65000
+</code></pre><h3 id=调整linux最大文件数量>调整linux最大文件数量</h3><p>/etc/security/limits.conf文件尾部添加如下代码：</p><pre><code>* soft nofile 65535
+* hard nofile 65535
+</code></pre><h2 id=tmcat参数优化>Tmcat参数优化</h2><h3 id=设置内存参数>设置内存参数</h3><p>tomcat安装目录/bin/catalina.sh 106 行添加以下内容</p><pre><code>JAVA_OPTS=&quot;-Xmx8192M -Xms8192M -XX:MaxPermSize=512M -XX:PermSize=512M -XX:+UseG1GC -XX:MaxGCPauseMillis=100 -XX:+ParallelRefProcEnabled -XX:+HeapDumpOnOutOfMemoryError -XX:+PrintGCApplicationStoppedTime -XX:+PrintHeapAtGC&quot;
+</code></pre><p>【注意】不要换行是一行 参数
+参考地址为：https://console.perfma.com/
+线程数计算公式： Max memory （除去系统占用和其他应用程序占用后的操作系统总内存大小） = [-Xmx] + [-XX:MaxMetaSpaceSize] + number_of_threads * [-Xss]</p><h3 id=修改日志打印>修改日志打印</h3><p>访问日志原始值：</p><pre><code>&lt;Valve className=&quot;org.apache.catalina.valves.AccessLogValve&quot; 
+directory=&quot;logs&quot; prefix=&quot;localhost_access_log.&quot; suffix=&quot;.txt&quot;
+pattern=&quot;%h %l %u %t %s %b&quot; /&gt;
+</code></pre><p>调整后的值:</p><pre><code>&lt;Valve className=&quot;org.apache.catalina.valves.AccessLogValve&quot;
+directory=&quot;logs&quot; prefix=&quot;localhost_access_log.&quot; suffix=&quot;.txt&quot;
+pattern=&quot;%h %l %u %t %q %s %b %F %D %I &quot; /&gt;
+</code></pre><p><code>pattern</code>属性的值由文字文本字符串和以“％”字符为前缀的模式标识符组合而成，以替换为来自当前请求和响应的相应变量值。支持以下模式代码：(原始地址:http://tomcat.apache.org/tomcat-7.0-doc/config/valve.html)</p><ul><li><strong>％</strong> a-远程IP地址</li><li>**％A-**本地IP地址</li><li>**％b-**发送的字节，不包括HTTP标头，如果为零则为&rsquo;-&rsquo;</li><li>**％B-**发送的字节，不包括HTTP标头</li><li>**％h-**远程主机名（如果<code>enableLookups</code>连接器为false，则为IP地址 ）</li><li>**％H-**请求协议</li><li><strong>％l</strong> -identd的远程逻辑用户名（总是返回“-”）</li><li>**％m-**请求方法（GET，POST等）</li><li>**％p-**接收此请求的本地端口。另请参见<code>%{xxx}p</code>下文。</li><li>**％q-**查询字符串（如果存在，则以“？”开头）</li><li>**％r-**请求的第一行（方法和请求URI）</li><li>**％s-**响应的HTTP状态代码</li><li>**％S-**用户会话ID</li><li>**％t-**日期和时间，采用通用日志格式</li><li>**％u-**已验证（如果有）的远程用户，否则为&rsquo;-&rsquo;</li><li>**％U-**请求的URL路径</li><li>**％v-**本地服务器名称</li><li>**％D-**以毫秒为单位处理请求所花费的时间。注意：在httpd中，％D是微秒。从Tomcat 10开始，行为将与httpd对齐。</li><li>**％T-**处理请求所花费的时间，以秒为单位。注意：此值具有毫秒分辨率，而在httpd中具有第二分辨率。行为将与Tomcat 10及更高版本中的httpd保持一致。</li><li>**％F-**提交响应所花费的时间（以毫秒为单位）</li><li>**％I-**当前请求线程名称（以后可以与堆栈跟踪进行比较）</li></ul><h3 id=调整线程数>调整线程数</h3><p>tomcat安装目录/conf/server.xml 71行</p><p>调整前原始值：</p><pre><code>&lt;Connector port=&quot;8080&quot; protocol=&quot;HTTP/1.1&quot;
+connectionTimeout=&quot;20000&quot;
+redirectPort=&quot;8443&quot; /&gt;
+</code></pre><p>调整后的值：</p><pre><code>&lt;Connector
+port=&quot;8080&quot;
+protocol=&quot;HTTP/1.1&quot;
+maxKeepAliveRequests=&quot;200&quot;
+socketBuffer=&quot;9000&quot;
+enableLookups=&quot;false&quot;
+tcpNoDelay=&quot;true&quot;
+minSpareThreads=&quot;100&quot;
+maxSpareThreads=&quot;100&quot;
+maxThreads=&quot;2000&quot;
+connectionTimeout=&quot;5000&quot;
+maxHttpHeaderSize=&quot;32768&quot;
+URIEncoding=&quot;UTF-8&quot;
+acceptCount=&quot;200&quot;
+redirectPort=&quot;8443&quot; /&gt;
+</code></pre><p>配置项解释</p><table><thead><tr><th>参数</th><th>含义</th><th>示例</th></tr></thead><tbody><tr><td>port</td><td>绑定的端口,如果设置为0，tomcat则随机获取一个空闲端口</td><td>默认 port="8080&rdquo;</td></tr><tr><td>protocol</td><td>传输协议和版本</td><td>默认 protocol = &ldquo;HTTP/1.1&rdquo;</td></tr><tr><td>connectionTimeout</td><td>连接超时时间，单位毫秒</td><td>默认 connectionTimeout="20000&rdquo;</td></tr><tr><td>redirectPort</td><td>接收到的ssl请求后重定向的端口</td><td>默认 redirectPort="8443&rdquo;</td></tr><tr><td>maxThreads</td><td>tomcat能创建来处理请求的最大线程数，也为最大并发数 超过则放入请求队列中进行排队，默认值为200；需要根据业务和系统性能进行调整</td><td>maxThreads="1000&rdquo;</td></tr><tr><td>URIEncoding</td><td>url的字符编码，在tomcat8.5版本中，该值默认为UTF-8,除非在org.apache.catalina.STRICT_SERVLET_COMPLIANCE 将system property 设置为true才会使用ISO-8859-1</td><td>URIEncoding="UTF-8&rdquo;</td></tr><tr><td>minProcessors</td><td>启动时创建的线程数（最小线程数）</td><td>minProcessors="50&rdquo;</td></tr><tr><td>acceptCount</td><td>指定当所有可以使用的处理请求的线程数都被使用时，可以放到队列中的请求数，就是被排队的请求数，超过这个数的请求将拒绝连接 默认值为100</td><td>acceptcount="500&rdquo;</td></tr><tr><td>acceptorThreadCount</td><td>可以用于接受连接的进程数，默认为1，但是在一些多核的的服务器上，我们会将它的值设置为2或者更大的数，来应对一些不活跃的连接。</td><td></td></tr><tr><td>minSpareThreads</td><td>最小空闲线程数，任何情况都会存活的线程数，即便超过了最大空闲时间，也不会被回收，默认值10;</td><td>minSpareThreads="25&rdquo;</td></tr><tr><td>maxSpareThreads</td><td>最大空闲线程数，在最大空闲时间（maxIdleTime）内活跃过，此时空闲，当空闲时间大于maxIdleTime则被回收，小则继续存活，等待被调度，默认值50；</td><td></td></tr><tr><td>enableLookups</td><td>调用request、getRemoteHost()执行DNS查询，以返回远程主机的主机名，如果设置为false，则直接返回IP地址 默认是禁用的，在请求过滤中的根据远程主机名过滤，需要将该参数设置为true</td><td>enableLookups="false&rdquo;</td></tr><tr><td>maxIdleTime</td><td>最大空闲时间，超过这个空闲时间，且线程数大于minSpareThreads的，都会被回收，默认值1分钟（60000ms)</td><td>maxPostSize</td></tr><tr><td>address</td><td>对于一些具有多个ip的服务器，我们可以通过该参数指定绑定的ip，默认情况下监听所有的地址</td><td>address="192.168.1.110&rdquo;</td></tr><tr><td>compressibleMimeType</td><td>该值用来指定哪些文件类型的文件可以进行压缩，默认值为：text/html,text/xml,text/plain,text/css,text/javascript,application/javascript</td><td></td></tr><tr><td>compression</td><td>开启gzip 压缩，可以接受的值是 &ldquo;off&rdquo;(禁用压缩),&ldquo;on&rdquo;(开启压缩),&ldquo;force(强制压缩)"，&ldquo;1-9&rdquo;(等效于开启压缩，并且设定压缩等级),开启了压缩，也就意味着要占用更多的cpu资源</td><td>compression</td></tr><tr><td>compressionMinSize</td><td>在compression 参数指定为on后，该参数用来指定压缩的阈值，只有大于该阈值才会被压缩，默认为 2048</td><td></td></tr><tr><td>keepAliveTimeout</td><td>指connector两个HTTP请求直接的等待时间，超过该时间没有接收到第二个HTTP请求就关闭连接，默认是使用connectionTimeout 的值，单位为毫秒</td><td></td></tr><tr><td>maxConnections</td><td>在一定时间内可以接受和处理的最大连接数，达到限制后，服务器接受但不处理该链接，但可以存放到acceptCount，该默认值因连接器类型而异。对于NIO和NIO2，默认值为10000。对于APR / native，默认为8192。</td><td></td></tr><tr><td>maxCookieCount</td><td>请求允许的最大cookie 数，值小于0表示无限制，默认值为 200</td><td></td></tr><tr><td>disableUploadTimeout</td><td>默认是true ，禁用数据上传超时</td><td></td></tr><tr><td>connectionUploadTimeout</td><td>设定数据上传的超时时间，只有在disableUploadTimeout设置为false才生效，单位毫秒</td><td>connectionUploadTimeout="50000&rdquo;</td></tr><tr><td>processorCache</td><td>进程缓冲器，默认值是maxThreads的值,使用好该值可以提升并发请求。</td><td></td></tr></tbody></table></div><footer class=post-footer><div class=post-tags><a href=https://1162492411.github.io/docs/tags/%e6%9c%8d%e5%8a%a1%e4%bc%98%e5%8c%96 rel=tag title=服务优化>#服务优化#</a>
+<a href=https://1162492411.github.io/docs/tags/%e8%b0%83%e4%bc%98 rel=tag title=调优>#调优#</a>
+<a href=https://1162492411.github.io/docs/tags/linux rel=tag title=Linux>#Linux#</a></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://1162492411.github.io/docs/post/hystrix%E7%86%94%E6%96%AD%E5%99%A8/ rel=next title=Hystrix熔断器><i class="fa fa-chevron-left"></i>Hystrix熔断器</a></div><div class="post-nav-prev post-nav-item"><a href=https://1162492411.github.io/docs/post/docker-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/ rel=prev title="Docker 常用命令">Docker 常用命令 <i class="fa fa-chevron-right"></i></a></div></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target=post-toc-wrap></li><li class=sidebar-nav-overview data-target=site-overview></li></ul><section class="site-overview sidebar-panel"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=https://1162492411.github.io/docs/img/author.jpg alt=zyg><p class=site-author-name itemprop=name>zyg</p><p class="site-description motion-element" itemprop=description>Programmer & Architect</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=https://1162492411.github.io/docs/post/><span class=site-state-item-count>28</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-categories"><a href=https://1162492411.github.io/docs/categories/><span class=site-state-item-count>27</span>
+<span class=site-state-item-name></span></a></div><div class="site-state-item site-state-tags"><a href=https://1162492411.github.io/docs/tags/><span class=site-state-item-count>47</span>
+<span class=site-state-item-name></span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/1162492411/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>GitHub</a></span></div><div class="links-of-blogroll motion-element inline"><script type=text/javascript src="//rf.revolvermaps.com/0/0/8.js?i=5b4f2ucxar6&m=0&s=220&c=ff0000&cr1=ffffff&f=arial&l=33&bv=35" async></script></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class=post-toc><div class=post-toc-content><nav id=TableOfContents><ul><li><ul><li><a href=#调整linux最大线程数>调整linux最大线程数</a></li><li><a href=#调整linux全局最大pid>调整linux全局最大pid</a></li><li><a href=#调整linux-tcp进程参数>调整linux TCP进程参数</a></li><li><a href=#调整linux最大文件数量>调整linux最大文件数量</a></li></ul></li><li><a href=#tmcat参数优化>Tmcat参数优化</a><ul><li><a href=#设置内存参数>设置内存参数</a></li><li><a href=#修改日志打印>修改日志打印</a></li><li><a href=#调整线程数>调整线程数</a></li></ul></li></ul></nav></div></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span itemprop=copyrightYear>&copy;
+2009 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span><span class=author itemprop=copyrightHolder></span></div><div class=powered-by>Powered by - <a class=theme-link href=http://gohugo.io target=_blank title=hugo>Hugo v0.68.3</a></div><div class=theme-info>Theme by - <a class=theme-link href=https://github.com/xtfly/hugo-theme-next target=_blank>NexT</a></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i><span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript>if(Object.prototype.toString.call(window.Promise)!=='[object Function]'){window.Promise=null;}</script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery/index.js?v=2.1.3"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.min.js?v=1.2.1"></script><script type=text/javascript src="https://1162492411.github.io/docs/js/vendor/velocity/velocity.ui.min.js?v=1.2.1"></script><script src="https://1162492411.github.io/docs/js/vendor/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script><script src="https://1162492411.github.io/docs/js/vendor/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script><script type=text/javascript src=https://1162492411.github.io/docs/js/utils.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/motion.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/affix.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/schemes/pisces.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/scrollspy.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/post-details.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/toc.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/bootstrap.js></script><script type=text/javascript src=https://1162492411.github.io/docs/js/search.js></script><script type=text/x-mathjax-config>
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    tex2jax: {
+      inlineMath: [ ['$','$'] ],
+      displayMath: [ ['$$','$$'] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { fonts: ["TeX"] }
+  });
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script></body></html>
