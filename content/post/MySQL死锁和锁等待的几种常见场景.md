@@ -170,15 +170,25 @@ comment: false
   详见https://dev.mysql.com/doc/refman/5.7/en/innodb-locks-table.html
   
   列名     描述
+  
   LOCK_ID     一个唯一的锁ID号，内部为 InnoDB。
+  
   LOCK_TRX_ID     持有锁的交易的ID
+  
   LOCK_MODE     如何请求锁定。允许锁定模式描述符 S，X， IS，IX， GAP，AUTO_INC，和 UNKNOWN。锁定模式描述符可以组合使用以识别特定的锁定模式。
+  
   LOCK_TYPE     锁的类型
+  
   LOCK_TABLE     已锁定或包含锁定记录的表的名称
+  
   LOCK_INDEX     索引的名称，如果LOCK_TYPE是 RECORD; 否则NULL
+  
   LOCK_SPACE     锁定记录的表空间ID，如果 LOCK_TYPE是RECORD; 否则NULL
+  
   LOCK_PAGE     锁定记录的页码，如果 LOCK_TYPE是RECORD; 否则NULL。
+  
   LOCK_REC     页面内锁定记录的堆号，如果 LOCK_TYPE是RECORD; 否则NULL。
+  
   LOCK_DATA     与锁相关的数据（如果有）。如果 LOCK_TYPE是RECORD，是锁定的记录的主键值，否则NULL。此列包含锁定行中主键列的值，格式为有效的SQL字符串。如果没有主键，LOCK_DATA则是唯一的InnoDB内部行ID号。如果对键值或范围高于索引中的最大值的间隙锁定，则LOCK_DATA 报告supremum pseudo-record。当包含锁定记录的页面不在缓冲池中时（如果在保持锁定时将其分页到磁盘），InnoDB不从磁盘获取页面，以避免不必要的磁盘操作。相反， LOCK_DATA设置为 NULL。
 
   ## 死锁日志说明
@@ -360,6 +370,7 @@ TRANSACTIONS
 - 更新商家权益表: update merchant_privilege_record  where merchant_id=111
 
 - 更新订单表：update order set status='取消订单' where order_no='xxx'
+  
   如果入口B和入口C同时发生，那么就会死锁
 
 ## 数据重叠 - 表没有辅助索引
@@ -406,21 +417,25 @@ TRANSACTIONS
   如果觉得该场景中的sql不太贴合业务场景，把is_delete换成level商家等级,隔离级别RR，事务A刷数job针对level=1的新手商家统一赠送100积分,表中level=1的商家假设占据一半的比例，事务B为某个高等级商家修改自己的名字。
 
   分析-RR模式
+  
 - 针对SQL1， RR级别下，虽然where条件中的is_delete有索引，但是因为is_delete=0的行数在表中所占比例很大，因此sql最终使用了主键索引，锁住了全表所有数据(可以通过查看执行计划来佐证)
 [图片]
 - 针对SQL2，where条件中只有id，因此若SQL2执行，通过主键索引会锁定id=7的这条数据。
 - RR级别下，事务B 的SQL2执行时，因为想要锁的索引和数据已经被事务A持有，因此会等待事务A释放锁，或者一直等待直至抛错Lock wait timeout exceeded; try restarting transaction。
   
   分析-RC模式
+  
 - 针对SQL1，RC级别下，虽然也没有用到is_delete索引，改用了主键索引，但是最终只锁定了符合is_delete=0的那部分数据
 - 针对SQL2，与RR模式下的分析一样，若SQL2执行，通过主键索引会锁定id=7的这条数据
 - RC级别下，SQL正常执行，它可以正常拿到id=7的这条数据的锁
 - 引出疑问：why，rc和rr锁定的不一样，猜想应该是semi-consistent read(半一致性读)在rc级别生效了，把不符合条件的数据的锁给释放掉了(具体方式是先扫描到这些数据，发现不符合where条件后又释放对这些数据的锁定)。semi-consistent read会提前释放一些锁，减少冲突的概率提高并发，具体概念自行查询，这里给出官方的[参考链接](https://dev.mysql.com/doc/refman/5.7/en/innodb-transaction-isolation-levels.html)与中文博客链接）
 
-有索引但是没有使用上的原因很多，日常工作中大家多少都有了解，这里不再举更多例子。
+  有索引但是没有使用上的原因很多，日常工作中大家多少都有了解，这里不再举更多例子。
 ## 数据重叠 - 不同索引方式锁定的数据重叠
   针对上一个例子，如果让事务A中的sql使用上辅助索引，还会出问题吗？
+  
   基于MySQL5.7.24 & 8.0.20
+  
   先说结论：如果多个事务中，当前读的sql锁定的数据中有重叠，也会出现锁等待。
 
 ```sql
@@ -453,10 +468,13 @@ insert into a_dict(id,field_template_id,value) values
 - sql2通过idx_p锁定field_id=2的数据，这之中包含id=1、2、3、4的数据
 
 - sql2执行时锁定的数据与sql1重叠，因此等待
-  总结：涉及到当前读的sql时多考虑索引和锁定数据的情况
+
+  总结：涉及到当前读的sql时多考虑索引和锁定数据的情况。
+
   至于为什么锁定数据重叠会冲突，我个人猜想是和索引底层实现有关系
   [图片]
   [图片]
+
   主键索引内存储的值里是实际数据(0001,apple,6.00)，其他索引内存储的值是主键索引的值(1,2,3,4,5)。因此其他索引锁定数据时，也会涉及到相应的主键索引。仅为个人猜测，瓜不保熟。
   
   这个案例看起来代码简单很清晰，后边会举一个业务系统里更加真实复杂的案例
