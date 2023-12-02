@@ -733,7 +733,12 @@ insert into a_dict(id,field_template_id,value) values
 
 # 附录-一些链接
 [Innodb事务子系统介绍-阿里](http://mysql.taobao.org/monthly/2015/12/01/)
+
 [Innodb事务锁系统介绍-阿里](http://mysql.taobao.org/monthly/2016/01/01/)
+
 MySQL45讲-丁奇-极客时间
+
 《高性能MYSQL》
+
 [不同的自增锁模式下锁的规则-官方5.7](https://dev.mysql.com/doc/refman/5.7/en/innodb-auto-increment-handling.html)
+
